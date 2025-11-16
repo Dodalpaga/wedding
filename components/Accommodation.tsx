@@ -237,9 +237,7 @@ export default function Accommodation() {
               </p>
               <p className="text-sm text-[var(--dark)]">
                 Nous vous recommandons de réserver votre hébergement dès que
-                possible, surtout pour le week-end du mariage. N'oubliez pas de
-                mentionner que vous participez au mariage de Solenne & Dorian
-                pour d'éventuelles réductions !
+                possible, surtout pour le week-end du mariage.
               </p>
             </div>
           </div>

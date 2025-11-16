@@ -70,9 +70,7 @@ export default function Header() {
               <button
                 onClick={() => scrollToSection('accueil')}
                 className={`transition-colors duration-300 ${
-                  scrolled
-                    ? 'text-[var(--primary)] hover:text-[var(--dark)]'
-                    : 'text-[var(--accent)] hover:text-[var(--dark)]'
+                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
                 }`}
               >
                 Accueil
@@ -82,9 +80,7 @@ export default function Header() {
               <button
                 onClick={() => scrollToSection('infos')}
                 className={`transition-colors duration-300 ${
-                  scrolled
-                    ? 'text-[var(--primary)] hover:text-[var(--dark)]'
-                    : 'text-[var(--accent)] hover:text-[var(--dark)]'
+                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
                 }`}
               >
                 Informations
@@ -94,9 +90,7 @@ export default function Header() {
               <button
                 onClick={() => scrollToSection('programme')}
                 className={`transition-colors duration-300 ${
-                  scrolled
-                    ? 'text-[var(--primary)] hover:text-[var(--dark)]'
-                    : 'text-[var(--accent)] hover:text-[var(--dark)]'
+                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
                 }`}
               >
                 Programme
@@ -106,9 +100,7 @@ export default function Header() {
               <button
                 onClick={() => scrollToSection('contact')}
                 className={`transition-colors duration-300 ${
-                  scrolled
-                    ? 'text-[var(--primary)] hover:text-[var(--dark)]'
-                    : 'text-[var(--accent)] hover:text-[var(--dark)]'
+                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
                 }`}
               >
                 Contact
@@ -156,9 +148,7 @@ export default function Header() {
               <button
                 onClick={() => scrollToSection('accueil')}
                 className={`block py-2 transition-colors duration-300 ${
-                  scrolled
-                    ? 'text-[var(--primary)] hover:text-[var(--dark)]'
-                    : 'text-[var(--accent)] hover:text-[var(--dark)]'
+                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
                 }`}
               >
                 Accueil
@@ -168,9 +158,7 @@ export default function Header() {
               <button
                 onClick={() => scrollToSection('infos')}
                 className={`block py-2 transition-colors duration-300 ${
-                  scrolled
-                    ? 'text-[var(--primary)] hover:text-[var(--dark)]'
-                    : 'text-[var(--accent)] hover:text-[var(--dark)]'
+                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
                 }`}
               >
                 Informations
@@ -180,9 +168,7 @@ export default function Header() {
               <button
                 onClick={() => scrollToSection('programme')}
                 className={`block py-2 transition-colors duration-300 ${
-                  scrolled
-                    ? 'text-[var(--primary)] hover:text-[var(--dark)]'
-                    : 'text-[var(--accent)] hover:text-[var(--dark)]'
+                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
                 }`}
               >
                 Programme
@@ -192,9 +178,7 @@ export default function Header() {
               <button
                 onClick={() => scrollToSection('contact')}
                 className={`block py-2 transition-colors duration-300 ${
-                  scrolled
-                    ? 'text-[var(--primary)] hover:text-[var(--dark)]'
-                    : 'text-[var(--accent)] hover:text-[var(--dark)]'
+                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
                 }`}
               >
                 Contact
