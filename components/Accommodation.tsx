@@ -1,5 +1,21 @@
-export default function Accommodation() {
+export default function AccommodationLamaud() {
   const accommodations = [
+    {
+      type: 'Gîte',
+      name: "Gîte de l'Héritier",
+      address: '323 Métairie Basse, 81500 Marzens',
+      distance: '8 minutes en voiture',
+      phone: '06 08 74 08 77',
+      website: 'https://heritier-location.fr/informations/',
+      price: '€ - €€',
+      capacity: 12,
+      description: 'Idéal pour les familles',
+      features: [
+        'Piscine extérieure chauffée',
+        'Cuisine d’été avec plancha',
+        'Adapté aux familles',
+      ],
+    },
     {
       type: 'Gîte',
       name: 'Gîte de Ségur',
@@ -15,22 +31,6 @@ export default function Accommodation() {
         'Hammam',
         'Jacuzzi',
         'Salle de fitness',
-      ],
-    },
-    {
-      type: 'Gîte',
-      name: "Gîte de l'Héritier",
-      address: '323 Métairie Basse, 81500 Marzens',
-      distance: '8 minutes en voiture',
-      phone: '06 08 74 08 77',
-      website: 'https://heritier-location.fr/informations/',
-      price: '€ - €€',
-      capacity: 12,
-      description: 'Idéal pour les familles',
-      features: [
-        'Piscine extérieure chauffée',
-        'Cuisine d’été avec plancha',
-        'Adapté aux familles',
       ],
     },
   ];

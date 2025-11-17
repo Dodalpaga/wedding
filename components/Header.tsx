@@ -1,53 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 100);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: 'smooth' });
-    setMenuOpen(false);
-  };
 
   return (
-    <header
-      className={`fixed top-0 w-full backdrop-blur-md shadow-lg z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/98 border-b border-[var(--primary)]/10'
-          : 'bg-[var(--primary)]/98 border-b border-[var(--dark)]/20'
-      }`}
-    >
+    <header className="fixed top-0 w-full bg-[var(--accent)] shadow-lg z-50 border-b border-white/20">
+      {' '}
       <nav className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <div className="relative h-10 w-10">
-              {/* Logo blanc (visible sur fond aurore) */}
               <img
                 src="/SD Logo.svg"
                 alt="Logo"
-                className={`absolute inset-0 h-10 w-10 object-contain brightness-0 invert transition-opacity duration-300 ${
-                  scrolled ? 'opacity-0' : 'opacity-100'
-                }`}
-                onError={(e) => (e.currentTarget.style.display = 'none')}
-              />
-              {/* Logo bleu (visible sur fond blanc) */}
-              <img
-                src="/SD Logo.svg"
-                alt="Logo"
-                className={`absolute inset-0 h-10 w-10 object-contain transition-opacity duration-300 ${
-                  scrolled ? 'opacity-100' : 'opacity-0'
-                }`}
+                className={`absolute inset-0 h-10 w-10 object-contain transition-opacity duration-300 `}
                 style={{
                   filter:
                     'brightness(0) saturate(100%) invert(13%) sepia(48%) saturate(2084%) hue-rotate(165deg) brightness(95%) contrast(101%)',
@@ -55,11 +24,7 @@ export default function Header() {
                 onError={(e) => (e.currentTarget.style.display = 'none')}
               />
             </div>
-            <h1
-              className={`text-2xl font-wedding transition-colors duration-300 ${
-                scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-              }`}
-            >
+            <h1 className="text-2xl font-wedding text-[var(--primary)]">
               Solenne & Dorian
             </h1>
           </div>
@@ -67,53 +32,55 @@ export default function Header() {
           {/* Menu desktop */}
           <ul className="hidden md:flex gap-8">
             <li>
-              <button
-                onClick={() => scrollToSection('accueil')}
-                className={`transition-colors duration-300 ${
-                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-                }`}
+              <Link
+                href="/#accueil"
+                className="text-[var(--primary)] font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
               >
                 Accueil
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection('infos')}
-                className={`transition-colors duration-300 ${
-                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-                }`}
+              <Link
+                href="/#infos"
+                className="text-[var(--primary)] font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
               >
-                Informations
-              </button>
+                Information
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection('programme')}
-                className={`transition-colors duration-300 ${
-                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-                }`}
+              <Link
+                href="/#programme"
+                className="text-[var(--primary)] font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
               >
                 Programme
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className={`transition-colors duration-300 ${
-                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-                }`}
+              <Link
+                href="/#contact"
+                className="text-[var(--primary)] font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
               >
                 Contact
-              </button>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/confirmation/"
+                className="text-[var(--primary)] underline font-semibold hover:opacity-80 transition-opacity"
+              >
+                Confirmer
+              </Link>
             </li>
           </ul>
 
           {/* Burger menu mobile */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className={`md:hidden transition-colors duration-300 ${
-              scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-            }`}
+            className="md:hidden text-[var(--primary)]"
             aria-label="Menu"
           >
             <svg
@@ -143,46 +110,51 @@ export default function Header() {
 
         {/* Menu mobile */}
         {menuOpen && (
-          <ul className="md:hidden mt-4 space-y-2">
+          <ul className="md:hidden mt-4 space-y-2 pb-2">
             <li>
-              <button
-                onClick={() => scrollToSection('accueil')}
-                className={`block py-2 transition-colors duration-300 ${
-                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-                }`}
+              <Link
+                href="/#accueil"
+                className="text-[var(--primary)] font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
               >
                 Accueil
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection('infos')}
-                className={`block py-2 transition-colors duration-300 ${
-                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-                }`}
+              <Link
+                href="/#infos"
+                className="text-[var(--primary)] font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
               >
-                Informations
-              </button>
+                Information
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection('programme')}
-                className={`block py-2 transition-colors duration-300 ${
-                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-                }`}
+              <Link
+                href="/#programme"
+                className="text-[var(--primary)] font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
               >
                 Programme
-              </button>
+              </Link>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection('contact')}
-                className={`block py-2 transition-colors duration-300 ${
-                  scrolled ? 'text-[var(--primary)]' : 'text-[var(--accent)]'
-                }`}
+              <Link
+                href="/#contact"
+                className="text-[var(--primary)] font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
               >
                 Contact
-              </button>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/confirmation/"
+                className="text-[var(--primary)] underline font-semibold hover:opacity-80 transition-opacity"
+                onClick={() => setMenuOpen(false)}
+              >
+                Confirmer
+              </Link>
             </li>
           </ul>
         )}

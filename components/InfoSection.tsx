@@ -70,33 +70,6 @@ export default function InfoSection() {
               </div>
             </div>
           </div>
-
-          {/* <div className="mt-12 max-w-2xl mx-auto bg-[var(--secondary)]/10 border-l-4 border-[var(--secondary)] p-6 rounded">
-            <div className="flex items-start">
-              <svg
-                className="w-6 h-6 text-[var(--secondary)] mt-0.5 mr-3 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <div>
-                <p className="font-semibold text-[var(--primary)] mb-1">
-                  Parking disponible
-                </p>
-                <p className="text-sm text-[var(--dark)]">
-                  Un parking gratuit est disponible sur place au château. Des
-                  navettes seront organisées depuis l'église.
-                </p>
-              </div>
-            </div>
-          </div> */}
         </div>
       </section>
 
