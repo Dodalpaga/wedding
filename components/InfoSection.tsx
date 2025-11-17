@@ -37,7 +37,12 @@ export default function InfoSection() {
                   (à 40 mintues de Toulouse), offre un cadre verdoyant et
                   paisible, idéal pour célébrer un mariage en toute intimité.
                 </p>
-                <img src="images/domaine.png" alt="" />
+                <img
+                  src={`${
+                    process.env.NEXT_PUBLIC_BASE_PATH || ''
+                  }/images/domaine.png`}
+                  alt=""
+                />
               </div>
             </div>
 
@@ -66,7 +71,12 @@ export default function InfoSection() {
                   Un parking gratuit est disponible sur place au domaine. Il y
                   aura de la place pour tout le monde !
                 </p>
-                <img src="images/dessus-domaine.png" alt="" />
+                <img
+                  src={`${
+                    process.env.NEXT_PUBLIC_BASE_PATH || ''
+                  }/images/dessus-domaine.png`}
+                  alt=""
+                />
               </div>
             </div>
           </div>

@@ -16,6 +16,12 @@ const nextConfig = {
     ],
   },
 
+  // Ajouter la variable d'environnement
+  env: {
+    NEXT_PUBLIC_BASE_PATH:
+      process.env.NODE_ENV === 'production' ? '/wedding' : '',
+  },
+
   basePath: process.env.NODE_ENV === 'production' ? '/wedding' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/wedding' : '',
 

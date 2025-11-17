@@ -14,7 +14,7 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <div className="relative h-10 w-10">
               <img
-                src="SD Logo.svg"
+                src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/SD Logo.svg`}
                 alt="Logo"
                 className={`absolute inset-0 h-10 w-10 object-contain transition-opacity duration-300 `}
                 onError={(e) => (e.currentTarget.style.display = 'none')}
