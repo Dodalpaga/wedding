@@ -17,10 +17,6 @@ export default function Header() {
                 src="SD Logo.svg"
                 alt="Logo"
                 className={`absolute inset-0 h-10 w-10 object-contain transition-opacity duration-300 `}
-                style={{
-                  filter:
-                    'brightness(0) saturate(100%) invert(13%) sepia(48%) saturate(2084%) hue-rotate(165deg) brightness(95%) contrast(101%)',
-                }}
                 onError={(e) => (e.currentTarget.style.display = 'none')}
               />
             </div>
