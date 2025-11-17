@@ -11,6 +11,9 @@ import {
 } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 
+type SortField = 'code' | 'nom' | 'statut' | 'arrivee' | 'date';
+type SortDirection = 'asc' | 'desc';
+
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState('');
@@ -22,9 +25,14 @@ export default function AdminDashboard() {
   const [filteredStatuts, setFilteredStatuts] = useState<any[]>([]);
   const [filterStatus, setFilterStatus] = useState<string>('tous');
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterName, setFilterName] = useState('');
   const [codesInvitation, setCodesInvitation] = useState<Map<string, any>>(
     new Map()
   );
+
+  // États pour le tri
+  const [sortField, setSortField] = useState<SortField>('nom');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
   // Vérifier l'authentification au chargement
   useEffect(() => {
@@ -71,24 +79,120 @@ export default function AdminDashboard() {
     }
   };
 
-  // Filtrer les statuts
-  useEffect(() => {
-    let filtered = [...statuts];
+  // Obtenir tous les membres de tous les codes
+  const getAllMembres = () => {
+    const allMembres: any[] = [];
+    codesInvitation.forEach((code) => {
+      (code.membres || []).forEach((nom: string) => {
+        const statut = statuts.find((s) => s.nom_membre === nom);
+        allMembres.push({
+          nom,
+          codeInvitation: code.id,
+          statut: statut?.statut || 'en_attente',
+          arrivee: statut?.arrivee || '',
+          commentaires: statut?.commentaires || '',
+          dateModification: statut?.date_modification,
+        });
+      });
+    });
+    return allMembres;
+  };
 
-    if (filterStatus !== 'tous') {
-      filtered = filtered.filter((s) => s.statut === filterStatus);
+  // Fonction de tri
+  const sortMembres = (membres: any[]) => {
+    return [...membres].sort((a, b) => {
+      let aValue, bValue;
+
+      switch (sortField) {
+        case 'code':
+          aValue = a.codeInvitation.toLowerCase();
+          bValue = b.codeInvitation.toLowerCase();
+          break;
+        case 'nom':
+          aValue = a.nom.toLowerCase();
+          bValue = b.nom.toLowerCase();
+          break;
+        case 'statut':
+          aValue = a.statut;
+          bValue = b.statut;
+          break;
+        case 'arrivee':
+          aValue = a.arrivee || '';
+          bValue = b.arrivee || '';
+          break;
+        case 'date':
+          aValue = a.dateModification?.toDate?.() || new Date(0);
+          bValue = b.dateModification?.toDate?.() || new Date(0);
+          break;
+        default:
+          return 0;
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  // Gérer le clic sur un en-tête de colonne
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
     }
+  };
 
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (s) =>
-          s.nom_membre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          s.code_invitation?.toLowerCase().includes(searchTerm.toLowerCase())
+  // Icône de tri
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) {
+      return (
+        <svg
+          className="w-4 h-4 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+          />
+        </svg>
       );
     }
-
-    setFilteredStatuts(filtered);
-  }, [filterStatus, searchTerm, statuts]);
+    return sortDirection === 'asc' ? (
+      <svg
+        className="w-4 h-4 text-[#137e41]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M5 15l7-7 7 7"
+        />
+      </svg>
+    ) : (
+      <svg
+        className="w-4 h-4 text-[#137e41]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 9l-7 7-7-7"
+        />
+      </svg>
+    );
+  };
 
   // Connexion
   const handleLogin = async () => {
@@ -119,7 +223,7 @@ export default function AdminDashboard() {
   );
 
   const totalReponses = statuts.reduce((acc, s) => {
-    return acc + (s.nombre || 1); // si tu stockes un "nombre"
+    return acc + (s.nombre || 1);
   }, 0);
 
   // Statistiques
@@ -141,14 +245,14 @@ export default function AdminDashboard() {
       'Date Modification',
     ];
 
-    const rows = filteredStatuts.map((s) => [
-      s.code_invitation,
-      s.nom_membre,
+    const rows = filteredMembres.map((s) => [
+      s.codeInvitation,
+      s.nom,
       s.statut,
       s.arrivee || '',
       (s.commentaires || '').replace(/,/g, ';'),
-      s.date_modification?.toDate
-        ? new Date(s.date_modification.toDate()).toLocaleDateString('fr-FR')
+      s.dateModification?.toDate
+        ? new Date(s.dateModification.toDate()).toLocaleDateString('fr-FR')
         : '',
     ]);
 
@@ -162,25 +266,6 @@ export default function AdminDashboard() {
       new Date().toISOString().split('T')[0]
     }.csv`;
     link.click();
-  };
-
-  // Obtenir tous les membres de tous les codes
-  const getAllMembres = () => {
-    const allMembres: any[] = [];
-    codesInvitation.forEach((code) => {
-      (code.membres || []).forEach((nom: string) => {
-        const statut = statuts.find((s) => s.nom_membre === nom);
-        allMembres.push({
-          nom,
-          codeInvitation: code.id,
-          statut: statut?.statut || 'en_attente',
-          arrivee: statut?.arrivee || '',
-          commentaires: statut?.commentaires || '',
-          dateModification: statut?.date_modification,
-        });
-      });
-    });
-    return allMembres;
   };
 
   // Écran de connexion
@@ -255,14 +340,70 @@ export default function AdminDashboard() {
 
   // Dashboard principal
   const allMembres = getAllMembres();
-  const filteredMembres = allMembres.filter((m) => {
-    const matchStatus = filterStatus === 'tous' || m.statut === filterStatus;
-    const matchSearch =
-      !searchTerm ||
-      m.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.codeInvitation.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchStatus && matchSearch;
-  });
+
+  // Filtrer les membres
+  const filteredMembres = sortMembres(
+    allMembres.filter((m) => {
+      const matchStatus = filterStatus === 'tous' || m.statut === filterStatus;
+      const matchSearch =
+        !searchTerm ||
+        m.codeInvitation.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchName =
+        !filterName || m.nom.toLowerCase().includes(filterName.toLowerCase());
+      return matchStatus && matchSearch && matchName;
+    })
+  );
+
+  // Statistiques pour les visualisations
+  const confirmedMembers = allMembres.filter((m) => m.statut === 'accepte');
+
+  const arrivalStats = {
+    'Vendredi soir': confirmedMembers.filter(
+      (m) => m.arrivee === 'Vendredi soir'
+    ).length,
+    'Samedi midi': confirmedMembers.filter((m) => m.arrivee === 'Samedi midi')
+      .length,
+    'Samedi après-midi': confirmedMembers.filter(
+      (m) => m.arrivee === 'Samedi après-midi'
+    ).length,
+    'Non précisé': confirmedMembers.filter(
+      (m) => !m.arrivee || m.arrivee === ''
+    ).length,
+  };
+
+  const maxArrival = Math.max(...Object.values(arrivalStats), 1);
+
+  // Statistiques par code d'invitation
+  const topCodes = Array.from(codesInvitation.entries())
+    .map(([code, data]) => {
+      const membres = data.membres || [];
+      const description = data.description || '';
+      const confirmed = membres.filter((nom: string) =>
+        statuts.find((s) => s.nom_membre === nom && s.statut === 'accepte')
+      ).length;
+      return { code, description, total: membres.length, confirmed };
+    })
+    .sort((a, b) => b.confirmed - a.confirmed)
+    .slice(0, 5);
+
+  // Taux de réponse par jour (simulé avec dates de modification)
+  const responsesOverTime = statuts
+    .filter((s) => s.date_modification?.toDate)
+    .reduce((acc: any, s) => {
+      const date = new Date(s.date_modification.toDate()).toLocaleDateString(
+        'fr-FR'
+      );
+      acc[date] = (acc[date] || 0) + 1;
+      return acc;
+    }, {});
+
+  const sortedDates = Object.entries(responsesOverTime)
+    .sort(
+      ([a], [b]) =>
+        new Date(a.split('/').reverse().join('-')).getTime() -
+        new Date(b.split('/').reverse().join('-')).getTime()
+    )
+    .slice(-7);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -324,18 +465,205 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Visualisations */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* Timeline des arrivées */}
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-[#137e41]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Timeline des arrivées
+            </h3>
+            <p className="text-sm text-gray-600 mb-6">
+              {confirmedMembers.length} personnes confirmées
+            </p>
+
+            <div className="space-y-6">
+              {/* Vendredi soir */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    🌙 Vendredi soir
+                  </span>
+                  <span className="text-lg font-bold text-[#003b4e]">
+                    {arrivalStats['Vendredi soir']}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-[#003b4e] to-[#005a70] h-3 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${
+                        (arrivalStats['Vendredi soir'] / maxArrival) * 100
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Samedi midi */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    ☀️ Samedi midi
+                  </span>
+                  <span className="text-lg font-bold text-[#137e41]">
+                    {arrivalStats['Samedi midi']}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-[#137e41] to-[#1a9e52] h-3 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${
+                        (arrivalStats['Samedi midi'] / maxArrival) * 100
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Samedi après-midi */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                    🌤️ Samedi après-midi
+                  </span>
+                  <span className="text-lg font-bold text-[#f59e0b]">
+                    {arrivalStats['Samedi après-midi']}
+                  </span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-[#f59e0b] to-[#fbbf24] h-3 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${
+                        (arrivalStats['Samedi après-midi'] / maxArrival) * 100
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Non précisé */}
+              {arrivalStats['Non précisé'] > 0 && (
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                      ❓ Non précisé
+                    </span>
+                    <span className="text-lg font-bold text-gray-500">
+                      {arrivalStats['Non précisé']}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div
+                      className="bg-gray-400 h-3 rounded-full transition-all duration-500"
+                      style={{
+                        width: `${
+                          (arrivalStats['Non précisé'] / maxArrival) * 100
+                        }%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Taux de conversion par code */}
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-[#137e41]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                />
+              </svg>
+              Top 5 codes d'invitation
+            </h3>
+            <p className="text-sm text-gray-600 mb-6">
+              Par nombre de confirmations
+            </p>
+
+            <div className="space-y-4">
+              {topCodes.map((code, index) => (
+                <div key={code.code}>
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-white bg-gradient-to-r from-[#003b4e] to-[#137e41] w-6 h-6 rounded-full flex items-center justify-center">
+                        {index + 1}
+                      </span>
+                      <span className="text-sm font-mono font-semibold text-gray-700">
+                        {code.code}
+                      </span>
+                      <span className="text-sm font-mono font-semibold text-gray-700">
+                        ({code.description})
+                      </span>
+                    </div>
+                    <span className="text-sm text-gray-600">
+                      <span className="font-bold text-[#137e41]">
+                        {code.confirmed}
+                      </span>
+                      /{code.total}
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="bg-gradient-to-r from-[#003b4e] to-[#137e41] h-2 rounded-full transition-all duration-500"
+                      style={{
+                        width: `${(code.confirmed / code.total) * 100}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Filtres */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <div className="grid md:grid-cols-4 gap-4">
+          <div className="grid md:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Recherche
+                Recherche code
               </label>
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Nom ou code..."
+                placeholder="Code invitation..."
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#137e41]"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Recherche nom
+              </label>
+              <input
+                type="text"
+                value={filterName}
+                onChange={(e) => setFilterName(e.target.value)}
+                placeholder="Nom de l'invité..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#137e41]"
               />
             </div>
@@ -375,6 +703,18 @@ export default function AdminDashboard() {
                 Export CSV
               </button>
             </div>
+            <div className="flex items-end">
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setFilterName('');
+                  setFilterStatus('tous');
+                }}
+                className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Réinitialiser
+              </button>
+            </div>
           </div>
         </div>
 
@@ -384,23 +724,53 @@ export default function AdminDashboard() {
             <table className="w-full">
               <thead className="bg-gray-100 border-b">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Code
+                  <th
+                    onClick={() => handleSort('code')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      Code
+                      <SortIcon field="code" />
+                    </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Nom
+                  <th
+                    onClick={() => handleSort('nom')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      Nom
+                      <SortIcon field="nom" />
+                    </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Statut
+                  <th
+                    onClick={() => handleSort('statut')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      Statut
+                      <SortIcon field="statut" />
+                    </div>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Arrivée
+                  <th
+                    onClick={() => handleSort('arrivee')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      Arrivée
+                      <SortIcon field="arrivee" />
+                    </div>
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
                     Commentaires
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
-                    Date
+                  <th
+                    onClick={() => handleSort('date')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      Date
+                      <SortIcon field="date" />
+                    </div>
                   </th>
                 </tr>
               </thead>
@@ -464,6 +834,10 @@ export default function AdminDashboard() {
             Aucun invité trouvé
           </div>
         )}
+
+        <div className="mt-4 text-sm text-gray-600 text-center">
+          {filteredMembres.length} invité(s) affiché(s) sur {allMembres.length}
+        </div>
       </div>
     </div>
   );
