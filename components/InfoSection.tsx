@@ -1,5 +1,8 @@
 'use client';
 
+import VillaIcon from '@mui/icons-material/Villa'; // très élégant pour un domaine
+import LocalParkingIcon from '@mui/icons-material/LocalParking'; // L’icône parking parfaite !
+
 export default function InfoSection() {
   return (
     <>
@@ -13,60 +16,38 @@ export default function InfoSection() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Le Lieu */}
             <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
-              <div className="text-center mb-4">
-                <svg
-                  className="w-12 h-12 mx-auto text-[var(--secondary)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
+              <div className="text-center mb-6">
+                <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
               </div>
               <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
                 Le Domaine d'en Naudet
               </h3>
-              <div className="space-y-2 text-[var(--dark)] text-justify">
+              <div className="space-y-4 text-[var(--dark)] text-justify">
                 <p>
                   Le domaine d’en Naudet, situé à quelques kilomètres de Lavaur
-                  (à 40 mintues de Toulouse), offre un cadre verdoyant et
+                  (à 40 minutes de Toulouse), offre un cadre verdoyant et
                   paisible, idéal pour célébrer un mariage en toute intimité.
                 </p>
                 <img
                   src={`${
                     process.env.NEXT_PUBLIC_BASE_PATH || ''
                   }/images/domaine.png`}
-                  alt=""
+                  alt="Domaine d’en Naudet"
                 />
               </div>
             </div>
 
             {/* Parking */}
             <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
-              <div className="text-center mb-4">
-                <svg
-                  className="w-12 h-12 mx-auto text-[var(--secondary)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
+              <div className="text-center mb-6">
+                <LocalParkingIcon
+                  sx={{ fontSize: 60, color: 'var(--secondary)' }}
+                />
               </div>
               <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
                 Parking
               </h3>
-              <div className="space-y-2 text-[var(--dark)]">
+              <div className="space-y-4 text-[var(--dark)]">
                 <p>
                   Un parking gratuit est disponible sur place au domaine. Il y
                   aura de la place pour tout le monde !
@@ -75,7 +56,7 @@ export default function InfoSection() {
                   src={`${
                     process.env.NEXT_PUBLIC_BASE_PATH || ''
                   }/images/dessus-domaine.png`}
-                  alt=""
+                  alt="Vue aérienne du parking"
                 />
               </div>
             </div>
@@ -89,11 +70,14 @@ export default function InfoSection() {
 
         <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
-            Programme de la journée
+            Programme du week-end
           </h2>
 
           <div className="max-w-2xl mx-auto">
-            <div className="space-y-8">
+            <p className="max-w-2xl mx-auto text-center text-lg text-[var(--dark)] mb-8">
+              A venir ...
+            </p>
+            {/* <div className="space-y-8">
               {[
                 {
                   time: '14:00',
@@ -138,7 +122,7 @@ export default function InfoSection() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

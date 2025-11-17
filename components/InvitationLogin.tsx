@@ -15,12 +15,14 @@ export default function InvitationLogin({ onSuccess }: InvitationLoginProps) {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Important : empêche le rechargement de la page
+
+    if (!code.trim()) return; // Sécurité supplémentaire
+
     setLoading(true);
     setError('');
 
     try {
-      // Vérifier le code dans Firestore
       const codeRef = doc(db, 'codes_invitation', code.toUpperCase());
       const codeDoc = await getDoc(codeRef);
 
@@ -32,7 +34,6 @@ export default function InvitationLogin({ onSuccess }: InvitationLoginProps) {
 
       const inviteData = codeDoc.data();
 
-      // Code valide - passer les données à la page suivante
       onSuccess({
         code: code.toUpperCase(),
         ...inviteData,
@@ -62,7 +63,7 @@ export default function InvitationLogin({ onSuccess }: InvitationLoginProps) {
 
       <div className="relative z-10 w-full max-w-md px-4">
         <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-[#137e41]/20">
-          {/* Bouton retour en haut à gauche */}
+          {/* Bouton retour */}
           <div className="absolute top-4 left-4">
             <Link
               href="/"
@@ -84,8 +85,9 @@ export default function InvitationLogin({ onSuccess }: InvitationLoginProps) {
               Retour à l’accueil
             </Link>
           </div>
-          {/* Logo */}
-          <div className="text-center mb-2">
+
+          {/* Logo + titre */}
+          <div className="text-center mb-8">
             <div className="inline-block bg-gradient-to-br from-[#003b4e] to-[#137e41] p-4 rounded-full mb-4">
               <svg
                 className="w-12 h-12 text-white"
@@ -107,8 +109,8 @@ export default function InvitationLogin({ onSuccess }: InvitationLoginProps) {
             <p className="text-gray-600">17 Juillet 2027</p>
           </div>
 
-          {/* Formulaire */}
-          <div className="space-y-6">
+          {/* === FORMULAIRE avec onSubmit === */}
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Code d'invitation
@@ -121,6 +123,7 @@ export default function InvitationLogin({ onSuccess }: InvitationLoginProps) {
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-[#137e41] focus:outline-none transition-colors text-center text-lg font-mono uppercase"
                 required
                 disabled={loading}
+                autoFocus // bonus : focus automatique au chargement
               />
               <p className="text-xs text-gray-500 mt-2 text-center">
                 Entrez le code reçu dans votre invitation
@@ -148,9 +151,10 @@ export default function InvitationLogin({ onSuccess }: InvitationLoginProps) {
               </div>
             )}
 
+            {/* Le bouton peut maintenant avoir type="submit" */}
             <button
-              onClick={handleSubmit}
-              disabled={loading || !code}
+              type="submit"
+              disabled={loading || !code.trim()}
               className="w-full bg-gradient-to-r from-[#003b4e] to-[#137e41] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
@@ -180,9 +184,9 @@ export default function InvitationLogin({ onSuccess }: InvitationLoginProps) {
                 'Accéder au formulaire'
               )}
             </button>
-          </div>
+          </form>
 
-          {/* Info */}
+          {/* Info contact */}
           <div className="mt-6 bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
             <div className="flex items-start">
               <svg

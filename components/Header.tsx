@@ -68,7 +68,7 @@ export default function Header() {
                 href="/confirmation/"
                 className="text-[var(--primary)] underline font-semibold hover:opacity-80 transition-opacity"
               >
-                Confirmer
+                Confirmations
               </Link>
             </li>
           </ul>
@@ -149,7 +149,7 @@ export default function Header() {
                 className="text-[var(--primary)] underline font-semibold hover:opacity-80 transition-opacity"
                 onClick={() => setMenuOpen(false)}
               >
-                Confirmer
+                Confirmations
               </Link>
             </li>
           </ul>

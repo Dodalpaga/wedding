@@ -111,18 +111,23 @@ export default function AdminDashboard() {
     setIsAuthenticated(false);
   };
 
+  const totalInvites = Array.from(codesInvitation.values()).reduce(
+    (acc, code) => {
+      return acc + (code.membres?.length || 0);
+    },
+    0
+  );
+
+  const totalReponses = statuts.reduce((acc, s) => {
+    return acc + (s.nombre || 1); // si tu stockes un "nombre"
+  }, 0);
+
   // Statistiques
   const stats = {
-    total: statuts.length,
+    total: totalInvites,
     acceptes: statuts.filter((s) => s.statut === 'accepte').length,
     refuses: statuts.filter((s) => s.statut === 'refuse').length,
-    enAttente: Array.from(codesInvitation.values()).reduce((acc, code) => {
-      const membres = code.membres || [];
-      const membresConfirmes = statuts.filter(
-        (s) => s.code_invitation === code.id
-      ).length;
-      return acc + (membres.length - membresConfirmes);
-    }, 0),
+    enAttente: totalInvites - totalReponses,
   };
 
   // Export CSV

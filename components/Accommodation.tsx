@@ -1,4 +1,4 @@
-export default function AccommodationLamaud() {
+export default function Accommodation() {
   const accommodations = [
     {
       type: 'Gîte',

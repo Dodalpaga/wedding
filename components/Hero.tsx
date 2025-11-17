@@ -6,23 +6,9 @@ export default function Hero() {
       id="accueil"
       className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20"
     >
-      {/* Fond aurores boréales animé */}
-      <div className="absolute inset-0 aurora-bg"></div>
-
-      {/* Overlay pour améliorer la lisibilité */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--primary)]/30 to-[var(--dark)]/50"></div>
-
-      {/* Effet de lumières flottantes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--secondary)]/20 rounded-full blur-3xl animate-pulse"
-          style={{ animationDuration: '4s' }}
-        ></div>
-        <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--primary)]/20 rounded-full blur-3xl animate-pulse"
-          style={{ animationDuration: '6s', animationDelay: '2s' }}
-        ></div>
-      </div>
+      {/* Fond aurores boréales */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#003b4e] via-[#034861] to-[#137e41]"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#003b4e]/30 to-[#034861]/50"></div>
 
       <div className="container mx-auto px-4 text-center relative z-10">
         <img
@@ -40,13 +26,6 @@ export default function Hero() {
         </p>
         <div className="text-2xl md:text-3xl font-light text-[var(--accent)] mb-12">
           <p className="font-semibold">17 Juillet 2027</p>
-        </div>
-        <div className="inline-block bg-[var(--accent)]/95 backdrop-blur-sm rounded-lg p-8 shadow-2xl border border-[var(--secondary)]/30">
-          <p className="text-lg text-[var(--accent)]">
-            Nous serions honorés de vous compter parmi nous
-            <br />
-            pour célébrer ce jour si spécial
-          </p>
         </div>
       </div>
 
