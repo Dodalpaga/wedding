@@ -9,9 +9,9 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'https://dodalpaga.github.io/wedding/',
+        hostname: 'dodalpaga.github.io',
         port: '', // Empty string indicates no specific port
-        pathname: '**', // Allow all paths under this domain
+        pathname: '/wedding/**', // Allow all paths under this domain
       },
     ],
   },

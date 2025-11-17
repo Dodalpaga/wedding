@@ -26,7 +26,7 @@ export default function Hero() {
 
       <div className="container mx-auto px-4 text-center relative z-10">
         <img
-          src="/SD Logo.svg"
+          src="SD Logo.svg"
           alt="Logo"
           className="h-24 w-24 mx-auto mb-8 object-contain drop-shadow-2xl brightness-0 invert"
           onError={(e) => (e.currentTarget.style.display = 'none')}

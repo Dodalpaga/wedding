@@ -60,28 +60,7 @@ NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:abc123
 
 ### 2. Règles Firestore
 
-Dans Firebase Console → Firestore → Règles :
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /invites/{inviteId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null;
-    }
-    match /confirmations/{confirmId} {
-      allow read: if request.auth != null;
-      allow create: if true;
-      allow update, delete: if request.auth != null;
-    }
-    match /codes_invitation/{code} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-  }
-}
-```
+Dans Firebase Console → Firestore → Règles
 
 ### 3. Créer un compte admin
 

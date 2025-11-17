@@ -14,7 +14,7 @@ export default function Header() {
           <div className="flex items-center gap-3">
             <div className="relative h-10 w-10">
               <img
-                src="/SD Logo.svg"
+                src="SD Logo.svg"
                 alt="Logo"
                 className={`absolute inset-0 h-10 w-10 object-contain transition-opacity duration-300 `}
                 style={{
