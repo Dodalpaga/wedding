@@ -6,6 +6,9 @@ import Link from 'next/link';
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // On vérifie si on est en mode développement
+  const isDev = process.env.NODE_ENV === 'development';
+
   return (
     <header className="fixed top-0 w-full bg-[var(--accent)] shadow-lg z-50 border-b border-white/20">
       {' '}
@@ -54,6 +57,32 @@ export default function Header() {
                 Programme
               </Link>
             </li>
+
+            {/* --- ZONE DEV UNIQUEMENT (Desktop) --- */}
+            {isDev && (
+              <>
+                <li>
+                  <Link
+                    href="/noces/"
+                    className="text-red-400 font-semibold hover:opacity-80 transition-opacity border border-red-400 px-2 rounded"
+                    title="Visible uniquement en dév"
+                  >
+                    Noces (Dev)
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/gallerie/"
+                    className="text-red-400 font-semibold hover:opacity-80 transition-opacity border border-red-400 px-2 rounded"
+                    title="Visible uniquement en dév"
+                  >
+                    Gallerie (Dev)
+                  </Link>
+                </li>
+              </>
+            )}
+            {/* ------------------------------------- */}
+
             <li>
               <Link
                 href="/#contact"
@@ -134,6 +163,30 @@ export default function Header() {
                 Programme
               </Link>
             </li>
+
+            {/* --- ZONE DEV UNIQUEMENT (Mobile) --- */}
+            {isDev && (
+              <>
+                <li>
+                  <Link
+                    href="/noces/"
+                    className="text-red-400 font-semibold hover:opacity-80 transition-opacity pl-4 border-l-2 border-red-400 block"
+                  >
+                    Noces (Dev Mode)
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/gallerie/"
+                    className="text-red-400 font-semibold hover:opacity-80 transition-opacity pl-4 border-l-2 border-red-400 block"
+                  >
+                    Gallerie (Dev Mode)
+                  </Link>
+                </li>
+              </>
+            )}
+            {/* ------------------------------------ */}
+
             <li>
               <Link
                 href="/#contact"

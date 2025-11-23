@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import Header from '@/components/Header';
-import Accommodation from '@/components/Accommodation';
+import Hebergement from '@/components/Hebergement';
 
-export default function ConfirmationPage() {
+export default function Page() {
   function ReturnButton() {
     return (
       <div className="absolute top-4 left-4">
@@ -35,7 +35,7 @@ export default function ConfirmationPage() {
     <div className="pt-16 md:pt-4">
       <Header />
       <ReturnButton />
-      <Accommodation />
+      <Hebergement />
     </div>
   );
 }

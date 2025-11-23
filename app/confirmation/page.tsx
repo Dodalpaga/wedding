@@ -5,7 +5,7 @@ import Link from 'next/link';
 import InvitationLogin from '@/components/InvitationLogin';
 import RSVPFormFirebase from '@/components/RSVPFormFirebase';
 
-export default function ConfirmationPage() {
+export default function Page() {
   const [inviteData, setInviteData] = useState<any>(null);
 
   const handleLoginSuccess = (data: any) => {

@@ -111,7 +111,7 @@ Password : `VotreMotDePasse123!`
 │   ├── Header.tsx               # Navigation
 │   ├── Hero.tsx                 # Section hero
 │   ├── InfoSection.tsx          # Infos pratiques
-│   ├── Accommodation.tsx        # Hébergements
+│   ├── Hebergement.tsx        # Hébergements
 │   ├── Footer.tsx               # Pied de page
 │   ├── InvitationLogin.tsx      # Login avec code
 │   └── RSVPFormFirebase.tsx     # Formulaire Firebase

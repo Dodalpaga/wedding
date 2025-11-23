@@ -1,5 +1,5 @@
-export default function Accommodation() {
-  const accommodations = [
+export default function Hebergement() {
+  const hebergements = [
     {
       type: 'Gîte',
       name: "Gîte de l'Héritier",
@@ -54,7 +54,7 @@ export default function Accommodation() {
         </p>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          {accommodations.map((acc, index) => (
+          {hebergements.map((acc, index) => (
             <div
               key={index}
               className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all hover:shadow-xl"
