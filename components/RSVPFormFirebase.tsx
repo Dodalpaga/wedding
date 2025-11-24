@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   collection,
-  addDoc,
   doc,
   updateDoc,
   getDoc,
@@ -13,12 +12,15 @@ import {
 import { db } from '@/lib/firebase';
 import { serverTimestamp } from 'firebase/firestore';
 
+// MISE À JOUR : Ajout des champs brunch et chanson
 interface Membre {
   nom: string;
   email: string;
   statut?: 'accepte' | 'refuse' | 'en_attente';
   arrivee?: string;
   commentaires?: string;
+  brunch?: 'oui' | 'non'; // Nouveau champ
+  chanson?: string; // Nouveau champ
 }
 
 interface RSVPFormFirebaseProps {
@@ -28,11 +30,14 @@ interface RSVPFormFirebaseProps {
 export default function RSVPFormFirebase({
   inviteData,
 }: RSVPFormFirebaseProps) {
+  // MISE À JOUR : Ajout des champs brunch et chanson à l'état
   const [formData, setFormData] = useState({
     arrivee: '',
     email: '',
     commentaires: '',
     statut: 'accepte' as 'accepte' | 'refuse',
+    brunch: '' as 'oui' | 'non' | '', // Chaîne vide pour l'état initial non sélectionné
+    chanson: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
@@ -64,25 +69,35 @@ export default function RSVPFormFirebase({
               statutsMap.set(doc.id, doc.data());
             });
 
-            const membresAvecStatut = membresData.map((nom: string) => {
-              const statutData = statutsMap.get(nom);
+            const membresAvecStatut: Membre[] = membresData.map(
+              (nom: string) => {
+                const statutData = statutsMap.get(nom);
 
-              if (statutData) {
+                if (statutData) {
+                  return {
+                    nom,
+                    email: statutData.email || '',
+                    statut: statutData.statut || 'en_attente',
+                    arrivee: statutData.arrivee || '',
+                    commentaires: statutData.commentaires || '',
+                    // Nouveaux champs
+                    brunch: statutData.brunch || '',
+                    chanson: statutData.chanson || '',
+                  };
+                }
+
                 return {
                   nom,
-                  statut: statutData.statut || 'en_attente',
-                  arrivee: statutData.arrivee || '',
-                  commentaires: statutData.commentaires || '',
+                  email: '',
+                  statut: 'en_attente' as const,
+                  arrivee: '',
+                  commentaires: '',
+                  // Nouveaux champs
+                  brunch: '',
+                  chanson: '',
                 };
               }
-
-              return {
-                nom,
-                statut: 'en_attente' as const,
-                arrivee: '',
-                commentaires: '',
-              };
-            });
+            );
 
             setMembres(membresAvecStatut);
             setIsLoading(false);
@@ -113,6 +128,10 @@ export default function RSVPFormFirebase({
           arrivee: membre.arrivee || '',
           email: membre.email || '',
           commentaires: membre.commentaires || '',
+          // Nouveaux champs
+          brunch: (membre.brunch || '') as 'oui' | 'non' | '',
+          chanson: membre.chanson || '',
+          // Statut
           statut: (membre.statut === 'refuse' ? 'refuse' : 'accepte') as
             | 'accepte'
             | 'refuse',
@@ -124,6 +143,18 @@ export default function RSVPFormFirebase({
   const handleSubmit = async () => {
     if (!membreSelectionne) {
       alert('Veuillez sélectionner un membre');
+      return;
+    }
+
+    // NOUVELLE VALIDATION : Vérifie que arrivee et brunch sont renseignés si accepte
+    if (formData.statut === 'accepte' && !formData.arrivee) {
+      alert("Veuillez indiquer le moment d'arrivée.");
+      return;
+    }
+    if (formData.statut === 'accepte' && !formData.brunch) {
+      alert(
+        'Veuillez confirmer si vous participez ou non au Brunch du Dimanche.'
+      );
       return;
     }
 
@@ -140,6 +171,8 @@ export default function RSVPFormFirebase({
         arrivee: formData.arrivee,
         email: formData.email,
         commentaires: formData.commentaires,
+        brunch: formData.brunch, // Sauvegarde du brunch
+        chanson: formData.chanson, // Sauvegarde de la chanson
         date_modification: serverTimestamp(),
       });
 
@@ -160,6 +193,8 @@ export default function RSVPFormFirebase({
           email: '',
           commentaires: '',
           statut: 'accepte',
+          brunch: '',
+          chanson: '',
         });
       }, 2000);
     } catch (error) {
@@ -203,13 +238,22 @@ export default function RSVPFormFirebase({
                 <br />• Membre : {membreSelectionne}
                 {formData.statut === 'accepte' && (
                   <>
+                    <br />• Statut : ✅ Confirmé
                     <br />• Arrivée : {formData.arrivee}
+                    {/* AFFICHAGE BRUNCH */}
+                    <br />• Brunch du Dimanche :{' '}
+                    {formData.brunch === 'oui'
+                      ? '✅ Oui'
+                      : formData.brunch === 'non'
+                      ? '❌ Non'
+                      : 'Non spécifié'}
+                    {/* AFFICHAGE CHANSON */}
+                    {formData.chanson && <br />}
+                    {formData.chanson && `• Chanson : ${formData.chanson}`}
                   </>
                 )}
-                <br />• Statut :{' '}
-                {formData.statut === 'accepte'
-                  ? '✅ Confirmé'
-                  : '❌ Ne vient pas'}
+                {formData.statut === 'refuse' && <br />}
+                {formData.statut === 'refuse' && `• Statut : ❌ Ne vient pas`}
               </p>
             </div>
             <p className="text-sm text-gray-500 mt-6">
@@ -387,8 +431,8 @@ export default function RSVPFormFirebase({
                     }
                     placeholder="jean.dupont@gmail.com"
                     className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg 
-               focus:border-[var(--secondary)] focus:outline-none 
-               transition-colors"
+              focus:border-[var(--secondary)] focus:outline-none 
+              transition-colors"
                     autoComplete="email"
                   />
                 </div>
@@ -414,6 +458,73 @@ export default function RSVPFormFirebase({
                     <option value="Samedi après-midi">Samedi après-midi</option>
                   </select>
                 </div>
+
+                {/* NOUVEAU CHAMP : Brunch du Dimanche */}
+                <div className="mb-8">
+                  <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+                    Brunch
+                  </h3>
+                  <label className="block text-sm font-medium text-[var(--dark)] mb-2">
+                    Participerez-vous au Brunch du Dimanche matin ? *
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      onClick={() =>
+                        setFormData({ ...formData, brunch: 'oui' })
+                      }
+                      className={`p-4 rounded-lg border-2 transition-all ${
+                        formData.brunch === 'oui'
+                          ? 'border-green-500 bg-green-50'
+                          : 'border-gray-300 hover:border-green-300'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-4xl mb-2">🥐</div>
+                        <p className="font-semibold">Oui, avec plaisir !</p>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() =>
+                        setFormData({ ...formData, brunch: 'non' })
+                      }
+                      className={`p-4 rounded-lg border-2 transition-all ${
+                        formData.brunch === 'non'
+                          ? 'border-red-500 bg-red-50'
+                          : 'border-gray-300 hover:border-red-300'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-4xl mb-2">☕</div>
+                        <p className="font-semibold">Non, je pars avant</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* NOUVEAU CHAMP : Suggestion musicale */}
+                <div className="mb-8">
+                  <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+                    Ambiance
+                  </h3>
+                  <label className="block text-sm font-medium text-[var(--dark)] mb-2">
+                    Une suggestion de chanson pour la soirée dansante ?
+                    (Optionnel)
+                  </label>
+                  <input
+                    type="text"
+                    id="chanson"
+                    name="chanson"
+                    value={formData.chanson}
+                    onChange={(e) =>
+                      setFormData({ ...formData, chanson: e.target.value })
+                    }
+                    placeholder="Titre et artiste qui vous feront danser !"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg 
+              focus:border-[var(--secondary)] focus:outline-none 
+              transition-colors"
+                  />
+                </div>
+
                 {/* Commentaires */}
                 <div className="mb-8">
                   <label className="block text-sm font-medium text-[var(--dark)] mb-2">
@@ -422,7 +533,10 @@ export default function RSVPFormFirebase({
                   <textarea
                     value={formData.commentaires}
                     onChange={(e) =>
-                      setFormData({ ...formData, commentaires: e.target.value })
+                      setFormData({
+                        ...formData,
+                        commentaires: e.target.value,
+                      })
                     }
                     rows={4}
                     className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[var(--secondary)] focus:outline-none transition-colors"
@@ -438,9 +552,11 @@ export default function RSVPFormFirebase({
             <div className="text-center">
               <button
                 onClick={handleSubmit}
+                // MISE À JOUR : Ajout de la condition !formData.brunch
                 disabled={
                   isSubmitting ||
-                  (formData.statut === 'accepte' && !formData.arrivee)
+                  (formData.statut === 'accepte' &&
+                    (!formData.arrivee || !formData.brunch))
                 }
                 className="bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >

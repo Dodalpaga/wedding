@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 
-type SortField = 'code' | 'nom' | 'statut' | 'arrivee' | 'date';
+type SortField = 'code' | 'nom' | 'statut' | 'arrivee' | 'date' | 'brunch';
 type SortDirection = 'asc' | 'desc';
 
 export default function AdminDashboard() {
@@ -90,6 +90,7 @@ export default function AdminDashboard() {
           codeInvitation: code.id,
           statut: statut?.statut || 'en_attente',
           arrivee: statut?.arrivee || '',
+          brunch: statut?.brunch || '', // Ajout de l'attribut brunch
           commentaires: statut?.commentaires || '',
           dateModification: statut?.date_modification,
         });
@@ -119,6 +120,10 @@ export default function AdminDashboard() {
         case 'arrivee':
           aValue = a.arrivee || '';
           bValue = b.arrivee || '';
+          break;
+        case 'brunch': // Ajout du tri par brunch
+          aValue = a.brunch || '';
+          bValue = b.brunch || '';
           break;
         case 'date':
           aValue = a.dateModification?.toDate?.() || new Date(0);
@@ -226,12 +231,27 @@ export default function AdminDashboard() {
     return acc + (s.nombre || 1);
   }, 0);
 
+  // Modification pour compter le nombre de personnes (Element 1 & 2)
+  const totalAcceptes = statuts
+    .filter((s) => s.statut === 'accepte')
+    .reduce((acc, s) => acc + (s.nombre || 1), 0);
+
+  const totalRefuses = statuts
+    .filter((s) => s.statut === 'refuse')
+    .reduce((acc, s) => acc + (s.nombre || 1), 0);
+
+  // Calcul du nombre de brunchs positifs
+  const totalBrunch = statuts
+    .filter((s) => s.brunch === 'oui')
+    .reduce((acc, s) => acc + (s.nombre || 1), 0);
+
   // Statistiques
   const stats = {
     total: totalInvites,
-    acceptes: statuts.filter((s) => s.statut === 'accepte').length,
-    refuses: statuts.filter((s) => s.statut === 'refuse').length,
+    acceptes: totalAcceptes,
+    refuses: totalRefuses,
     enAttente: totalInvites - totalReponses,
+    brunch: totalBrunch, // Ajout aux stats
   };
 
   // Export CSV
@@ -241,6 +261,7 @@ export default function AdminDashboard() {
       'Nom Membre',
       'Statut',
       'Arrivée',
+      'Brunch',
       'Commentaires',
       'Date Modification',
     ];
@@ -250,6 +271,7 @@ export default function AdminDashboard() {
       s.nom,
       s.statut,
       s.arrivee || '',
+      s.brunch || '',
       (s.commentaires || '').replace(/,/g, ';'),
       s.dateModification?.toDate
         ? new Date(s.dateModification.toDate()).toLocaleDateString('fr-FR')
@@ -378,9 +400,13 @@ export default function AdminDashboard() {
     .map(([code, data]) => {
       const membres = data.membres || [];
       const description = data.description || '';
+      const statutEntry = statuts.find(
+        (s) => s.code_invitation === code && s.statut === 'accepte'
+      );
       const confirmed = membres.filter((nom: string) =>
         statuts.find((s) => s.nom_membre === nom && s.statut === 'accepte')
       ).length;
+
       return { code, description, total: membres.length, confirmed };
     })
     .sort((a, b) => b.confirmed - a.confirmed)
@@ -440,7 +466,7 @@ export default function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Statistiques */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow">
             <p className="text-sm text-gray-600">Total invités</p>
             <p className="text-3xl font-bold text-gray-800">
@@ -462,6 +488,10 @@ export default function AdminDashboard() {
             <p className="text-3xl font-bold text-yellow-700">
               {stats.enAttente}
             </p>
+          </div>
+          <div className="bg-purple-50 p-4 rounded-lg shadow">
+            <p className="text-sm text-purple-600">🥞 Brunch</p>
+            <p className="text-3xl font-bold text-purple-700">{stats.brunch}</p>
           </div>
         </div>
 
@@ -760,6 +790,16 @@ export default function AdminDashboard() {
                       <SortIcon field="arrivee" />
                     </div>
                   </th>
+                  {/* Nouvelle colonne Brunch */}
+                  <th
+                    onClick={() => handleSort('brunch')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      Brunch
+                      <SortIcon field="brunch" />
+                    </div>
+                  </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
                     Commentaires
                   </th>
@@ -805,6 +845,18 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {membre.arrivee || '-'}
+                    </td>
+                    {/* Affichage Brunch */}
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {membre.brunch === 'oui' ? (
+                        <span className="text-green-600 font-medium">
+                          ✅ Oui
+                        </span>
+                      ) : membre.brunch === 'non' ? (
+                        <span className="text-red-500">❌ Non</span>
+                      ) : (
+                        '-'
+                      )}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
                       {membre.commentaires || '-'}

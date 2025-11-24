@@ -2,6 +2,8 @@
 
 import VillaIcon from '@mui/icons-material/Villa'; // très élégant pour un domaine
 import LocalParkingIcon from '@mui/icons-material/LocalParking'; // L’icône parking parfaite !
+import WbSunnyIcon from '@mui/icons-material/WbSunny'; // Icône météo
+import CheckroomIcon from '@mui/icons-material/Checkroom'; // Icône tenue
 
 export default function InfoSection() {
   return (
@@ -13,9 +15,10 @@ export default function InfoSection() {
             Informations pratiques
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          {/* Nouvelle grille pour les 4 cartes */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             {/* Le Lieu */}
-            <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
+            <div className="md:col-span-2 bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
               <div className="text-center mb-6">
                 <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
               </div>
@@ -33,6 +36,7 @@ export default function InfoSection() {
                     process.env.NEXT_PUBLIC_BASE_PATH || ''
                   }/images/domaine.png`}
                   alt="Domaine d’en Naudet"
+                  className="rounded-lg shadow-md"
                 />
               </div>
             </div>
@@ -57,9 +61,55 @@ export default function InfoSection() {
                     process.env.NEXT_PUBLIC_BASE_PATH || ''
                   }/images/dessus-domaine.png`}
                   alt="Vue aérienne du parking"
+                  className="rounded-lg shadow-md"
                 />
               </div>
             </div>
+
+            {/* --- NOUVELLE SECTION : MÉTÉO & TENUE --- */}
+            <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all flex flex-col justify-between">
+              <div>
+                {/* Météo */}
+                <div className="mb-8">
+                  <div className="text-center mb-4">
+                    <WbSunnyIcon
+                      sx={{ fontSize: 60, color: 'var(--secondary)' }}
+                    />
+                  </div>
+                  <h3 className="text-3xl font-wedding text-[var(--primary)] mb-2 text-center">
+                    Côté Météo
+                  </h3>
+                  <p className="text-[var(--dark)] text-sm text-center">
+                    En cette saison, les journées sont agréables (25-30°C), mais
+                    les soirées peuvent être fraîches (15-18°C).
+                  </p>
+                </div>
+
+                {/* Tenue */}
+                <div>
+                  <div className="text-center mb-4">
+                    <CheckroomIcon
+                      sx={{ fontSize: 60, color: 'var(--secondary)' }}
+                    />
+                  </div>
+                  <h3 className="text-3xl font-wedding text-[var(--primary)] mb-2 text-center">
+                    Code Vestimentaire
+                  </h3>
+                  <p className="text-[var(--dark)] text-sm text-center">
+                    **Chic et Champêtre**. Privilégiez les tenues élégantes tout
+                    en restant à l'aise. N'oubliez pas un châle ou une veste
+                    pour le soir !
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center">
+                <span className="text-xs text-[var(--secondary)] font-semibold uppercase tracking-wider">
+                  Cérémonie en extérieur prévue
+                </span>
+              </div>
+            </div>
+            {/* ------------------------------------ */}
           </div>
         </div>
       </section>
