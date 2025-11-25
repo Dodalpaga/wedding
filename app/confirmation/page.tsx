@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ReturnButton from '@/components/ReturnButton';
 import InvitationLogin from '@/components/InvitationLogin';
 import RSVPFormFirebase from '@/components/RSVPFormFirebase';
 import Link from 'next/link';
 
-export default function Page() {
+function ConfirmationContent() {
   const searchParams = useSearchParams();
   const codeFromUrl = searchParams.get('code');
   const [inviteData, setInviteData] = useState<any>(null);
@@ -47,12 +47,11 @@ export default function Page() {
   }
 
   return (
-    <div className="pt-16 md:pt-4">
+    <div>
       <link
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet"
       />
-      <ReturnButton label="Retour à l'accueil" href="/" />
       <h2 className="text-6xl md:text-8xl font-wedding text-center text-[var(--primary)]">
         Confirmer sa présence
       </h2>
@@ -118,6 +117,27 @@ export default function Page() {
           isVinHonneurOnly={isVinHonneurOnly}
         />
       )}
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <div className="pt-4 md:pt-4">
+      <link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet"
+      />
+      <ReturnButton label="Retour à l'accueil" href="/" />
+      <Suspense
+        fallback={
+          <div className="text-center py-20">
+            <p className="text-[var(--dark)]">Chargement...</p>
+          </div>
+        }
+      >
+        <ConfirmationContent />
+      </Suspense>
     </div>
   );
 }
