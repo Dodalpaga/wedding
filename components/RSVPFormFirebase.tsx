@@ -276,9 +276,9 @@ export default function RSVPFormFirebase({
         ) : (
           <div className="max-w-3xl mx-auto mb-8">
             <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20">
-              <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
+              {/* <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
                 Membres du cercle
-              </h3>
+              </h3> */}
               <div className="grid md:grid-cols-2 gap-4">
                 {membres.map((membre) => (
                   <div
