@@ -23,7 +23,7 @@ export default function Header() {
                 onError={(e) => (e.currentTarget.style.display = 'none')}
               />
             </div>
-            <h1 className="text-2xl font-wedding text-[var(--primary)]">
+            <h1 className="text-4xl font-wedding text-[var(--primary)]">
               Solenne & Dorian
             </h1>
           </div>
