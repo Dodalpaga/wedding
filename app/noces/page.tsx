@@ -80,7 +80,7 @@ export default function HoneymoonPage() {
         {/* Motif décoratif (optionnel) */}
         <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/shattered-island.png')]"></div>
 
-        <div className="relative z-10 text-center px-4 pt-16">
+        <div className="relative z-10 text-center px-4 pt-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}

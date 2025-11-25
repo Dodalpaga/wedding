@@ -12,31 +12,31 @@ import {
 import { db } from '@/lib/firebase';
 import { serverTimestamp } from 'firebase/firestore';
 
-// MISE À JOUR : Ajout des champs brunch et chanson
 interface Membre {
   nom: string;
   email: string;
   statut?: 'accepte' | 'refuse' | 'en_attente';
   arrivee?: string;
   commentaires?: string;
-  brunch?: 'oui' | 'non'; // Nouveau champ
-  chanson?: string; // Nouveau champ
+  brunch?: 'oui' | 'non';
+  chanson?: string;
 }
 
 interface RSVPFormFirebaseProps {
   inviteData: any;
+  isVinHonneurOnly?: boolean;
 }
 
 export default function RSVPFormFirebase({
   inviteData,
+  isVinHonneurOnly = false,
 }: RSVPFormFirebaseProps) {
-  // MISE À JOUR : Ajout des champs brunch et chanson à l'état
   const [formData, setFormData] = useState({
     arrivee: '',
     email: '',
     commentaires: '',
     statut: 'accepte' as 'accepte' | 'refuse',
-    brunch: '' as 'oui' | 'non' | '', // Chaîne vide pour l'état initial non sélectionné
+    brunch: '' as 'oui' | 'non' | '',
     chanson: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,7 +61,6 @@ export default function RSVPFormFirebase({
           const data = codeSnap.data();
           const membresData = data.membres || [];
 
-          // Écouter les changements de statuts en temps réel
           const statutsRef = collection(db, 'statuts');
           unsubscribeStatuts = onSnapshot(statutsRef, (snapshot) => {
             const statutsMap = new Map();
@@ -80,7 +79,6 @@ export default function RSVPFormFirebase({
                     statut: statutData.statut || 'en_attente',
                     arrivee: statutData.arrivee || '',
                     commentaires: statutData.commentaires || '',
-                    // Nouveaux champs
                     brunch: statutData.brunch || '',
                     chanson: statutData.chanson || '',
                   };
@@ -92,7 +90,6 @@ export default function RSVPFormFirebase({
                   statut: 'en_attente' as const,
                   arrivee: '',
                   commentaires: '',
-                  // Nouveaux champs
                   brunch: '',
                   chanson: '',
                 };
@@ -111,7 +108,6 @@ export default function RSVPFormFirebase({
 
     loadMembres();
 
-    // Cleanup: arrêter l'écoute lors du démontage
     return () => {
       if (unsubscribeStatuts) {
         unsubscribeStatuts();
@@ -128,10 +124,8 @@ export default function RSVPFormFirebase({
           arrivee: membre.arrivee || '',
           email: membre.email || '',
           commentaires: membre.commentaires || '',
-          // Nouveaux champs
           brunch: (membre.brunch || '') as 'oui' | 'non' | '',
           chanson: membre.chanson || '',
-          // Statut
           statut: (membre.statut === 'refuse' ? 'refuse' : 'accepte') as
             | 'accepte'
             | 'refuse',
@@ -146,23 +140,24 @@ export default function RSVPFormFirebase({
       return;
     }
 
-    // NOUVELLE VALIDATION : Vérifie que arrivee et brunch sont renseignés si accepte
-    if (formData.statut === 'accepte' && !formData.arrivee) {
-      alert("Veuillez indiquer le moment d'arrivée.");
-      return;
-    }
-    if (formData.statut === 'accepte' && !formData.brunch) {
-      alert(
-        'Veuillez confirmer si vous participez ou non au Brunch du Dimanche.'
-      );
-      return;
+    // Validation selon le type d'invitation
+    if (formData.statut === 'accepte' && !isVinHonneurOnly) {
+      if (!formData.arrivee) {
+        alert("Veuillez indiquer le moment d'arrivée.");
+        return;
+      }
+      if (!formData.brunch) {
+        alert(
+          'Veuillez confirmer si vous participez ou non au Brunch du Dimanche.'
+        );
+        return;
+      }
     }
 
     setIsSubmitting(true);
     setSubmitStatus('idle');
 
     try {
-      // Sauvegarder le statut dans la collection "statuts"
       const statutRef = doc(db, 'statuts', membreSelectionne);
       await setDoc(statutRef, {
         code_invitation: inviteData.code,
@@ -171,12 +166,11 @@ export default function RSVPFormFirebase({
         arrivee: formData.arrivee,
         email: formData.email,
         commentaires: formData.commentaires,
-        brunch: formData.brunch, // Sauvegarde du brunch
-        chanson: formData.chanson, // Sauvegarde de la chanson
+        brunch: formData.brunch,
+        chanson: formData.chanson,
         date_modification: serverTimestamp(),
       });
 
-      // Marquer le code comme utilisé
       const codeRef = doc(db, 'codes_invitation', inviteData.code);
       await updateDoc(codeRef, {
         date_utilisation: serverTimestamp(),
@@ -184,7 +178,6 @@ export default function RSVPFormFirebase({
 
       setSubmitStatus('success');
 
-      // Réinitialiser après 2 secondes
       setTimeout(() => {
         setMembreSelectionne('');
         setSubmitStatus('idle');
@@ -211,19 +204,9 @@ export default function RSVPFormFirebase({
         <div className="max-w-2xl w-full bg-white p-8 rounded-2xl shadow-2xl border-2 border-green-400">
           <div className="text-center">
             <div className="inline-block bg-green-100 p-6 rounded-full mb-6">
-              <svg
-                className="w-16 h-16 text-green-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+              <span className="material-icons text-green-500 text-6xl">
+                check_circle
+              </span>
             </div>
             <h2 className="text-5xl font-wedding text-[var(--primary)] mb-4">
               Merci pour ta confirmation !
@@ -239,21 +222,29 @@ export default function RSVPFormFirebase({
                 {formData.statut === 'accepte' && (
                   <>
                     <br />• Statut : ✅ Confirmé
-                    <br />• Arrivée : {formData.arrivee}
-                    {/* AFFICHAGE BRUNCH */}
-                    <br />• Brunch du Dimanche :{' '}
-                    {formData.brunch === 'oui'
-                      ? '✅ Oui'
-                      : formData.brunch === 'non'
-                      ? '❌ Non'
-                      : 'Non spécifié'}
-                    {/* AFFICHAGE CHANSON */}
-                    {formData.chanson && <br />}
-                    {formData.chanson && `• Chanson : ${formData.chanson}`}
+                    {!isVinHonneurOnly && formData.arrivee && (
+                      <>
+                        <br />• Arrivée : {formData.arrivee}
+                      </>
+                    )}
+                    {!isVinHonneurOnly && formData.brunch && (
+                      <>
+                        <br />• Brunch du Dimanche :{' '}
+                        {formData.brunch === 'oui' ? '✅ Oui' : '❌ Non'}
+                      </>
+                    )}
+                    {!isVinHonneurOnly && formData.chanson && (
+                      <>
+                        <br />• Chanson : {formData.chanson}
+                      </>
+                    )}
                   </>
                 )}
-                {formData.statut === 'refuse' && <br />}
-                {formData.statut === 'refuse' && `• Statut : ❌ Ne vient pas`}
+                {formData.statut === 'refuse' && (
+                  <>
+                    <br />• Statut : ❌ Ne vient pas
+                  </>
+                )}
               </p>
             </div>
             <p className="text-sm text-gray-500 mt-6">
@@ -266,7 +257,11 @@ export default function RSVPFormFirebase({
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-[var(--accent)] via-white to-[var(--accent)]">
+    <section className="py-5 bg-gradient-to-b from-[var(--accent)] via-white to-[var(--accent)]">
+      <link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet"
+      />
       <div className="container mx-auto px-4">
         {/* Liste des membres du cercle */}
         {isLoading ? (
@@ -276,55 +271,86 @@ export default function RSVPFormFirebase({
         ) : (
           <div className="max-w-3xl mx-auto mb-8">
             <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20">
-              {/* <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
-                Membres du cercle
-              </h3> */}
               <div className="grid md:grid-cols-2 gap-4">
                 {membres.map((membre) => (
-                  <div
+                  <button
                     key={membre.nom}
-                    className={`p-4 rounded-lg border-2 transition-all ${
+                    onClick={() => {
+                      setMembreSelectionne(membre.nom);
+                      setTimeout(() => {
+                        formulaireRef.current?.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'start',
+                        });
+                      }, 100);
+                    }}
+                    className={`p-4 rounded-lg border-2 transition-all text-left hover:shadow-md cursor-pointer ${
                       membre.statut === 'accepte'
-                        ? 'bg-green-50 border-green-300'
+                        ? 'bg-green-50 border-green-300 hover:border-green-400'
                         : membre.statut === 'refuse'
-                        ? 'bg-red-50 border-red-300'
-                        : 'bg-gray-50 border-gray-300'
+                        ? 'bg-red-50 border-red-300 hover:border-red-400'
+                        : 'bg-gray-50 border-gray-300 hover:border-gray-400'
                     }`}
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <p className="font-semibold text-[var(--dark)]">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <p className="font-semibold text-[var(--dark)] mb-1">
                           {membre.nom}
                         </p>
-                        <p className="text-sm text-gray-600">
-                          {membre.statut === 'accepte' && '✅ Confirmé'}
-                          {membre.statut === 'refuse' && '❌ Ne vient pas'}
-                          {membre.statut === 'en_attente' && '⏳ En attente'}
+                        <p className="text-sm text-gray-600 flex items-center gap-1">
+                          {membre.statut === 'accepte' && (
+                            <>
+                              <span
+                                className="material-icons text-green-600"
+                                style={{ fontSize: '16px' }}
+                              >
+                                check_circle
+                              </span>
+                              Confirmé
+                            </>
+                          )}
+                          {membre.statut === 'refuse' && (
+                            <>
+                              <span
+                                className="material-icons text-red-600"
+                                style={{ fontSize: '16px' }}
+                              >
+                                cancel
+                              </span>
+                              Ne vient pas
+                            </>
+                          )}
+                          {membre.statut === 'en_attente' && (
+                            <>
+                              <span
+                                className="material-icons text-gray-600"
+                                style={{ fontSize: '16px' }}
+                              >
+                                schedule
+                              </span>
+                              En attente
+                            </>
+                          )}
                         </p>
-                        {membre.statut === 'accepte' && membre.arrivee && (
-                          <p className="text-xs text-gray-500 mt-1">
-                            Arrivée: {membre.arrivee}
-                          </p>
-                        )}
+                        {membre.statut === 'accepte' &&
+                          membre.arrivee &&
+                          !isVinHonneurOnly && (
+                            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                              <span
+                                className="material-icons"
+                                style={{ fontSize: '12px' }}
+                              >
+                                schedule
+                              </span>
+                              Arrivée: {membre.arrivee}
+                            </p>
+                          )}
                       </div>
-                      <button
-                        onClick={() => {
-                          setMembreSelectionne(membre.nom);
-                          setTimeout(() => {
-                            formulaireRef.current?.scrollIntoView({
-                              behavior: 'smooth',
-                              block: 'start',
-                            });
-                          }, 100);
-                        }}
-                        className="text-[var(--primary)] hover:text-[var(--secondary)] text-sm underline"
-                      >
-                        {membre.statut === 'en_attente'
-                          ? 'Répondre'
-                          : 'Modifier'}
-                      </button>
+                      <span className="material-icons text-[var(--secondary)] flex-shrink-0 ml-2">
+                        chevron_right
+                      </span>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>
@@ -333,8 +359,9 @@ export default function RSVPFormFirebase({
 
         {!membreSelectionne && (
           <div className="max-w-3xl mx-auto bg-blue-50 border-2 border-blue-300 p-6 rounded-lg text-center mb-8">
-            <p className="text-[var(--dark)]">
-              👆 Sélectionnez un membre ci-dessus pour confirmer sa présence
+            <p className="text-[var(--dark)] flex items-center justify-center gap-2">
+              <span className="material-icons">touch_app</span>
+              Cliquez sur un membre ci-dessus pour confirmer sa présence
             </p>
           </div>
         )}
@@ -352,19 +379,7 @@ export default function RSVPFormFirebase({
                 onClick={() => setMembreSelectionne('')}
                 className="text-gray-500 hover:text-gray-700"
               >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <span className="material-icons">close</span>
               </button>
             </div>
 
@@ -385,7 +400,9 @@ export default function RSVPFormFirebase({
                   }`}
                 >
                   <div className="text-center">
-                    <div className="text-4xl mb-2">✅</div>
+                    <span className="material-icons text-4xl mb-2 text-green-600">
+                      check_circle
+                    </span>
                     <p className="font-semibold">J'accepte avec plaisir</p>
                   </div>
                 </button>
@@ -398,175 +415,213 @@ export default function RSVPFormFirebase({
                   }`}
                 >
                   <div className="text-center">
-                    <div className="text-4xl mb-2">❌</div>
+                    <span className="material-icons text-4xl mb-2 text-red-600">
+                      cancel
+                    </span>
                     <p className="font-semibold">Je ne peux pas venir</p>
                   </div>
                 </button>
               </div>
             </div>
 
-            {formData.statut === 'accepte' && (
-              <>
-                <div className="mb-8">
-                  <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
-                    Informations
-                  </h3>
+            <>
+              <div className="mb-8">
+                <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+                  Informations
+                </h3>
 
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-[var(--dark)] mb-2"
-                  >
-                    Quelle est ton adresse mail (pour te donner toutes les news
-                    sur notre évènement) ?
-                  </label>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2"
+                >
+                  <span className="material-icons" style={{ fontSize: '18px' }}>
+                    email
+                  </span>
+                  Quelle est ton adresse mail pour te donner toutes les news sur
+                  notre évènement ? (Optionnel)
+                </label>
 
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    placeholder="jean.dupont@gmail.com"
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg 
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  placeholder="jean.dupont@gmail.com"
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg 
               focus:border-[var(--secondary)] focus:outline-none 
               transition-colors"
-                    autoComplete="email"
-                  />
-                </div>
-                {/* Moment d'arrivée */}
-                <div className="mb-8">
-                  <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
-                    Arrivée
-                  </h3>
-                  <label className="block text-sm font-medium text-[var(--dark)] mb-2">
-                    Quand prévois-tu d'arriver ? *
-                  </label>
-                  <select
-                    required
-                    value={formData.arrivee}
-                    onChange={(e) =>
-                      setFormData({ ...formData, arrivee: e.target.value })
-                    }
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[var(--secondary)] focus:outline-none transition-colors"
-                  >
-                    <option value="">Sélectionnez un moment</option>
-                    <option value="Vendredi soir">Vendredi soir</option>
-                    <option value="Samedi midi">Samedi pour le midi</option>
-                    <option value="Samedi après-midi">Samedi après-midi</option>
-                  </select>
-                </div>
+                  autoComplete="email"
+                />
+              </div>
 
-                {/* NOUVEAU CHAMP : Brunch du Dimanche */}
-                <div className="mb-8">
-                  <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
-                    Brunch
-                  </h3>
-                  <label className="block text-sm font-medium text-[var(--dark)] mb-2">
-                    Participerez-vous au Brunch du Dimanche matin ? *
-                  </label>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      onClick={() =>
-                        setFormData({ ...formData, brunch: 'oui' })
+              {/* Champs cachés pour vin d'honneur uniquement */}
+              {!isVinHonneurOnly && formData.statut === 'accepte' && (
+                <>
+                  {/* Moment d'arrivée */}
+                  <div className="mb-8">
+                    <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+                      Arrivée
+                    </h3>
+                    <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
+                      <span
+                        className="material-icons"
+                        style={{ fontSize: '18px' }}
+                      >
+                        schedule
+                      </span>
+                      Quand prévois-tu d'arriver ? *
+                    </label>
+                    <select
+                      required
+                      value={formData.arrivee}
+                      onChange={(e) =>
+                        setFormData({ ...formData, arrivee: e.target.value })
                       }
-                      className={`p-4 rounded-lg border-2 transition-all ${
-                        formData.brunch === 'oui'
-                          ? 'border-green-500 bg-green-50'
-                          : 'border-gray-300 hover:border-green-300'
-                      }`}
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[var(--secondary)] focus:outline-none transition-colors"
                     >
-                      <div className="text-center">
-                        <div className="text-4xl mb-2">🥐</div>
-                        <p className="font-semibold">Oui, avec plaisir !</p>
-                      </div>
-                    </button>
-                    <button
-                      onClick={() =>
-                        setFormData({ ...formData, brunch: 'non' })
-                      }
-                      className={`p-4 rounded-lg border-2 transition-all ${
-                        formData.brunch === 'non'
-                          ? 'border-red-500 bg-red-50'
-                          : 'border-gray-300 hover:border-red-300'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <div className="text-4xl mb-2">☕</div>
-                        <p className="font-semibold">Non, je pars avant</p>
-                      </div>
-                    </button>
+                      <option value="">Sélectionnez un moment</option>
+                      <option value="Vendredi soir">Vendredi soir</option>
+                      <option value="Samedi midi">Samedi pour le midi</option>
+                      <option value="Samedi après-midi">
+                        Samedi après-midi
+                      </option>
+                    </select>
                   </div>
-                </div>
 
-                {/* NOUVEAU CHAMP : Suggestion musicale */}
-                <div className="mb-8">
-                  <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
-                    Ambiance
-                  </h3>
-                  <label className="block text-sm font-medium text-[var(--dark)] mb-2">
-                    Une suggestion de chanson pour la soirée dansante ?
-                    (Optionnel)
-                  </label>
-                  <input
-                    type="text"
-                    id="chanson"
-                    name="chanson"
-                    value={formData.chanson}
-                    onChange={(e) =>
-                      setFormData({ ...formData, chanson: e.target.value })
-                    }
-                    placeholder="Titre et artiste qui vous feront danser !"
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg 
+                  {/* Brunch du Dimanche */}
+                  <div className="mb-8">
+                    <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+                      Brunch
+                    </h3>
+                    <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
+                      <span
+                        className="material-icons"
+                        style={{ fontSize: '18px' }}
+                      >
+                        brunch_dining
+                      </span>
+                      Participeras-tu au Brunch du Dimanche matin ? *
+                    </label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <button
+                        onClick={() =>
+                          setFormData({ ...formData, brunch: 'oui' })
+                        }
+                        className={`p-4 rounded-lg border-2 transition-all ${
+                          formData.brunch === 'oui'
+                            ? 'border-green-500 bg-green-50'
+                            : 'border-gray-300 hover:border-green-300'
+                        }`}
+                      >
+                        <div className="text-center">
+                          <span className="material-icons text-4xl mb-2">
+                            bakery_dining
+                          </span>
+                          <p className="font-semibold">Oui, avec plaisir !</p>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() =>
+                          setFormData({ ...formData, brunch: 'non' })
+                        }
+                        className={`p-4 rounded-lg border-2 transition-all ${
+                          formData.brunch === 'non'
+                            ? 'border-red-500 bg-red-50'
+                            : 'border-gray-300 hover:border-red-300'
+                        }`}
+                      >
+                        <div className="text-center">
+                          <span className="material-icons text-4xl mb-2">
+                            coffee
+                          </span>
+                          <p className="font-semibold">Non, je pars avant</p>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Suggestion musicale */}
+                  <div className="mb-8">
+                    <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+                      Ambiance
+                    </h3>
+                    <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
+                      <span
+                        className="material-icons"
+                        style={{ fontSize: '18px' }}
+                      >
+                        music_note
+                      </span>
+                      Une suggestion de chanson pour la soirée dansante ?
+                      (Optionnel)
+                    </label>
+                    <input
+                      type="text"
+                      id="chanson"
+                      name="chanson"
+                      value={formData.chanson}
+                      onChange={(e) =>
+                        setFormData({ ...formData, chanson: e.target.value })
+                      }
+                      placeholder="Titre et artiste qui vous feront danser !"
+                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg 
               focus:border-[var(--secondary)] focus:outline-none 
               transition-colors"
-                  />
-                </div>
+                    />
+                  </div>
+                </>
+              )}
 
-                {/* Commentaires */}
-                <div className="mb-8">
-                  <label className="block text-sm font-medium text-[var(--dark)] mb-2">
-                    Commentaires ou besoins particuliers (optionnel)
-                  </label>
-                  <textarea
-                    value={formData.commentaires}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        commentaires: e.target.value,
-                      })
-                    }
-                    rows={4}
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[var(--secondary)] focus:outline-none transition-colors"
-                    placeholder={
-                      "Allergies alimentaires, régime spécial, besoin d'un siège bébé..."
-                    }
-                  />
-                </div>
-              </>
-            )}
+              {/* Commentaires */}
+              <div className="mb-8">
+                <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
+                  <span className="material-icons" style={{ fontSize: '18px' }}>
+                    comment
+                  </span>
+                  Commentaires ou besoins particuliers (Optionnel)
+                </label>
+                <textarea
+                  value={formData.commentaires}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      commentaires: e.target.value,
+                    })
+                  }
+                  rows={4}
+                  className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[var(--secondary)] focus:outline-none transition-colors"
+                  placeholder={
+                    "Allergies alimentaires, régime spécial, besoin d'un siège bébé..."
+                  }
+                />
+              </div>
+            </>
 
             {/* Bouton de soumission */}
             <div className="text-center">
               <button
                 onClick={handleSubmit}
-                // MISE À JOUR : Ajout de la condition !formData.brunch
                 disabled={
                   isSubmitting ||
                   (formData.statut === 'accepte' &&
+                    !isVinHonneurOnly &&
                     (!formData.arrivee || !formData.brunch))
                 }
-                className="bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
               >
+                <span className="material-icons">send</span>
                 {isSubmitting ? 'Envoi en cours...' : 'Confirmer ma réponse'}
               </button>
             </div>
 
             {submitStatus === 'error' && (
-              <div className="mt-6 p-4 bg-red-100 border-2 border-red-400 text-red-800 rounded-lg text-center">
-                ❌ Une erreur s'est produite. Veuillez réessayer.
+              <div className="mt-6 p-4 bg-red-100 border-2 border-red-400 text-red-800 rounded-lg text-center flex items-center justify-center gap-2">
+                <span className="material-icons">error</span>
+                Une erreur s'est produite. Veuillez réessayer.
               </div>
             )}
           </div>

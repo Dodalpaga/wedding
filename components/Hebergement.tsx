@@ -1,5 +1,25 @@
-export default function Hebergement() {
-  const hebergements = [
+interface Hebergement {
+  type: string;
+  name: string;
+  address: string;
+  distance: string;
+  phone?: string;
+  website?: string;
+  price: string;
+  capacity: number;
+  description: string;
+  features: string[];
+}
+
+interface HebergementPersonnaliseProps {
+  code: string | null;
+}
+
+export default function HebergementPersonnalise({
+  code,
+}: HebergementPersonnaliseProps) {
+  // Configuration des hébergements par défaut (tous)
+  const tousLesHebergements: Hebergement[] = [
     {
       type: 'Gîte',
       name: "Gîte de l'Héritier",
@@ -12,7 +32,7 @@ export default function Hebergement() {
       description: 'Idéal pour les familles',
       features: [
         'Piscine extérieure chauffée',
-        'Cuisine d’été avec plancha',
+        "Cuisine d'été avec plancha",
         'Adapté aux familles',
       ],
     },
@@ -33,7 +53,66 @@ export default function Hebergement() {
         'Salle de fitness',
       ],
     },
+    {
+      type: 'Hôtel',
+      name: 'Hôtel du Centre-Ville',
+      address: 'Place de la Mairie, 81000 Albi',
+      distance: '25 minutes en voiture',
+      phone: '05 63 54 12 34',
+      website: 'https://hotel-exemple.fr',
+      price: '€€',
+      capacity: 2,
+      description: 'Confortable et bien situé',
+      features: ['Parking gratuit', 'Petit-déjeuner inclus', 'WiFi'],
+    },
   ];
+
+  // Personnalisation des hébergements selon le code
+  const getHebergementsPersonnalises = (): Hebergement[] => {
+    switch (code) {
+      case 'LSGCUE':
+      case 'FIPEMX':
+        // Cousins éloignés : on suggère plutôt les hôtels et le plus petit gîte
+        return [
+          tousLesHebergements[0], // Gîte de l'Héritier
+          tousLesHebergements[2], // Hôtel
+        ];
+
+      case 'XJZSML':
+      case 'LOSIUX':
+      case 'AMSOIF':
+      case 'AMOFIX':
+        // Famille proche : on suggère les grands gîtes en priorité
+        return [
+          tousLesHebergements[1], // Gîte de Ségur (grand)
+          tousLesHebergements[0], // Gîte de l'Héritier
+        ];
+
+      default:
+        // Par défaut : tous les hébergements
+        return tousLesHebergements;
+    }
+  };
+
+  const hebergements = getHebergementsPersonnalises();
+
+  // Message personnalisé selon le code
+  const getMessagePersonnalise = (): string => {
+    switch (code) {
+      case 'LSGCUE':
+      case 'FIPEMX':
+        return "Voici quelques suggestions d'hébergement à proximité du lieu de réception, parfaitement adaptées pour vous !";
+
+      case 'XJZSML':
+      case 'LOSIUX':
+      case 'AMSOIF':
+      case 'AMOFIX':
+        return 'Nous avons sélectionné des hébergements spacieux pour accueillir toute la famille !';
+
+      default:
+        return "Nous avons sélectionné quelques suggestions d'hébergement à proximité du lieu de réception.";
+    }
+  };
 
   const getPriceColor = (price: string) => {
     if (price.includes('€€€')) return 'text-amber-600';
@@ -42,16 +121,26 @@ export default function Hebergement() {
   };
 
   return (
-    <section id="hebergement" className="py-20 bg-[var(--accent)]">
+    <section id="hebergement" className="py-5 bg-[var(--accent)]">
       <div className="container mx-auto px-4">
         <h2 className="text-6xl md:text-8xl font-wedding text-center text-[var(--primary)] mb-8">
           Où dormir ?
         </h2>
-        <p className="text-center text-[var(--dark)] mb-12 max-w-3xl mx-auto text-lg">
-          Nous avons sélectionné quelques suggestions d'hébergement à proximité
-          du lieu de réception. N'hésitez pas à réserver tôt pour garantir votre
-          place !
-        </p>
+
+        {/* Message personnalisé avec badge code */}
+        <div className="text-center mb-12 max-w-3xl mx-auto">
+          {code && (
+            <span className="inline-block bg-[var(--secondary)]/20 text-[var(--secondary)] px-4 py-2 rounded-full text-sm font-semibold mb-4">
+              Suggestions pour {code}
+            </span>
+          )}
+          <p className="text-[var(--dark)] text-lg">
+            {getMessagePersonnalise()}
+          </p>
+          <p className="text-[var(--dark)] text-sm mt-2">
+            N'hésitez pas à réserver tôt pour garantir votre place !
+          </p>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {hebergements.map((acc, index) => (
@@ -237,7 +326,7 @@ export default function Hebergement() {
               </p>
               <p className="text-sm text-[var(--dark)]">
                 Nous vous recommandons de réserver votre hébergement dès que
-                possible, surtout pour le week-end du mariage.
+                possible, surtout pour le week-end du mariage (17 juillet 2027).
               </p>
             </div>
           </div>

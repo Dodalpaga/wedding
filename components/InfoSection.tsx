@@ -238,7 +238,7 @@ export default function InfoSection() {
             </div>
 
             <div className="mt-12 bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white p-6 rounded-lg shadow-lg">
-              <p className="font-semibold text-lg mb-2">
+              <p className="font-semibold text-lg">
                 Merci de confirmer votre présence avant le 31 décembre 2026
               </p>
             </div>

@@ -2,15 +2,20 @@
 
 import Link from 'next/link';
 
-export default function ReturnButton() {
+interface ReturnButtonProps {
+  label: string;
+  href?: string; // facultatif : "/" par défaut
+}
+
+export default function ReturnButton({ label, href = '/' }: ReturnButtonProps) {
   return (
-    <div className="absolute top-4 left-4">
+    <div className="container mx-auto px-4 mb-4">
       <Link
-        href="/"
-        className="text-sm text-[#003b4e] hover:text-[#137e41] hover:underline transition-colors flex items-center gap-1"
+        href={href}
+        className="inline-flex items-center gap-2 text-[var(--primary)] hover:text-[var(--secondary)] transition-colors group"
       >
         <svg
-          className="w-4 h-4"
+          className="w-5 h-5 group-hover:-translate-x-1 transition-transform"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -19,10 +24,10 @@ export default function ReturnButton() {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M15 19l-7-7 7-7"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"
           />
         </svg>
-        Retour à l’accueil
+        <span className="font-semibold">{label}</span>
       </Link>
     </div>
   );
