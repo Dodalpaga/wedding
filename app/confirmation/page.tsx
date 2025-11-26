@@ -6,6 +6,11 @@ import ReturnButton from '@/components/ReturnButton';
 import InvitationLogin from '@/components/InvitationLogin';
 import RSVPFormFirebase from '@/components/RSVPFormFirebase';
 import Link from 'next/link';
+import {
+  getCodesAvecHebergement,
+  getCodesVinHonneur,
+  getCodesRSVP,
+} from '@/config/codes';
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
@@ -24,18 +29,10 @@ function ConfirmationContent() {
     }
   }, [codeFromUrl, inviteData]);
 
-  // Configuration : quels codes ont besoin de suggestions d'hébergement
-  const codesAvecHebergement = [
-    'LSGCUE',
-    'FIPEMX', // Lamaud Cousins
-    'XJZSML',
-    'LOSIUX',
-    'AMSOIF',
-    'AMOFIX', // Famille proche et amis proches
-  ];
-
-  // Configuration : codes invités uniquement au vin d'honneur
-  const codesVinHonneur = ['VJAUKO'];
+  // Récupération des codes depuis les variables d'environnement
+  const codesAvecHebergement = getCodesAvecHebergement();
+  const codesVinHonneur = getCodesVinHonneur();
+  const codesRSVP = getCodesRSVP();
 
   const afficherHebergement =
     inviteData && codesAvecHebergement.includes(inviteData.code);
@@ -102,16 +99,8 @@ function ConfirmationContent() {
         </div>
       )}
 
-      {/* Formulaires RSVP */}
-      {['LSGCUE', 'FIPEMX'].includes(inviteData.code) && (
-        <RSVPFormFirebase
-          inviteData={inviteData}
-          isVinHonneurOnly={isVinHonneurOnly}
-        />
-      )}
-      {['XJZSML', 'LOSIUX', 'AMSOIF', 'AMOFIX', 'VJAUKO'].includes(
-        inviteData.code
-      ) && (
+      {/* Formulaire RSVP */}
+      {codesRSVP.includes(inviteData.code) && (
         <RSVPFormFirebase
           inviteData={inviteData}
           isVinHonneurOnly={isVinHonneurOnly}

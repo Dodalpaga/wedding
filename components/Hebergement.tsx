@@ -1,3 +1,5 @@
+import { getCodesParGroupe, estDansGroupe } from '@/config/codes';
+
 interface Hebergement {
   type: string;
   name: string;
@@ -18,7 +20,7 @@ interface HebergementPersonnaliseProps {
 export default function HebergementPersonnalise({
   code,
 }: HebergementPersonnaliseProps) {
-  // Configuration des hébergements par défaut (tous)
+  // Configuration des hébergements disponibles
   const tousLesHebergements: Hebergement[] = [
     {
       type: 'Gîte',
@@ -67,51 +69,73 @@ export default function HebergementPersonnalise({
     },
   ];
 
-  // Personnalisation des hébergements selon le code
+  // Personnalisation des hébergements selon le groupe
   const getHebergementsPersonnalises = (): Hebergement[] => {
-    switch (code) {
-      case 'LSGCUE':
-      case 'FIPEMX':
-        // Cousins éloignés : on suggère plutôt les hôtels et le plus petit gîte
-        return [
-          tousLesHebergements[0], // Gîte de l'Héritier
-          tousLesHebergements[2], // Hôtel
-        ];
+    if (!code) return tousLesHebergements;
 
-      case 'XJZSML':
-      case 'LOSIUX':
-      case 'AMSOIF':
-      case 'AMOFIX':
-        // Famille proche : on suggère les grands gîtes en priorité
-        return [
-          tousLesHebergements[1], // Gîte de Ségur (grand)
-          tousLesHebergements[0], // Gîte de l'Héritier
-        ];
-
-      default:
-        // Par défaut : tous les hébergements
-        return tousLesHebergements;
+    // Famille Voydie (18 personnes) - Grand gîte prioritaire
+    // Gilles Laurence Thomas Amandine +1, Didier, Danielle et JF, Claire Maelle Simon, Les Momisson
+    if (estDansGroupe(code, 'voydie')) {
+      return [
+        tousLesHebergements[1], // Gîte de Ségur (grand)
+        tousLesHebergements[0], // Gîte de l'Héritier
+      ];
     }
+
+    // Cousins Lamaud (8 personnes) - Petit gîte
+    if (estDansGroupe(code, 'lamaud')) {
+      return [
+        tousLesHebergements[0], // Gîte de l'Héritier
+      ];
+    }
+
+    // Groupes de 4 à 6 personnes - AirBnB ou petit gîte
+    // Maxime Jeanne Andreanne Théo (4 pers), Copains Théâtre (6 pers)
+    if (estDansGroupe(code, 'airbnb')) {
+      return [
+        tousLesHebergements[0], // Gîte de l'Héritier
+        tousLesHebergements[2], // Hôtel
+      ];
+    }
+
+    // Couples - Hôtel
+    // JF Barraud & Annette, Isabelle & Thierry Jolivets, Pierrette & Alain LEDUC,
+    // Gilles & Amandine (parrain Dorian), Vincent & Justine, Zina, Frédérique tante Solenne
+    if (estDansGroupe(code, 'couples')) {
+      return [
+        tousLesHebergements[2], // Hôtel
+      ];
+    }
+
+    // Par défaut : tous les hébergements
+    return tousLesHebergements;
   };
 
   const hebergements = getHebergementsPersonnalises();
 
-  // Message personnalisé selon le code
+  // Message personnalisé selon le groupe
   const getMessagePersonnalise = (): string => {
-    switch (code) {
-      case 'LSGCUE':
-      case 'FIPEMX':
-        return "Voici quelques suggestions d'hébergement à proximité du lieu de réception, parfaitement adaptées pour vous !";
-
-      case 'XJZSML':
-      case 'LOSIUX':
-      case 'AMSOIF':
-      case 'AMOFIX':
-        return 'Nous avons sélectionné des hébergements spacieux pour accueillir toute la famille !';
-
-      default:
-        return "Nous avons sélectionné quelques suggestions d'hébergement à proximité du lieu de réception.";
+    if (!code) {
+      return "Nous avons sélectionné quelques suggestions d'hébergement à proximité du lieu de réception.";
     }
+
+    if (estDansGroupe(code, 'voydie')) {
+      return 'Nous avons sélectionné des hébergements spacieux pour accueillir toute la famille Voydie !';
+    }
+
+    if (estDansGroupe(code, 'lamaud')) {
+      return "Voici quelques suggestions d'hébergement à proximité du lieu de réception, parfaitement adaptées pour vous !";
+    }
+
+    if (estDansGroupe(code, 'airbnb')) {
+      return "Voici des options d'hébergement idéales pour votre groupe !";
+    }
+
+    if (estDansGroupe(code, 'couples')) {
+      return 'Nous avons sélectionné des hébergements confortables pour les couples.';
+    }
+
+    return "Nous avons sélectionné quelques suggestions d'hébergement à proximité du lieu de réception.";
   };
 
   const getPriceColor = (price: string) => {
