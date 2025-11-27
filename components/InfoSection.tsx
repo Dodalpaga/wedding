@@ -34,9 +34,9 @@ export default function InfoSection() {
                 <img
                   src={`${
                     process.env.NEXT_PUBLIC_BASE_PATH || ''
-                  }/images/domaine.png`}
+                  }/images/domaine.svg`}
                   alt="Domaine d’en Naudet"
-                  className="rounded-lg shadow-md"
+                  style={{ width: '100%' }}
                 />
               </div>
             </div>
@@ -56,13 +56,6 @@ export default function InfoSection() {
                   Un parking gratuit est disponible sur place au domaine. Il y
                   aura de la place pour tout le monde !
                 </p>
-                <img
-                  src={`${
-                    process.env.NEXT_PUBLIC_BASE_PATH || ''
-                  }/images/dessus-domaine.png`}
-                  alt="Vue aérienne du parking"
-                  className="rounded-lg shadow-md"
-                />
               </div>
             </div>
 
