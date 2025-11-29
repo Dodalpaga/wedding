@@ -7,7 +7,7 @@
   src: url('../public/fonts/Wedding.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
-  font-display: optional;
+  font-display: swap;
 }
 
 :root {
