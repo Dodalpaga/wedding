@@ -75,7 +75,7 @@ function ConfirmationContent() {
           <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-pink-300 p-4 rounded-lg">
             <p className="text-center text-pink-800 flex items-center justify-center gap-2">
               <span className="material-icons">celebration</span>
-              <strong>Invitation sur le week-end</strong>
+              <strong>Invitation sur l'ensemble du week-end</strong>
             </p>
           </div>
         )}

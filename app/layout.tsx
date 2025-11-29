@@ -13,6 +13,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/Wedding.otf"
+          as="font"
+          type="font/otf"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="antialiased">{children}</body>
     </html>
   );

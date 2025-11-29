@@ -15,94 +15,90 @@ export default function InfoSection() {
             Informations pratiques
           </h2>
 
-          {/* Nouvelle grille pour les 4 cartes */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
-            {/* Le Lieu */}
-            <div className="md:col-span-2 bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
-              <div className="text-center mb-6">
-                <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
-              </div>
-              <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
-                Le Domaine d'en Naudet
-              </h3>
-              <div className="space-y-4 text-[var(--dark)] text-justify">
-                <p>
-                  Le domaine d’en Naudet, situé à quelques kilomètres de Lavaur
-                  (à 40 minutes de Toulouse), offre un cadre verdoyant et
-                  paisible, idéal pour célébrer un mariage en toute intimité.
-                </p>
-                <img
-                  src={`${
-                    process.env.NEXT_PUBLIC_BASE_PATH || ''
-                  }/images/domaine.svg`}
-                  alt="Domaine d’en Naudet"
-                  style={{ width: '100%' }}
-                />
-              </div>
-            </div>
-
-            {/* Parking */}
-            <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
-              <div className="text-center mb-6">
-                <LocalParkingIcon
-                  sx={{ fontSize: 60, color: 'var(--secondary)' }}
-                />
-              </div>
-              <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
-                Parking
-              </h3>
-              <div className="space-y-4 text-[var(--dark)]">
-                <p>
-                  Un parking gratuit est disponible sur place au domaine. Il y
-                  aura de la place pour tout le monde !
+          {/* Nouvelle disposition : 2 colonnes principales */}
+          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Colonne 1 : Le Lieu */}
+            <div className="bg-white rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all overflow-hidden flex flex-col">
+              <div className="p-8 flex-grow">
+                <div className="text-center mb-6">
+                  <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
+                </div>
+                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
+                  Le Domaine d'en Naudet
+                </h3>
+                <p className="text-[var(--dark)] text-justify">
+                  Le domaine d'en Naudet, situé à Teyssode, à quelques
+                  kilomètres de Lavaur (à 40 minutes de Toulouse), offre un
+                  cadre verdoyant et paisible, idéal pour célébrer un mariage en
+                  toute intimité.
                 </p>
               </div>
+              <img
+                src={`${
+                  process.env.NEXT_PUBLIC_BASE_PATH || ''
+                }/images/domaine.svg`}
+                alt="Domaine d'en Naudet"
+                className="w-full"
+              />
             </div>
 
-            {/* --- NOUVELLE SECTION : MÉTÉO & TENUE --- */}
-            <div className="bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all flex flex-col justify-between">
-              <div>
-                {/* Météo */}
-                <div className="mb-8">
-                  <div className="text-center mb-4">
-                    <WbSunnyIcon
-                      sx={{ fontSize: 60, color: 'var(--secondary)' }}
-                    />
-                  </div>
-                  <h3 className="text-3xl font-wedding text-[var(--primary)] mb-2 text-center">
-                    Côté Météo
-                  </h3>
-                  <p className="text-[var(--dark)] text-sm text-center">
-                    En cette saison, les journées sont agréables (25-30°C), mais
-                    les soirées peuvent être fraîches (15-18°C).
-                  </p>
+            {/* Colonne 2 : Grille 2x2 */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Parking */}
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
+                <div className="text-center mb-4">
+                  <LocalParkingIcon
+                    sx={{ fontSize: 50, color: 'var(--secondary)' }}
+                  />
                 </div>
-
-                {/* Tenue */}
-                <div>
-                  <div className="text-center mb-4">
-                    <CheckroomIcon
-                      sx={{ fontSize: 60, color: 'var(--secondary)' }}
-                    />
-                  </div>
-                  <h3 className="text-3xl font-wedding text-[var(--primary)] mb-2 text-center">
-                    Code Vestimentaire
-                  </h3>
-                  <p className="text-[var(--dark)] text-sm text-center">
-                    **Chic et Champêtre**. Privilégiez les tenues élégantes tout
-                    en restant à l'aise. N'oubliez pas un châle ou une veste
-                    pour le soir !
-                  </p>
-                </div>
+                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
+                  Parking
+                </h3>
+                <p className="text-[var(--dark)] text-sm text-center">
+                  Un parking est disponible sur place au domaine. Il y aura de
+                  la place pour tout le monde !
+                </p>
               </div>
 
-              <div className="mt-6 text-center">
-                <span className="text-xs text-[var(--secondary)] font-semibold uppercase tracking-wider">
-                  Cérémonie en extérieur prévue
-                </span>
+              {/* Météo */}
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
+                <div className="text-center mb-4">
+                  <WbSunnyIcon
+                    sx={{ fontSize: 50, color: 'var(--secondary)' }}
+                  />
+                </div>
+                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
+                  Côté Météo
+                </h3>
+                <p className="text-[var(--dark)] text-sm text-center">
+                  En cette saison, les journées sont chaudes (30-35°C), mais les
+                  intérieurs seront climatisés. Prenez de quoi vous protéger du
+                  soleil !
+                </p>
+              </div>
+
+              {/* Code Vestimentaire */}
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all col-span-2">
+                <div className="text-center mb-4">
+                  <CheckroomIcon
+                    sx={{ fontSize: 50, color: 'var(--secondary)' }}
+                  />
+                </div>
+                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
+                  Code Vestimentaire
+                </h3>
+                <p className="text-[var(--dark)] text-sm text-center mb-4">
+                  <strong>Chic et Champêtre</strong>. Privilégiez les tenues
+                  élégantes tout en restant à l'aise. N'oubliez pas un châle ou
+                  une veste pour le soir !
+                </p>
+                <div className="text-center">
+                  <span className="text-xs$* text-[var(--secondary)] font-semibold uppercase tracking-wider">
+                    Cérémonie en extérieur prévue
+                  </span>
+                </div>
               </div>
             </div>
-            {/* ------------------------------------ */}
           </div>
         </div>
       </section>

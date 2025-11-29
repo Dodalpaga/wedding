@@ -190,7 +190,7 @@ export default function HoneymoonPage() {
       </div>
 
       {/* Section Participation / Cadeau */}
-      <section className="py-20 bg-[#003b4e] text-white mt-20">
+      <section className="py-4 bg-[#003b4e] text-white mt-20">
         <div className="container mx-auto px-4 text-center max-w-2xl">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -198,7 +198,7 @@ export default function HoneymoonPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl md:text-7xl font-wedding mb-8">
-              Participer à notre rêve
+              Participer à notre voyage
             </h2>
             <p className="text-lg mb-8 font-light">
               Si vous souhaitez nous aider à réaliser ce voyage inoubliable, une
