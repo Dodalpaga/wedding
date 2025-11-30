@@ -36,11 +36,12 @@ export default function AdminDashboard() {
 
   // Vérifier l'authentification au chargement
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log('AUTH STATE =', user); // <--- ajout ici
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
+        // Attendre que le token soit bien chargé
+        await user.getIdToken(true);
         setIsAuthenticated(true);
-        loadData();
+        await loadData();
       } else {
         setIsAuthenticated(false);
       }
@@ -51,11 +52,24 @@ export default function AdminDashboard() {
   // Charger les données en temps réel
   const loadData = async () => {
     try {
+      // Vérifier l'authentification avant de charger
+      const user = auth.currentUser;
+      if (!user) {
+        console.log('⚠️ Utilisateur non authentifié');
+        return;
+      }
+
       console.log('🔍 Chargement des codes...');
 
-      // 1. Charger tous les codes d'invitation
-      const codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
-      console.log('✅ Codes trouvés:', codesSnapshot.size);
+      // 1. Charger tous les codes d'invitation avec gestion d'erreur
+      let codesSnapshot;
+      try {
+        codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
+        console.log('✅ Codes trouvés:', codesSnapshot.size);
+      } catch (error) {
+        console.error('❌ Erreur lecture codes:', error);
+        return;
+      }
 
       const codesMap = new Map<string, any>();
 
@@ -63,15 +77,12 @@ export default function AdminDashboard() {
         const code = codeDoc.id;
         const data = codeDoc.data();
 
-        console.log(`📋 Code ${code}:`, data);
-
         if (code.length === 6 && data.membres && Array.isArray(data.membres)) {
           codesMap.set(code, {
             id: code,
             membres: data.membres,
             description: data.description || code,
           });
-          console.log(`✅ ${code}: ${data.membres.length} membre(s) chargé(s)`);
         }
       });
 
@@ -84,19 +95,25 @@ export default function AdminDashboard() {
         orderBy('date_modification', 'desc')
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        console.log('📊 Statuts chargés:', data.length);
-        setStatuts(data);
-        setFilteredStatuts(data);
-      });
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const data = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          console.log('📊 Statuts chargés:', data.length);
+          setStatuts(data);
+          setFilteredStatuts(data);
+        },
+        (error) => {
+          console.error('❌ Erreur écoute statuts:', error);
+        }
+      );
 
       return unsubscribe;
     } catch (err) {
-      console.error('❌ Erreur chargement:', err);
+      console.error('❌ Erreur générale chargement:', err);
     }
   };
 
