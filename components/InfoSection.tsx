@@ -46,11 +46,20 @@ export default function InfoSection() {
                   Le Domaine d'en Naudet
                 </h3>
                 <p className="text-[var(--dark)] text-justify">
-                  Le domaine d'en Naudet, situé à Teyssode, à quelques
-                  kilomètres de Lavaur (à 40 minutes de Toulouse), offre un
-                  cadre verdoyant et paisible, idéal pour célébrer un mariage en
-                  toute intimité.
+                  Niché au cœur du Tarn, entouré de champs de tournesols et de
+                  collines verdoyantes, le Domaine d’en Naudet est un petit
+                  paradis où le temps semble suspendu. Une grande allée bordée
+                  de chênes, une grange rénovée aux pierres apparentes, un parc
+                  avec des coins d’ombre centenaires… Tout est réuni pour que
+                  cette journée dont on se souviendra toute la vie.
                 </p>
+                {/* <img
+                  src={`${
+                    process.env.NEXT_PUBLIC_BASE_PATH || ''
+                  }/images/domaine-aquarelle.png`}
+                  alt="Domaine d'en Naudet"
+                  className="w-full rounded-xl my-2"
+                /> */}
               </div>
               <img
                 src={`${
@@ -74,8 +83,9 @@ export default function InfoSection() {
                   Parking
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-center">
-                  Un parking est disponible sur place au domaine. Il y aura de
-                  la place pour tout le monde !
+                  Un grand parking gratuit est prévu sur le domaine (plus de 100
+                  places). Pas de stress : vous pourrez garer votre voiture
+                  juste à côté de la fête !
                 </p>
               </div>
 
@@ -90,9 +100,11 @@ export default function InfoSection() {
                   Côté Météo
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-center">
-                  En cette saison, les journées sont chaudes (30-35°C), mais les
-                  intérieurs seront climatisés. Prenez de quoi vous protéger du
-                  soleil !
+                  Août dans le Tarn = grand soleil et chaleur garantie (30-35 °C
+                  en journée) ! La cérémonie et le vin d’honneur seront en
+                  extérieur, sous les arbres et les guirlandes guinguette.
+                  Pensez à la crème solaire, aux lunettes de soleil et à un
+                  éventail (on en prévoira aussi).
                 </p>
               </div>
 
@@ -108,8 +120,8 @@ export default function InfoSection() {
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-center mb-4">
                   <strong>Chic et Champêtre</strong>. Privilégiez les tenues
-                  élégantes tout en restant à l'aise. N'oubliez pas un châle ou
-                  une veste pour le soir !
+                  élégantes tout en <strong>restant à l'aise</strong>. N'oubliez
+                  pas un châle ou une veste pour le soir !
                 </p>
                 <div className="text-center">
                   <span className="text-xs text-[var(--secondary)] font-semibold uppercase tracking-wider">
@@ -155,9 +167,13 @@ export default function InfoSection() {
               </div>
 
               <p className="text-lg text-[var(--dark)] mb-6 text-center">
-                Vous avez reçu un <strong>code personnel</strong> dans votre
-                invitation. Entrez-le ci-dessous pour accéder à la gestion de
-                votre présence.
+                On a trop hâte de savoir si vous serez là pour faire la fête
+                avec nous ! Chaque invitation contient un{' '}
+                <strong>code unique</strong> qui vous permet de confirmer (ou
+                pas) votre présence, de nous indiquer vos allergies ou régimes
+                particuliers, et même de nous dire si vous venez avec vos
+                enfants. Vous pourrez modifier vos réponses autant de fois que
+                vous voulez jusqu’au 31 décembre 2025.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -225,8 +241,8 @@ export default function InfoSection() {
 
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-lg text-[var(--dark)] mb-8">
-              Pour toute question ou information complémentaire, n'hésitez pas à
-              nous contacter :
+              Vous avez une question à 2 h du matin parce que vous hésitez entre
+              la robe verte ou la robe jaune ? On est là !
             </p>
 
             <div className="space-y-4">

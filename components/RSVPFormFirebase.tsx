@@ -11,15 +11,16 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { serverTimestamp } from 'firebase/firestore';
-
+// 1. MODIFIER L'INTERFACE Membre
 interface Membre {
   nom: string;
   email: string;
   statut?: 'accepte' | 'refuse' | 'en_attente';
-  arrivee?: string;
   commentaires?: string;
-  brunch?: 'oui' | 'non';
-  chanson?: string;
+  vendredi_soir?: boolean;
+  samedi_midi?: boolean;
+  samedi_soir?: boolean;
+  dimanche_brunch?: boolean;
 }
 
 interface RSVPFormFirebaseProps {
@@ -32,12 +33,13 @@ export default function RSVPFormFirebase({
   isVinHonneurOnly = false,
 }: RSVPFormFirebaseProps) {
   const [formData, setFormData] = useState({
-    arrivee: '',
     email: '',
     commentaires: '',
     statut: 'accepte' as 'accepte' | 'refuse',
-    brunch: '' as 'oui' | 'non' | '',
-    chanson: '',
+    vendredi_soir: false,
+    samedi_midi: false,
+    samedi_soir: false,
+    dimanche_brunch: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
@@ -77,10 +79,11 @@ export default function RSVPFormFirebase({
                     nom,
                     email: statutData.email || '',
                     statut: statutData.statut || 'en_attente',
-                    arrivee: statutData.arrivee || '',
                     commentaires: statutData.commentaires || '',
-                    brunch: statutData.brunch || '',
-                    chanson: statutData.chanson || '',
+                    vendredi_soir: statutData.vendredi_soir || false,
+                    samedi_midi: statutData.samedi_midi || false,
+                    samedi_soir: statutData.samedi_soir || false,
+                    dimanche_brunch: statutData.dimanche_brunch || false,
                   };
                 }
 
@@ -88,10 +91,11 @@ export default function RSVPFormFirebase({
                   nom,
                   email: '',
                   statut: 'en_attente' as const,
-                  arrivee: '',
                   commentaires: '',
-                  brunch: '',
-                  chanson: '',
+                  vendredi_soir: false,
+                  samedi_midi: false,
+                  samedi_soir: false,
+                  dimanche_brunch: false,
                 };
               }
             );
@@ -116,23 +120,32 @@ export default function RSVPFormFirebase({
   }, [inviteData.code]);
 
   // Charger les données du membre sélectionné
+  // Charger les données du membre sélectionné → CORRIGÉ
   useEffect(() => {
     if (membreSelectionne) {
       const membre = membres.find((m) => m.nom === membreSelectionne);
       if (membre) {
         setFormData({
-          arrivee: membre.arrivee || '',
           email: membre.email || '',
           commentaires: membre.commentaires || '',
-          brunch: (membre.brunch || '') as 'oui' | 'non' | '',
-          chanson: membre.chanson || '',
-          statut: (membre.statut === 'refuse' ? 'refuse' : 'accepte') as
-            | 'accepte'
-            | 'refuse',
+          statut: membre.statut === 'refuse' ? 'refuse' : 'accepte',
+          vendredi_soir: Boolean(membre.vendredi_soir),
+          samedi_midi: Boolean(membre.samedi_midi),
+          samedi_soir: Boolean(membre.samedi_soir),
+          dimanche_brunch: Boolean(membre.dimanche_brunch),
         });
+      } else {
+        // Si le membre n'a jamais répondu → tout à false sauf samedi_soir (souvent obligatoire)
+        setFormData((prev) => ({
+          ...prev,
+          vendredi_soir: false,
+          samedi_midi: false,
+          samedi_soir: false,
+          dimanche_brunch: false,
+        }));
       }
     }
-  }, [membreSelectionne, membres]);
+  }, [membreSelectionne, membres]); // ← "membres" est crucial ici !
 
   const handleSubmit = async () => {
     if (!membreSelectionne) {
@@ -140,15 +153,17 @@ export default function RSVPFormFirebase({
       return;
     }
 
-    // Validation selon le type d'invitation
+    // Validation : si accepte et que c'est pas vin d'honneur uniquement,
+    // il faut au moins un événement coché
     if (formData.statut === 'accepte' && !isVinHonneurOnly) {
-      if (!formData.arrivee) {
-        alert("Veuillez indiquer le moment d'arrivée.");
-        return;
-      }
-      if (!formData.brunch) {
+      if (
+        !formData.vendredi_soir &&
+        !formData.samedi_midi &&
+        !formData.samedi_soir &&
+        !formData.dimanche_brunch
+      ) {
         alert(
-          'Veuillez confirmer si vous participez ou non au Brunch du Dimanche.'
+          'Veuillez sélectionner au moins un événement auquel vous participerez.'
         );
         return;
       }
@@ -163,11 +178,12 @@ export default function RSVPFormFirebase({
         code_invitation: inviteData.code,
         nom_membre: membreSelectionne,
         statut: formData.statut,
-        arrivee: formData.arrivee,
         email: formData.email,
         commentaires: formData.commentaires,
-        brunch: formData.brunch,
-        chanson: formData.chanson,
+        vendredi_soir: formData.vendredi_soir,
+        samedi_midi: formData.samedi_midi,
+        samedi_soir: formData.samedi_soir,
+        dimanche_brunch: formData.dimanche_brunch,
         date_modification: serverTimestamp(),
       });
 
@@ -182,14 +198,15 @@ export default function RSVPFormFirebase({
         setMembreSelectionne('');
         setSubmitStatus('idle');
         setFormData({
-          arrivee: '',
           email: '',
           commentaires: '',
           statut: 'accepte',
-          brunch: '',
-          chanson: '',
+          vendredi_soir: false,
+          samedi_midi: false,
+          samedi_soir: false,
+          dimanche_brunch: false,
         });
-      }, 2000);
+      }, 6000);
     } catch (error) {
       console.error('Erreur:', error);
       setSubmitStatus('error');
@@ -222,20 +239,16 @@ export default function RSVPFormFirebase({
                 {formData.statut === 'accepte' && (
                   <>
                     <br />• Statut : ✅ Confirmé
-                    {!isVinHonneurOnly && formData.arrivee && (
+                    {!isVinHonneurOnly && (
                       <>
-                        <br />• Arrivée : {formData.arrivee}
-                      </>
-                    )}
-                    {!isVinHonneurOnly && formData.brunch && (
-                      <>
-                        <br />• Brunch du Dimanche :{' '}
-                        {formData.brunch === 'oui' ? '✅ Oui' : '❌ Non'}
-                      </>
-                    )}
-                    {!isVinHonneurOnly && formData.chanson && (
-                      <>
-                        <br />• Chanson : {formData.chanson}
+                        <br />• Vendredi soir :{' '}
+                        {formData.vendredi_soir ? '✅ Oui' : '❌ Non'}
+                        <br />• Samedi midi :{' '}
+                        {formData.samedi_midi ? '✅ Oui' : '❌ Non'}
+                        <br />• Samedi après-midi / soir (mariage) :{' '}
+                        {formData.samedi_soir ? '✅ Oui' : '❌ Non'}
+                        <br />• Dimanche brunch :{' '}
+                        {formData.dimanche_brunch ? '✅ Oui' : '❌ Non'}
                       </>
                     )}
                   </>
@@ -332,19 +345,14 @@ export default function RSVPFormFirebase({
                             </>
                           )}
                         </p>
-                        {membre.statut === 'accepte' &&
-                          membre.arrivee &&
-                          !isVinHonneurOnly && (
-                            <p className="text-xs text-gray-500 mt-1 flex items-center gap-1">
-                              <span
-                                className="material-icons"
-                                style={{ fontSize: '12px' }}
-                              >
-                                schedule
-                              </span>
-                              Arrivée: {membre.arrivee}
-                            </p>
-                          )}
+                        {membre.statut === 'accepte' && !isVinHonneurOnly && (
+                          <p className="text-xs text-gray-500 mt-1 flex items-center gap-1 flex-wrap">
+                            {membre.vendredi_soir && <span>🌙 Ven</span>}
+                            {membre.samedi_midi && <span>🍽️ Sam midi</span>}
+                            {membre.samedi_soir && <span>💒 Mariage</span>}
+                            {membre.dimanche_brunch && <span>🥞 Brunch</span>}
+                          </p>
+                        )}
                       </div>
                       <span className="material-icons text-[var(--secondary)] flex-shrink-0 ml-2">
                         chevron_right
@@ -460,157 +468,128 @@ export default function RSVPFormFirebase({
 
               {/* Champs cachés pour vin d'honneur uniquement */}
               {!isVinHonneurOnly && formData.statut === 'accepte' && (
-                <>
-                  {/* Moment d'arrivée */}
-                  <div className="mb-8">
-                    <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
-                      Arrivée
-                    </h3>
-                    <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
-                      <span
-                        className="material-icons"
-                        style={{ fontSize: '18px' }}
-                      >
-                        schedule
-                      </span>
-                      Quand prévois-tu d'arriver ? *
-                    </label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <button
-                        onClick={() =>
-                          setFormData({ ...formData, arrivee: 'Vendredi' })
+                <div className="mb-8">
+                  <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+                    Événements
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Sélectionnez les événements auxquels vous participerez *
+                  </p>
+
+                  <div className="space-y-4">
+                    {/* Vendredi soir */}
+                    <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-blue-50">
+                      <input
+                        type="checkbox"
+                        checked={formData.vendredi_soir}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            vendredi_soir: e.target.checked,
+                          })
                         }
-                        className={`p-4 rounded-lg border-2 transition-all text-left ${
-                          formData.arrivee === 'Vendredi'
-                            ? 'border-[var(--primary)] bg-blue-50'
-                            : 'border-gray-300 hover:border-[var(--primary)]'
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <span className="material-icons text-3xl text-[var(--primary)] flex-shrink-0">
+                        className="mt-1 w-5 h-5 text-[var(--primary)] rounded focus:ring-[var(--primary)]"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="material-icons text-[var(--primary)]">
                             nightlight
                           </span>
-                          <div>
-                            <p className="font-semibold text-[var(--dark)] mb-1">
-                              Vendredi
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              Un repas simple pour se retrouver tous ensemble
-                              avant la grande journée de samedi
-                            </p>
-                          </div>
-                        </div>
-                      </button>
-                      <button
-                        onClick={() =>
-                          setFormData({ ...formData, arrivee: 'Samedi' })
-                        }
-                        className={`p-4 rounded-lg border-2 transition-all text-left ${
-                          formData.arrivee === 'Samedi'
-                            ? 'border-[var(--primary)] bg-blue-50'
-                            : 'border-gray-300 hover:border-[var(--primary)]'
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <span className="material-icons text-3xl text-[var(--primary)] flex-shrink-0">
-                            wb_sunny
+                          <span className="font-semibold text-[var(--dark)]">
+                            Vendredi soir
                           </span>
-                          <div>
-                            <p className="font-semibold text-[var(--dark)] mb-1">
-                              Samedi
-                            </p>
-                            <p className="text-xs text-gray-600">
-                              Programme encore à définir, plus d'infos à venir
-                              prochainement
-                            </p>
-                          </div>
                         </div>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Brunch du Dimanche */}
-                  <div className="mb-8">
-                    <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
-                      Brunch
-                    </h3>
-                    <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
-                      <span
-                        className="material-icons"
-                        style={{ fontSize: '18px' }}
-                      >
-                        brunch_dining
-                      </span>
-                      Participeras-tu au Brunch du Dimanche matin ? *
+                        <p className="text-sm text-gray-600">
+                          Petit repas tranquille avant le jour J
+                        </p>
+                      </div>
                     </label>
-                    <div className="grid grid-cols-2 gap-4">
-                      <button
-                        onClick={() =>
-                          setFormData({ ...formData, brunch: 'oui' })
-                        }
-                        className={`p-4 rounded-lg border-2 transition-all ${
-                          formData.brunch === 'oui'
-                            ? 'border-green-500 bg-green-50'
-                            : 'border-gray-300 hover:border-green-300'
-                        }`}
-                      >
-                        <div className="text-center">
-                          <span className="material-icons text-4xl mb-2">
-                            bakery_dining
-                          </span>
-                          <p className="font-semibold">Oui, avec plaisir !</p>
-                        </div>
-                      </button>
-                      <button
-                        onClick={() =>
-                          setFormData({ ...formData, brunch: 'non' })
-                        }
-                        className={`p-4 rounded-lg border-2 transition-all ${
-                          formData.brunch === 'non'
-                            ? 'border-red-500 bg-red-50'
-                            : 'border-gray-300 hover:border-red-300'
-                        }`}
-                      >
-                        <div className="text-center">
-                          <span className="material-icons text-4xl mb-2">
-                            coffee
-                          </span>
-                          <p className="font-semibold">Non, je pars avant</p>
-                        </div>
-                      </button>
-                    </div>
-                  </div>
 
-                  {/* Suggestion musicale */}
-                  <div className="mb-8">
-                    <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
-                      Ambiance
-                    </h3>
-                    <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
-                      <span
-                        className="material-icons"
-                        style={{ fontSize: '18px' }}
-                      >
-                        music_note
-                      </span>
-                      Une suggestion de chanson pour la soirée dansante ?
-                      (Optionnel)
+                    {/* Samedi midi */}
+                    <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-blue-50">
+                      <input
+                        type="checkbox"
+                        checked={formData.samedi_midi}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            samedi_midi: e.target.checked,
+                          })
+                        }
+                        className="mt-1 w-5 h-5 text-[var(--primary)] rounded focus:ring-[var(--primary)]"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="material-icons text-[var(--primary)]">
+                            lunch_dining
+                          </span>
+                          <span className="font-semibold text-[var(--dark)]">
+                            Samedi midi
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          Repas simple, picorages et buffet de grignotage
+                        </p>
+                      </div>
                     </label>
-                    <input
-                      type="text"
-                      id="chanson"
-                      name="chanson"
-                      value={formData.chanson}
-                      onChange={(e) =>
-                        setFormData({ ...formData, chanson: e.target.value })
-                      }
-                      placeholder="Titre et artiste qui vous feront danser !"
-                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg 
-              focus:border-[var(--secondary)] focus:outline-none 
-              transition-colors"
-                    />
+
+                    {/* Samedi soir - Mariage */}
+                    <label className="flex items-start gap-4 p-4 border-2 border-pink-300 rounded-lg cursor-pointer transition-all hover:border-pink-500 hover:bg-pink-50 bg-pink-50/30">
+                      <input
+                        type="checkbox"
+                        checked={formData.samedi_soir}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            samedi_soir: e.target.checked,
+                          })
+                        }
+                        className="mt-1 w-5 h-5 text-pink-600 rounded focus:ring-pink-600"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="material-icons text-pink-600">
+                            favorite
+                          </span>
+                          <span className="font-semibold text-[var(--dark)]">
+                            Samedi soir - Repas de mariage
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          Le grand événement ! 🎉
+                        </p>
+                      </div>
+                    </label>
+
+                    {/* Dimanche brunch */}
+                    <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-blue-50">
+                      <input
+                        type="checkbox"
+                        checked={formData.dimanche_brunch}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            dimanche_brunch: e.target.checked,
+                          })
+                        }
+                        className="mt-1 w-5 h-5 text-[var(--primary)] rounded focus:ring-[var(--primary)]"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="material-icons text-[var(--primary)]">
+                            brunch_dining
+                          </span>
+                          <span className="font-semibold text-[var(--dark)]">
+                            Dimanche midi - Brunch
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          Brunch du lendemain pour prolonger le plaisir
+                        </p>
+                      </div>
+                    </label>
                   </div>
-                </>
+                </div>
               )}
 
               {/* Commentaires */}
@@ -645,8 +624,12 @@ export default function RSVPFormFirebase({
                 disabled={
                   isSubmitting ||
                   (formData.statut === 'accepte' &&
-                    !isVinHonneurOnly &&
-                    (!formData.arrivee || !formData.brunch))
+                    !(
+                      formData.vendredi_soir ||
+                      formData.samedi_midi ||
+                      formData.samedi_soir ||
+                      formData.dimanche_brunch
+                    ))
                 }
                 className="bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
               >

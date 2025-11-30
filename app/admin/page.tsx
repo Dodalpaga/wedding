@@ -11,7 +11,15 @@ import {
 } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 
-type SortField = 'code' | 'nom' | 'statut' | 'arrivee' | 'date' | 'brunch';
+type SortField =
+  | 'code'
+  | 'nom'
+  | 'statut'
+  | 'vendredi_soir'
+  | 'samedi_midi'
+  | 'samedi_soir'
+  | 'dimanche_brunch'
+  | 'date';
 type SortDirection = 'asc' | 'desc';
 
 export default function AdminDashboard() {
@@ -38,7 +46,6 @@ export default function AdminDashboard() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        // Attendre que le token soit bien chargé
         await user.getIdToken(true);
         setIsAuthenticated(true);
         await loadData();
@@ -49,33 +56,18 @@ export default function AdminDashboard() {
     return () => unsubscribe();
   }, []);
 
-  // Charger les données en temps réel
   const loadData = async () => {
     try {
-      // Vérifier l'authentification avant de charger
       const user = auth.currentUser;
-      if (!user) {
-        console.log('⚠️ Utilisateur non authentifié');
-        return;
-      }
+      if (!user) return;
 
-      console.log('🔍 Chargement des codes...');
-
-      // 1. Charger tous les codes d'invitation avec gestion d'erreur
-      let codesSnapshot;
-      try {
-        codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
-      } catch (error) {
-        console.error('❌ Erreur lecture codes:', error);
-        return;
-      }
-
+      // Charger les codes d'invitation
+      const codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
       const codesMap = new Map<string, any>();
 
       codesSnapshot.docs.forEach((codeDoc) => {
         const code = codeDoc.id;
         const data = codeDoc.data();
-
         if (code.length === 6 && data.membres && Array.isArray(data.membres)) {
           codesMap.set(code, {
             id: code,
@@ -84,11 +76,9 @@ export default function AdminDashboard() {
           });
         }
       });
-
-      console.log('📊 Total codes chargés:', codesMap.size);
       setCodesInvitation(codesMap);
 
-      // 2. Écouter les statuts en temps réel
+      // Écouter les statuts en temps réel
       const q = query(
         collection(db, 'statuts'),
         orderBy('date_modification', 'desc')
@@ -101,38 +91,38 @@ export default function AdminDashboard() {
             id: doc.id,
             ...doc.data(),
           }));
-          console.log('📊 Statuts chargés:', data.length);
           setStatuts(data);
           setFilteredStatuts(data);
         },
         (error) => {
-          console.error('❌ Erreur écoute statuts:', error);
+          console.error('Erreur écoute statuts:', error);
         }
       );
 
       return unsubscribe;
     } catch (err) {
-      console.error('❌ Erreur générale chargement:', err);
+      console.error('Erreur chargement:', err);
     }
   };
 
-  // Obtenir tous les membres de tous les codes
+  // Construire la liste complète des membres avec leurs réponses
   const getAllMembres = () => {
     const allMembres: any[] = [];
 
     codesInvitation.forEach((codeData, code) => {
-      // code = "ABC123"
       (codeData.membres || []).forEach((nom: string) => {
-        const statut = statuts.find((s) => s.nom_membre === nom);
+        const statut = statuts.find((s) => s.nom_membre === nom) || {};
 
         allMembres.push({
           nom,
-          codeInvitation: code, // ← maintenant c’est bien le code 6 lettres
-          statut: statut?.statut || 'en_attente',
-          arrivee: statut?.arrivee || '',
-          brunch: statut?.brunch || '',
-          commentaires: statut?.commentaires || '',
-          dateModification: statut?.date_modification,
+          codeInvitation: code,
+          statut: statut.statut || 'en_attente',
+          vendredi_soir: statut.vendredi_soir || false,
+          samedi_midi: statut.samedi_midi || false,
+          samedi_soir: statut.samedi_soir || false,
+          dimanche_brunch: statut.dimanche_brunch || false,
+          commentaires: statut.commentaires || '',
+          dateModification: statut.date_modification,
         });
       });
     });
@@ -140,10 +130,10 @@ export default function AdminDashboard() {
     return allMembres;
   };
 
-  // Fonction de tri
+  // Tri
   const sortMembres = (membres: any[]) => {
     return [...membres].sort((a, b) => {
-      let aValue, bValue;
+      let aValue: any, bValue: any;
 
       switch (sortField) {
         case 'code':
@@ -158,13 +148,12 @@ export default function AdminDashboard() {
           aValue = a.statut;
           bValue = b.statut;
           break;
-        case 'arrivee':
-          aValue = a.arrivee || '';
-          bValue = b.arrivee || '';
-          break;
-        case 'brunch':
-          aValue = a.brunch || '';
-          bValue = b.brunch || '';
+        case 'vendredi_soir':
+        case 'samedi_midi':
+        case 'samedi_soir':
+        case 'dimanche_brunch':
+          aValue = a[sortField] ? 1 : 0;
+          bValue = b[sortField] ? 1 : 0;
           break;
         case 'date':
           aValue = a.dateModification?.toDate?.() || new Date(0);
@@ -180,7 +169,6 @@ export default function AdminDashboard() {
     });
   };
 
-  // Gérer le clic sur un en-tête de colonne
   const handleSort = (field: SortField) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
@@ -190,9 +178,8 @@ export default function AdminDashboard() {
     }
   };
 
-  // Icône de tri
   const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) {
+    if (sortField !== field)
       return (
         <svg
           className="w-4 h-4 text-gray-400"
@@ -208,7 +195,6 @@ export default function AdminDashboard() {
           />
         </svg>
       );
-    }
     return sortDirection === 'asc' ? (
       <svg
         className="w-4 h-4 text-[#137e41]"
@@ -240,7 +226,7 @@ export default function AdminDashboard() {
     );
   };
 
-  // Connexion
+  // Connexion / Déconnexion
   const handleLogin = async () => {
     setLoading(true);
     setError('');
@@ -255,65 +241,68 @@ export default function AdminDashboard() {
     }
   };
 
-  // Déconnexion
   const handleLogout = async () => {
     await signOut(auth);
     setIsAuthenticated(false);
   };
 
-  const totalInvites = Array.from(codesInvitation.values()).reduce(
-    (acc, code) => {
-      return acc + (code.membres?.length || 0);
-    },
-    0
-  );
+  const allMembres = getAllMembres();
 
-  const totalReponses = statuts.reduce((acc, s) => {
-    return acc + (s.nombre || 1);
-  }, 0);
+  // Statistiques globales
+  const totalInvites = allMembres.length;
+  const totalAcceptes = allMembres.filter((m) => m.statut === 'accepte').length;
+  const totalRefuses = allMembres.filter((m) => m.statut === 'refuse').length;
+  const totalEnAttente = allMembres.filter(
+    (m) => m.statut === 'en_attente'
+  ).length;
 
-  const totalAcceptes = statuts
-    .filter((s) => s.statut === 'accepte')
-    .reduce((acc, s) => acc + (s.nombre || 1), 0);
-
-  const totalRefuses = statuts
-    .filter((s) => s.statut === 'refuse')
-    .reduce((acc, s) => acc + (s.nombre || 1), 0);
-
-  const totalBrunch = statuts
-    .filter((s) => s.brunch === 'oui')
-    .reduce((acc, s) => acc + (s.nombre || 1), 0);
-
-  // Statistiques
-  const stats = {
-    total: totalInvites,
-    acceptes: totalAcceptes,
-    refuses: totalRefuses,
-    enAttente: totalInvites - totalReponses,
-    brunch: totalBrunch,
+  const presenceParEvenement = {
+    vendredi_soir: allMembres.filter((m) => m.vendredi_soir).length,
+    samedi_midi: allMembres.filter((m) => m.samedi_midi).length,
+    samedi_soir: allMembres.filter((m) => m.samedi_soir).length,
+    dimanche_brunch: allMembres.filter((m) => m.dimanche_brunch).length,
   };
+
+  const maxPresence = Math.max(...Object.values(presenceParEvenement), 1);
+
+  // Filtrage
+  const filteredMembres = sortMembres(
+    allMembres.filter((m) => {
+      const matchStatus = filterStatus === 'tous' || m.statut === filterStatus;
+      const matchSearch =
+        !searchTerm ||
+        m.codeInvitation.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchName =
+        !filterName || m.nom.toLowerCase().includes(filterName.toLowerCase());
+      return matchStatus && matchSearch && matchName;
+    })
+  );
 
   // Export CSV
   const exportCSV = () => {
     const headers = [
       'Code',
-      'Nom Membre',
+      'Nom',
       'Statut',
-      'Arrivée',
-      'Brunch',
+      'Vendredi soir',
+      'Samedi midi',
+      'Samedi soir',
+      'Dimanche brunch',
       'Commentaires',
-      'Date Modification',
+      'Date modification',
     ];
 
-    const rows = filteredMembres.map((s) => [
-      s.codeInvitation,
-      s.nom,
-      s.statut,
-      s.arrivee || '',
-      s.brunch || '',
-      (s.commentaires || '').replace(/,/g, ';'),
-      s.dateModification?.toDate
-        ? new Date(s.dateModification.toDate()).toLocaleDateString('fr-FR')
+    const rows = filteredMembres.map((m) => [
+      m.codeInvitation,
+      m.nom,
+      m.statut,
+      m.vendredi_soir ? 'Oui' : 'Non',
+      m.samedi_midi ? 'Oui' : 'Non',
+      m.samedi_soir ? 'Oui' : 'Non',
+      m.dimanche_brunch ? 'Oui' : 'Non',
+      (m.commentaires || '').replace(/,/g, ';'),
+      m.dateModification?.toDate?.()
+        ? new Date(m.dateModification.toDate()).toLocaleString('fr-FR')
         : '',
     ]);
 
@@ -323,9 +312,7 @@ export default function AdminDashboard() {
 
     const link = document.createElement('a');
     link.href = encodeURI(csvContent);
-    link.download = `confirmations_${
-      new Date().toISOString().split('T')[0]
-    }.csv`;
+    link.download = `rsvp_${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
   };
 
@@ -357,39 +344,29 @@ export default function AdminDashboard() {
           </div>
 
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#137e41] focus:outline-none"
-                placeholder="admin@mariage-sd.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Mot de passe
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#137e41] focus:outline-none"
-              />
-            </div>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#137e41]"
+              placeholder="admin@mariage-sd.com"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+              className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[#137e41]"
+            />
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded">
-                <p className="text-sm text-red-700">{error}</p>
+              <div className="bg-red-50 border-l-4 border-red-400 p-3 rounded text-sm text-red-700">
+                {error}
               </div>
             )}
             <button
               onClick={handleLogin}
               disabled={loading}
-              className="w-full bg-gradient-to-r from-[#003b4e] to-[#137e41] text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-[#003b4e] to-[#137e41] text-white py-3 rounded-lg font-semibold hover:shadow-lg disabled:opacity-50"
             >
               {loading ? 'Connexion...' : 'Se connecter'}
             </button>
@@ -399,59 +376,8 @@ export default function AdminDashboard() {
     );
   }
 
-  // Dashboard principal
-  const allMembres = getAllMembres();
-
-  // Filtrer les membres
-  const filteredMembres = sortMembres(
-    allMembres.filter((m) => {
-      const matchStatus = filterStatus === 'tous' || m.statut === filterStatus;
-      const matchSearch =
-        !searchTerm ||
-        m.codeInvitation.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchName =
-        !filterName || m.nom.toLowerCase().includes(filterName.toLowerCase());
-      return matchStatus && matchSearch && matchName;
-    })
-  );
-
-  // Statistiques pour les visualisations
-  const confirmedMembers = allMembres.filter((m) => m.statut === 'accepte');
-
-  const arrivalStats = {
-    Vendredi: confirmedMembers.filter((m) => m.arrivee === 'Vendredi').length,
-    Samedi: confirmedMembers.filter((m) => m.arrivee === 'Samedi').length,
-    'Non précisé': confirmedMembers.filter(
-      (m) => !m.arrivee || m.arrivee === ''
-    ).length,
-  };
-
-  const maxArrival = Math.max(...Object.values(arrivalStats), 1);
-
-  // Statistiques par code d'invitation - Tous les codes triés par pourcentage
-  const topCodes = Array.from(codesInvitation.entries())
-    .map(([code, data]) => {
-      const membres = data.membres || [];
-      const description = data.description || '';
-      const confirmed = membres.filter((nom: string) =>
-        statuts.find((s) => s.nom_membre === nom && s.statut === 'accepte')
-      ).length;
-      const percentage =
-        membres.length > 0 ? (confirmed / membres.length) * 100 : 0;
-
-      return {
-        code,
-        description,
-        total: membres.length,
-        confirmed,
-        percentage,
-      };
-    })
-    .sort((a, b) => b.percentage - a.percentage);
-
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-gradient-to-r from-[#003b4e] to-[#137e41] shadow-lg">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="flex items-center gap-4">
@@ -480,7 +406,7 @@ export default function AdminDashboard() {
           </div>
           <button
             onClick={handleLogout}
-            className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 hover:scale-105"
+            className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg flex items-center gap-2"
           >
             <svg
               className="w-5 h-5"
@@ -501,263 +427,157 @@ export default function AdminDashboard() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Statistiques */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        {/* Cartes statistiques */}
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow">
             <p className="text-sm text-gray-600">Total invités</p>
-            <p className="text-3xl font-bold text-gray-800">
-              {allMembres.length}
-            </p>
+            <p className="text-3xl font-bold">{totalInvites}</p>
           </div>
           <div className="bg-green-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-green-600">✅ Confirmés</p>
-            <p className="text-3xl font-bold text-green-700">
-              {stats.acceptes}
-            </p>
+            <p className="text-sm text-green-600">Confirmés</p>
+            <p className="text-3xl font-bold text-green-700">{totalAcceptes}</p>
           </div>
           <div className="bg-red-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-red-600">❌ Refusés</p>
-            <p className="text-3xl font-bold text-red-700">{stats.refuses}</p>
+            <p className="text-sm text-red-600">Refusés</p>
+            <p className="text-3xl font-bold text-red-700">{totalRefuses}</p>
           </div>
           <div className="bg-yellow-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-yellow-600">⏳ En attente</p>
+            <p className="text-sm text-yellow-600">En attente</p>
             <p className="text-3xl font-bold text-yellow-700">
-              {stats.enAttente}
+              {totalEnAttente}
             </p>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-purple-600">🥞 Brunch</p>
-            <p className="text-3xl font-bold text-purple-700">{stats.brunch}</p>
+            <p className="text-sm text-purple-600">Brunch</p>
+            <p className="text-3xl font-bold text-purple-700">
+              {presenceParEvenement.dimanche_brunch}
+            </p>
+          </div>
+          <div className="bg-blue-50 p-4 rounded-lg shadow">
+            <p className="text-sm text-blue-600">Mariage</p>
+            <p className="text-3xl font-bold text-blue-700">
+              {presenceParEvenement.samedi_soir}
+            </p>
           </div>
         </div>
 
-        {/* Visualisations */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          {/* Timeline des arrivées */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-[#137e41]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Timeline des arrivées
-            </h3>
-            <p className="text-sm text-gray-600 mb-6">
-              {confirmedMembers.length} personnes confirmées
-            </p>
+        {/* Timeline des événements */}
+        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h3 className="text-xl font-bold text-gray-800 mb-6">
+            Présence par événement
+          </h3>
 
-            <div className="space-y-6">
-              {/* Vendredi */}
-              <div>
+          {/* Ajoute cette ligne juste après le <h3> (une seule fois) */}
+          <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+          />
+
+          <div className="space-y-5">
+            {[
+              {
+                key: 'vendredi_soir',
+                label: 'Vendredi soir',
+                icon: 'nightlight_round',
+                color: 'from-indigo-500 to-purple-600',
+              },
+              {
+                key: 'samedi_midi',
+                label: 'Samedi midi',
+                icon: 'lunch_dining',
+                color: 'from-orange-400 to-red-500',
+              },
+              {
+                key: 'samedi_soir',
+                label: 'Samedi après-midi / soir (Mariage)',
+                icon: 'favorite',
+                color: 'from-pink-500 to-rose-600',
+              },
+              {
+                key: 'dimanche_brunch',
+                label: 'Dimanche brunch',
+                icon: 'brunch_dining',
+                color: 'from-amber-400 to-orange-500',
+              },
+            ].map((evt) => (
+              <div key={evt.key}>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    🌙 Vendredi
+                  <span className="font-semibold text-gray-700 flex items-center gap-3">
+                    <span className="material-icons text-2xl text-[#137e41]">
+                      {evt.icon}
+                    </span>
+                    {evt.label}
                   </span>
-                  <span className="text-lg font-bold text-[#003b4e]">
-                    {arrivalStats['Vendredi']}
+                  <span className="text-2xl font-bold text-[#137e41]">
+                    {
+                      presenceParEvenement[
+                        evt.key as keyof typeof presenceParEvenement
+                      ]
+                    }
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-[#003b4e] to-[#005a70] h-3 rounded-full transition-all duration-500"
+                    className={`h-4 rounded-full bg-gradient-to-r ${evt.color} transition-all duration-700`}
                     style={{
                       width: `${
-                        (arrivalStats['Vendredi'] / maxArrival) * 100
+                        (presenceParEvenement[
+                          evt.key as keyof typeof presenceParEvenement
+                        ] /
+                          maxPresence) *
+                        100
                       }%`,
                     }}
                   />
                 </div>
               </div>
-
-              {/* Samedi */}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    ☀️ Samedi
-                  </span>
-                  <span className="text-lg font-bold text-[#137e41]">
-                    {arrivalStats['Samedi']}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-[#137e41] to-[#1a9e52] h-3 rounded-full transition-all duration-500"
-                    style={{
-                      width: `${(arrivalStats['Samedi'] / maxArrival) * 100}%`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Non précisé */}
-              {arrivalStats['Non précisé'] > 0 && (
-                <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                      ❓ Non précisé
-                    </span>
-                    <span className="text-lg font-bold text-gray-500">
-                      {arrivalStats['Non précisé']}
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                    <div
-                      className="bg-gray-400 h-3 rounded-full transition-all duration-500"
-                      style={{
-                        width: `${
-                          (arrivalStats['Non précisé'] / maxArrival) * 100
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Taux de conversion par code */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-[#137e41]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-                />
-              </svg>
-              Status des codes d'invitation ({topCodes.length} code(s)
-              d'invitation)
-            </h3>
-            <p className="text-sm text-gray-600 mb-6">
-              Triés par taux de confirmation
-            </p>
-
-            <div className="space-y-4 max-h-56 overflow-y-auto pr-2">
-              {topCodes.map((code, index) => (
-                <div key={code.code}>
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white bg-gradient-to-r from-[#003b4e] to-[#137e41] w-6 h-6 rounded-full flex items-center justify-center">
-                        {index + 1}
-                      </span>
-                      <span className="text-sm font-mono font-semibold text-gray-700">
-                        {code.code}
-                      </span>
-                      <span className="text-sm font-mono font-semibold text-gray-700">
-                        ({code.description})
-                      </span>
-                    </div>
-                    <span className="text-sm text-gray-600">
-                      <span className="font-bold text-[#137e41]">
-                        {code.confirmed}
-                      </span>
-                      /{code.total}
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-gradient-to-r from-[#003b4e] to-[#137e41] h-2 rounded-full transition-all duration-500"
-                      style={{
-                        width: `${(code.confirmed / code.total) * 100}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
 
         {/* Filtres */}
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <div className="grid md:grid-cols-5 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Recherche code
-              </label>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Code invitation..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#137e41]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Recherche nom
-              </label>
-              <input
-                type="text"
-                value={filterName}
-                onChange={(e) => setFilterName(e.target.value)}
-                placeholder="Nom de l'invité..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#137e41]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Statut
-              </label>
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#137e41]"
-              >
-                <option value="tous">Tous</option>
-                <option value="accepte">Confirmés</option>
-                <option value="refuse">Refusés</option>
-                <option value="en_attente">En attente</option>
-              </select>
-            </div>
-            <div className="flex items-end">
-              <button
-                onClick={exportCSV}
-                className="w-full bg-[#137e41] text-white px-4 py-2 rounded-lg hover:bg-[#0f6333] transition-colors flex items-center justify-center gap-2"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                Export CSV
-              </button>
-            </div>
-            <div className="flex items-end">
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setFilterName('');
-                  setFilterStatus('tous');
-                }}
-                className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
-              >
-                Réinitialiser
-              </button>
-            </div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Code..."
+              className="px-3 py-2 border rounded-lg"
+            />
+            <input
+              type="text"
+              value={filterName}
+              onChange={(e) => setFilterName(e.target.value)}
+              placeholder="Nom..."
+              className="px-3 py-2 border rounded-lg"
+            />
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="px-3 py-2 border rounded-lg"
+            >
+              <option value="tous">Tous</option>
+              <option value="accepte">Confirmés</option>
+              <option value="refuse">Refusés</option>
+              <option value="en_attente">En attente</option>
+            </select>
+            <button
+              onClick={exportCSV}
+              className="bg-[#137e41] text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2"
+            >
+              Export CSV
+            </button>
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setFilterName('');
+                setFilterStatus('tous');
+              }}
+              className="bg-gray-200 px-4 py-2 rounded-lg"
+            >
+              Réinitialiser
+            </button>
           </div>
         </div>
 
@@ -765,52 +585,62 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-100 border-b">
+              <thead className="bg-gray-100">
                 <tr>
                   <th
                     onClick={() => handleSort('code')}
-                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
                   >
                     <div className="flex items-center gap-2">
-                      Code
-                      <SortIcon field="code" />
+                      Code <SortIcon field="code" />
                     </div>
                   </th>
                   <th
                     onClick={() => handleSort('nom')}
-                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
                   >
                     <div className="flex items-center gap-2">
-                      Nom
-                      <SortIcon field="nom" />
+                      Nom <SortIcon field="nom" />
                     </div>
                   </th>
                   <th
                     onClick={() => handleSort('statut')}
-                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
                   >
                     <div className="flex items-center gap-2">
-                      Statut
-                      <SortIcon field="statut" />
+                      Statut <SortIcon field="statut" />
                     </div>
                   </th>
                   <th
-                    onClick={() => handleSort('arrivee')}
-                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                    onClick={() => handleSort('vendredi_soir')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
                   >
                     <div className="flex items-center gap-2">
-                      Arrivée
-                      <SortIcon field="arrivee" />
+                      Ven. soir <SortIcon field="vendredi_soir" />
                     </div>
                   </th>
-                  {/* Nouvelle colonne Brunch */}
                   <th
-                    onClick={() => handleSort('brunch')}
-                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                    onClick={() => handleSort('samedi_midi')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
                   >
                     <div className="flex items-center gap-2">
-                      Brunch
-                      <SortIcon field="brunch" />
+                      Sam. midi <SortIcon field="samedi_midi" />
+                    </div>
+                  </th>
+                  <th
+                    onClick={() => handleSort('samedi_soir')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Sam. soir <SortIcon field="samedi_soir" />
+                    </div>
+                  </th>
+                  <th
+                    onClick={() => handleSort('dimanche_brunch')}
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      Dim. brunch <SortIcon field="dimanche_brunch" />
                     </div>
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
@@ -818,73 +648,69 @@ export default function AdminDashboard() {
                   </th>
                   <th
                     onClick={() => handleSort('date')}
-                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
                   >
                     <div className="flex items-center gap-2">
-                      Date
-                      <SortIcon field="date" />
+                      Date <SortIcon field="date" />
                     </div>
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredMembres.map((membre, index) => (
+                {filteredMembres.map((m, i) => (
                   <tr
-                    key={`${membre.codeInvitation}-${membre.nom}-${index}`}
+                    key={`${m.codeInvitation}-${m.nom}-${i}`}
                     className="hover:bg-gray-50"
                   >
                     <td className="px-4 py-3 text-sm font-mono text-gray-600">
-                      {membre.codeInvitation}
+                      {m.codeInvitation}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium text-gray-800">
-                      {membre.nom}
+                      {m.nom}
                     </td>
                     <td className="px-4 py-3">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          membre.statut === 'accepte'
+                          m.statut === 'accepte'
                             ? 'bg-green-100 text-green-700'
-                            : membre.statut === 'refuse'
+                            : m.statut === 'refuse'
                             ? 'bg-red-100 text-red-700'
                             : 'bg-yellow-100 text-yellow-700'
                         }`}
                       >
-                        {membre.statut === 'accepte'
-                          ? '✅ Confirmé'
-                          : membre.statut === 'refuse'
-                          ? '❌ Refusé'
-                          : '⏳ En attente'}
+                        {m.statut === 'accepte'
+                          ? 'Confirmé'
+                          : m.statut === 'refuse'
+                          ? 'Refusé'
+                          : 'En attente'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {membre.arrivee || '-'}
+                    <td className="px-4 py-3 text-center">
+                      {m.vendredi_soir ? 'Oui' : '-'}
                     </td>
-                    {/* Affichage Brunch */}
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {membre.brunch === 'oui' ? (
-                        <span className="text-green-600 font-medium">
-                          ✅ Oui
-                        </span>
-                      ) : membre.brunch === 'non' ? (
-                        <span className="text-red-500">❌ Non</span>
-                      ) : (
-                        '-'
-                      )}
+                    <td className="px-4 py-3 text-center">
+                      {m.samedi_midi ? 'Oui' : '-'}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {m.samedi_soir ? 'Oui' : '-'}
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      {m.dimanche_brunch ? 'Oui' : '-'}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
-                      {membre.commentaires || '-'}
+                      {m.commentaires || '-'}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">
-                      {membre.dateModification?.toDate
-                        ? new Date(
-                            membre.dateModification.toDate()
-                          ).toLocaleDateString('fr-FR', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })
+                    <td className="px-4 py-3 text-xs text-gray-500">
+                      {m.dateModification?.toDate?.()
+                        ? new Date(m.dateModification.toDate()).toLocaleString(
+                            'fr-FR',
+                            {
+                              day: '2-digit',
+                              month: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            }
+                          )
                         : '-'}
                     </td>
                   </tr>
@@ -894,13 +720,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {filteredMembres.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
-            Aucun invité trouvé
-          </div>
-        )}
-
-        <div className="mt-4 text-sm text-gray-600 text-center">
+        <div className="mt-6 text-center text-gray-600">
           {filteredMembres.length} invité(s) affiché(s) sur {allMembres.length}
         </div>
       </div>
