@@ -1,11 +1,30 @@
 'use client';
 
-import VillaIcon from '@mui/icons-material/Villa'; // très élégant pour un domaine
-import LocalParkingIcon from '@mui/icons-material/LocalParking'; // L’icône parking parfaite !
-import WbSunnyIcon from '@mui/icons-material/WbSunny'; // Icône météo
-import CheckroomIcon from '@mui/icons-material/Checkroom'; // Icône tenue
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import VillaIcon from '@mui/icons-material/Villa';
+import LocalParkingIcon from '@mui/icons-material/LocalParking';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import CheckroomIcon from '@mui/icons-material/Checkroom';
+import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 
 export default function InfoSection() {
+  const router = useRouter();
+  const [code, setCode] = useState('');
+  const [error, setError] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!code.trim()) {
+      setError('Veuillez entrer votre code');
+      return;
+    }
+
+    // Redirection vers la page de confirmation avec le code
+    router.push(`/confirmation/?code=${encodeURIComponent(code.trim())}`);
+  };
+
   return (
     <>
       {/* Section Informations */}
@@ -18,7 +37,7 @@ export default function InfoSection() {
           {/* Nouvelle disposition : 2 colonnes principales */}
           <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
             {/* Colonne 1 : Le Lieu */}
-            <div className="bg-white rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all overflow-hidden flex flex-col">
+            <div className="bg-white rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all overflow-hidden flex flex-col">
               <div className="p-8 flex-grow">
                 <div className="text-center mb-6">
                   <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
@@ -45,7 +64,7 @@ export default function InfoSection() {
             {/* Colonne 2 : Grille 2x2 */}
             <div className="grid grid-cols-2 gap-4">
               {/* Parking */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all">
                 <div className="text-center mb-4">
                   <LocalParkingIcon
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
@@ -61,7 +80,7 @@ export default function InfoSection() {
               </div>
 
               {/* Météo */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all">
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all">
                 <div className="text-center mb-4">
                   <WbSunnyIcon
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
@@ -78,7 +97,7 @@ export default function InfoSection() {
               </div>
 
               {/* Code Vestimentaire */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 hover:border-[var(--secondary)] transition-all col-span-2">
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all col-span-2">
                 <div className="text-center mb-4">
                   <CheckroomIcon
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
@@ -93,7 +112,7 @@ export default function InfoSection() {
                   une veste pour le soir !
                 </p>
                 <div className="text-center">
-                  <span className="text-xs$* text-[var(--secondary)] font-semibold uppercase tracking-wider">
+                  <span className="text-xs text-[var(--secondary)] font-semibold uppercase tracking-wider">
                     Cérémonie en extérieur prévue
                   </span>
                 </div>
@@ -116,59 +135,90 @@ export default function InfoSection() {
             <p className="max-w-2xl mx-auto text-center text-lg text-[var(--dark)] mb-8">
               A venir ...
             </p>
-            {/* <div className="space-y-8">
-              {[
-                {
-                  time: '14:00',
-                  event: 'Cocktail de bienvenue',
-                  description: '',
-                },
-                {
-                  time: '15:30',
-                  event: 'Cérémonie Laïque',
-                  description: '',
-                },
-                {
-                  time: '17:00',
-                  event: "Vin d'honneur et photos",
-                  description: '',
-                },
-                {
-                  time: '20:00',
-                  event: 'Dîner de gala',
-                  description: '',
-                },
-                {
-                  time: '00:00',
-                  event: "Débuts d'une nuit de folies",
-                  description: '',
-                },
-                { time: '05:00', event: 'Fin de la soirée', description: '' },
-              ].map((item, index) => (
-                <div key={index} className="flex items-start group">
-                  <div className="bg-gradient-to-br from-[var(--primary)] to-[var(--dark)] text-white rounded-full w-16 h-16 flex items-center justify-center font-bold flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
-                    {item.time}
-                  </div>
-                  <div className="ml-6 bg-white p-4 rounded-lg shadow-md flex-grow border-2 border-[var(--secondary)]/20 group-hover:border-[var(--secondary)] transition-all">
-                    <h3 className="font-semibold text-lg text-[var(--primary)]">
-                      {item.event}
-                    </h3>
-                    {item.description && (
-                      <p className="text-[var(--dark)] text-sm mt-1">
-                        {item.description}
-                      </p>
-                    )}
-                  </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Confirmation */}
+      <section id="confirmation" className="py-20 bg-[var(--accent)]">
+        <div className="container mx-auto px-4">
+          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
+            Confirmer votre présence
+          </h2>
+
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-lg shadow-lg p-8 border-2 border-[var(--secondary)]/20">
+              <div className="text-center mb-8">
+                <CardGiftcardIcon
+                  sx={{ fontSize: 60, color: 'var(--secondary)' }}
+                />
+              </div>
+
+              <p className="text-lg text-[var(--dark)] mb-6 text-center">
+                Vous avez reçu un <strong>code personnel</strong> dans votre
+                invitation. Entrez-le ci-dessous pour accéder à la gestion de
+                votre présence.
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label
+                    htmlFor="code"
+                    className="block text-[var(--primary)] font-semibold mb-2 text-center"
+                  >
+                    Votre code d'invitation
+                  </label>
+                  <input
+                    id="code"
+                    type="text"
+                    value={code}
+                    onChange={(e) => {
+                      setCode(e.target.value);
+                      setError('');
+                    }}
+                    placeholder="Entrez votre code"
+                    className="w-full px-4 py-3 border-2 border-[var(--secondary)]/30 rounded-lg focus:border-[var(--secondary)] focus:outline-none text-center text-lg uppercase tracking-wider"
+                  />
+                  {error && (
+                    <p className="text-red-500 text-sm mt-2 text-center">
+                      {error}
+                    </p>
+                  )}
                 </div>
-              ))}
-            </div> */}
+
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg"
+                >
+                  Accéder à ma confirmation
+                </button>
+              </form>
+
+              <div className="mt-8 pt-6 border-t border-[var(--secondary)]/20">
+                <p className="text-sm text-[var(--dark)] text-center">
+                  <strong>Rassurez-vous !</strong> Toutes les informations sont
+                  modifiables à tout moment. Vous pourrez mettre à jour votre
+                  présence, vos préférences alimentaires et autres détails quand
+                  vous le souhaitez.
+                </p>
+              </div>
+
+              <div className="mt-6 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 p-4 rounded-lg">
+                <p className="text-sm text-[var(--dark)] text-center">
+                  📅 <strong>Date limite :</strong> Merci de confirmer votre
+                  présence avant le <strong>31 décembre 2026</strong>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Section Contact */}
-      <section id="contact" className="py-20 bg-[var(--accent)]">
-        <div className="container mx-auto px-4">
+      <section id="contact" className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)] via-[var(--primary)]/5 to-[var(--accent)]"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
             Nous contacter
           </h2>
@@ -224,12 +274,6 @@ export default function InfoSection() {
                   06 27 86 02 06
                 </a>
               </div>
-            </div>
-
-            <div className="mt-12 bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white p-6 rounded-lg shadow-lg">
-              <p className="font-semibold text-lg">
-                Merci de confirmer votre présence avant le 31 décembre 2026
-              </p>
             </div>
           </div>
         </div>

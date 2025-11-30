@@ -108,12 +108,10 @@ Password : `VotreMotDePasse123!`
 │   └── admin/
 │       └── page.tsx             # Dashboard admin
 ├── components/
-│   ├── Header.tsx               # Navigation
 │   ├── Hero.tsx                 # Section hero
 │   ├── InfoSection.tsx          # Infos pratiques
 │   ├── Hebergement.tsx        # Hébergements
 │   ├── Footer.tsx               # Pied de page
-│   ├── InvitationLogin.tsx      # Login avec code
 │   └── RSVPFormFirebase.tsx     # Formulaire Firebase
 ├── lib/
 │   └── firebase.ts              # Config Firebase

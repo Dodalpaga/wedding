@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 import ReturnButton from '@/components/ReturnButton';
-import InvitationLogin from '@/components/InvitationLogin';
 import RSVPFormFirebase from '@/components/RSVPFormFirebase';
 import Link from 'next/link';
 import {
@@ -14,20 +15,50 @@ import {
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const codeFromUrl = searchParams.get('code');
+
   const [inviteData, setInviteData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const handleLoginSuccess = (data: any) => {
-    setInviteData(data);
-  };
-
-  // Si un code est dans l'URL, essayer de l'utiliser directement
   useEffect(() => {
-    if (codeFromUrl && !inviteData) {
-      // Simuler une connexion automatique avec le code URL
-      setInviteData({ code: codeFromUrl });
-    }
-  }, [codeFromUrl, inviteData]);
+    const fetchInviteData = async () => {
+      if (!codeFromUrl) {
+        setError(
+          "Aucun code fourni. Veuillez retourner à l'accueil et entrer votre code."
+        );
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const codeRef = doc(db, 'codes_invitation', codeFromUrl.toUpperCase());
+        const codeDoc = await getDoc(codeRef);
+
+        if (!codeDoc.exists()) {
+          setError("Code d'invitation invalide. Veuillez vérifier votre code.");
+          setLoading(false);
+          return;
+        }
+
+        const data = codeDoc.data();
+        setInviteData({
+          code: codeFromUrl.toUpperCase(),
+          ...data,
+        });
+        setLoading(false);
+      } catch (err) {
+        console.error('Erreur:', err);
+        setError(
+          'Une erreur est survenue lors de la récupération de vos informations.'
+        );
+        setLoading(false);
+      }
+    };
+
+    fetchInviteData();
+  }, [codeFromUrl]);
 
   // Récupération des codes depuis les variables d'environnement
   const codesAvecHebergement = getCodesAvecHebergement();
@@ -39,10 +70,59 @@ function ConfirmationContent() {
   const isVinHonneurOnly =
     inviteData && codesVinHonneur.includes(inviteData.code);
 
-  if (!inviteData) {
-    return <InvitationLogin onSuccess={handleLoginSuccess} />;
+  // Affichage pendant le chargement
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--primary)] mb-4"></div>
+          <p className="text-[var(--dark)]">Vérification de votre code...</p>
+        </div>
+      </div>
+    );
   }
 
+  // Affichage en cas d'erreur
+  if (error) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-red-50 border-2 border-red-300 rounded-lg p-8 text-center">
+          <div className="text-red-500 mb-4">
+            <svg
+              className="w-16 h-16 mx-auto"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-semibold text-red-800 mb-3">Oups !</h3>
+          <p className="text-red-700 mb-6">{error}</p>
+          <button
+            onClick={() => router.push('/')}
+            className="bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+          >
+            Retour à l'accueil
+          </button>
+          <div className="mt-6 pt-6 border-t border-red-200">
+            <p className="text-sm text-red-700">
+              <strong>Besoin d'aide ?</strong>
+              <br />
+              Contactez-nous au 06 89 71 01 93 ou 06 27 86 02 06
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Affichage du formulaire si tout est OK
   return (
     <div>
       <link
@@ -121,6 +201,7 @@ export default function Page() {
       <Suspense
         fallback={
           <div className="text-center py-20">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--primary)] mb-4"></div>
             <p className="text-[var(--dark)]">Chargement...</p>
           </div>
         }
