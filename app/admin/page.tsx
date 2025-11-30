@@ -49,40 +49,54 @@ export default function AdminDashboard() {
   }, []);
 
   // Charger les données en temps réel
-  // Dans loadData()
   const loadData = async () => {
     try {
       console.log('🔍 Chargement des codes...');
+
+      // 1. Charger tous les codes d'invitation
       const codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
       console.log('✅ Codes trouvés:', codesSnapshot.size);
 
       const codesMap = new Map<string, any>();
 
-      for (const codeDoc of codesSnapshot.docs) {
+      codesSnapshot.docs.forEach((codeDoc) => {
         const code = codeDoc.id;
-        console.log('📋 Traitement du code:', code);
+        const data = codeDoc.data();
 
-        if (code.length !== 6) {
-          console.warn('⚠️ Code invalide ignoré:', code);
-          continue;
+        console.log(`📋 Code ${code}:`, data);
+
+        if (code.length === 6 && data.membres && Array.isArray(data.membres)) {
+          codesMap.set(code, {
+            id: code,
+            membres: data.membres,
+            description: data.description || code,
+          });
+          console.log(`✅ ${code}: ${data.membres.length} membre(s) chargé(s)`);
         }
-
-        try {
-          const membresSnapshot = await getDocs(collection(db, code));
-          console.log(`✅ Membres pour ${code}:`, membresSnapshot.size);
-
-          // ... reste du code
-        } catch (err) {
-          console.error(`❌ Erreur lecture membres pour ${code}:`, err);
-        }
-      }
+      });
 
       console.log('📊 Total codes chargés:', codesMap.size);
       setCodesInvitation(codesMap);
 
-      // ... reste du code
+      // 2. Écouter les statuts en temps réel
+      const q = query(
+        collection(db, 'statuts'),
+        orderBy('date_modification', 'desc')
+      );
+
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        console.log('📊 Statuts chargés:', data.length);
+        setStatuts(data);
+        setFilteredStatuts(data);
+      });
+
+      return unsubscribe;
     } catch (err) {
-      console.error('❌ Erreur chargement globale:', err);
+      console.error('❌ Erreur chargement:', err);
     }
   };
 
