@@ -37,6 +37,7 @@ export default function AdminDashboard() {
   // Vérifier l'authentification au chargement
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log('AUTH STATE =', user); // <--- ajout ici
       if (user) {
         setIsAuthenticated(true);
         loadData();
