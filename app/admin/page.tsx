@@ -65,7 +65,6 @@ export default function AdminDashboard() {
       let codesSnapshot;
       try {
         codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
-        console.log('✅ Codes trouvés:', codesSnapshot.size);
       } catch (error) {
         console.error('❌ Erreur lecture codes:', error);
         return;
