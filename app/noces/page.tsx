@@ -1,9 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
-import Link from 'next/link';
+import ReturnHomeButton from '@/components/ReturnButton';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import Header from '@/components/Header';
 
 // --- Données du voyage (A personnaliser) ---
 const tripSteps = [
@@ -70,8 +69,6 @@ export default function HoneymoonPage() {
 
   return (
     <div className="min-h-screen bg-[#fcfcfc] overflow-x-hidden">
-      <Header />
-
       {/* Hero Section du Voyage */}
       <div className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         {/* Fond dégradé aux couleurs du thème */}
@@ -96,6 +93,7 @@ export default function HoneymoonPage() {
           </motion.div>
         </div>
       </div>
+      <ReturnHomeButton />
 
       {/* Section Timeline avec l'Avion */}
       <div

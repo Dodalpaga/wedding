@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import Header from '@/components/Header';
+import ReturnHomeButton from '@/components/ReturnButton';
 
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
@@ -12,12 +13,6 @@ import Download from 'yet-another-react-lightbox/plugins/download';
 import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 
-// IMPORTS FIREBASE NÉCESSAIRES POUR LA VÉRIFICATION DU CODE
-import { doc, getDoc } from 'firebase/firestore';
-// Assurez-vous que le chemin est correct pour votre configuration
-import { db } from '@/lib/firebase';
-
-// --- Interface et Données restent inchangées ---
 interface Category {
   id: string;
   title: string;
@@ -27,7 +22,6 @@ interface Category {
 }
 
 const categoriesData: Category[] = [
-  // ... vos données categoriesData ...
   {
     id: 'ceremonie',
     title: 'Cérémonie',
@@ -83,146 +77,53 @@ const categoriesData: Category[] = [
   },
 ];
 
-// ----------------------------------------------------------------------
-// 🚨 NOUVEAU COMPOSANT : Contrôle d'Accès par Code
-// ----------------------------------------------------------------------
-
-export default function GalleryPage() {
-  const [code, setCode] = useState('');
-  const [hasAccess, setHasAccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  const checkCode = async () => {
-    if (code.trim() === '') {
-      setError('Veuillez entrer un code.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError('');
-
-    try {
-      // 1. Référence au document dans la collection 'codes_invitation'
-      const codeRef = doc(db, 'codes_invitation', code.trim());
-
-      // 2. Récupération du document
-      const codeSnap = await getDoc(codeRef);
-
-      // 3. Vérification de l'existence du code
-      if (codeSnap.exists()) {
-        setHasAccess(true); // Accès accordé
-      } else {
-        setError("Code invalide. Veuillez vérifier votre code d'invitation.");
-      }
-    } catch (err) {
-      console.error('Erreur de vérification Firebase:', err);
-      setError('Erreur lors de la vérification du code. Veuillez réessayer.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Affichage de la galerie si l'accès est accordé
-  if (hasAccess) {
-    // RENDER LE CONTENU DE LA GALERIE
-    return <GalleryContent />;
-  }
-
-  // Formulaire de saisie du code si l'accès est refusé
-  return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-[#fcfcfc] px-4">
-      <Header />
-      <div className="w-full max-w-lg p-8 bg-white rounded-xl shadow-2xl border border-gray-100">
-        <h1 className="text-6xl md:text-8xl font-wedding text-[#003b4e] mb-6 text-center">
-          Galerie Photos
-        </h1>
-        <p className="text-[#003b4e]/70 text-center mb-8">
-          Veuillez entrer votre **code d'invitation** pour accéder aux albums
-          photos.
-        </p>
-
-        <input
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value.toUpperCase())}
-          placeholder="Entrez votre code (ex: FAMILLE-DUPONT)"
-          disabled={isLoading}
-          className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-center 
-                     focus:border-[#137e41] focus:outline-none transition-colors mb-4 
-                     uppercase tracking-widest font-mono text-lg"
-        />
-
-        {error && <div className="text-red-500 text-center mb-4">{error}</div>}
-
-        <button
-          onClick={checkCode}
-          disabled={isLoading}
-          className="w-full bg-[#003b4e] text-white px-6 py-3 rounded-lg text-lg font-semibold 
-                     hover:bg-[#137e41] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isLoading ? 'Vérification...' : 'Accéder à la galerie'}
-        </button>
-        <div className="text-center mt-6">
-          <Link
-            href="/"
-            className="text-sm text-[#003b4e]/70 hover:text-[#137e41] transition-colors"
-          >
-            Retour à la page d'accueil
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ----------------------------------------------------------------------
-// 🖼️ COMPOSANT INTERNE : Contenu de la Galerie
-// ----------------------------------------------------------------------
-
+// Composant séparé qui utilise useSearchParams
 function GalleryContent() {
+  const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
   const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [hasAccess, setHasAccess] = useState(false);
+
+  useEffect(() => {
+    const code = searchParams.get('code');
+    if (code) {
+      setHasAccess(true);
+    }
+  }, [searchParams]);
 
   const getImgSrc = (src: string) => {
     return `${process.env.NEXT_PUBLIC_BASE_PATH || ''}${src}`;
   };
 
-  function ReturnHomeButton() {
+  if (!hasAccess) {
     return (
-      <div className="absolute top-4 left-4 z-30">
-        <Link
-          href="/"
-          className="text-sm font-medium text-[#003b4e] hover:text-[#137e41] transition-colors flex items-center gap-1 bg-white/90 backdrop-blur px-3 py-2 rounded-full shadow-sm border border-gray-100"
-        >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      <div className="min-h-screen flex flex-col justify-center items-center bg-[#fcfcfc] px-4">
+        <ReturnHomeButton />
+        <div className="w-full max-w-lg p-8 bg-white rounded-xl shadow-2xl border border-gray-100 text-center">
+          <h1 className="text-6xl md:text-8xl font-wedding text-[#003b4e] mb-6">
+            Accès Refusé
+          </h1>
+          <p className="text-[#003b4e]/70 mb-8">
+            Veuillez utiliser le formulaire sur la page d'accueil pour accéder à
+            la galerie avec votre code d'invitation.
+          </p>
+          <Link
+            href="/#confirmation"
+            className="inline-block bg-[#003b4e] text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-[#137e41] transition-all"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-            />
-          </svg>
-          Accueil
-        </Link>
+            Retour à l'accueil
+          </Link>
+        </div>
       </div>
     );
   }
 
-  // Contenu existant de GalleryPage renommé en GalleryContent
   return (
     <div className="min-h-screen bg-[#fcfcfc]">
-      <Header />
       <ReturnHomeButton />
 
-      {/* --- VUE 1 : LISTE DES ALBUMS --- */}
       {!selectedCategory && (
         <div className="pt-24 pb-20 container mx-auto px-4">
           <div className="text-center mb-16">
@@ -266,7 +167,6 @@ function GalleryContent() {
         </div>
       )}
 
-      {/* --- VUE 2 : DÉTAIL (MASONRY AUTO) --- */}
       {selectedCategory && (
         <div className="pt-24 pb-20">
           <div className="container mx-auto px-4 mb-12 flex flex-col items-center relative">
@@ -320,7 +220,6 @@ function GalleryContent() {
         </div>
       )}
 
-      {/* --- LIGHTBOX --- */}
       {selectedCategory && (
         <Lightbox
           index={lightboxIndex}
@@ -346,5 +245,24 @@ function GalleryContent() {
         />
       )}
     </div>
+  );
+}
+
+// Composant principal avec Suspense
+export default function GalleryPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[#fcfcfc]">
+          <div className="text-center">
+            <div className="text-6xl font-wedding text-[#003b4e] mb-4">
+              Chargement...
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <GalleryContent />
+    </Suspense>
   );
 }

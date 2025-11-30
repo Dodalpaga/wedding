@@ -6,12 +6,15 @@ import VillaIcon from '@mui/icons-material/Villa';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
-import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import QrCode from '@mui/icons-material/QrCode';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export default function InfoSection() {
   const router = useRouter();
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [isLoadingGallery, setIsLoadingGallery] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +26,37 @@ export default function InfoSection() {
 
     // Redirection vers la page de confirmation avec le code
     router.push(`/confirmation/?code=${encodeURIComponent(code.trim())}`);
+  };
+
+  const handleGalleryAccess = async () => {
+    if (code.trim() === '') {
+      setError('Veuillez entrer un code.');
+      return;
+    }
+
+    setIsLoadingGallery(true);
+    setError('');
+
+    try {
+      // Référence au document dans la collection 'codes_invitation'
+      const codeRef = doc(db, 'codes_invitation', code.trim());
+
+      // Récupération du document
+      const codeSnap = await getDoc(codeRef);
+
+      // Vérification de l'existence du code
+      if (codeSnap.exists()) {
+        // Accès accordé - redirection vers la galerie avec le code
+        router.push(`/gallerie/?code=${encodeURIComponent(code.trim())}`);
+      } else {
+        setError("Code invalide. Veuillez vérifier votre code d'invitation.");
+      }
+    } catch (err) {
+      console.error('Erreur de vérification Firebase:', err);
+      setError('Erreur lors de la vérification du code. Veuillez réessayer.');
+    } finally {
+      setIsLoadingGallery(false);
+    }
   };
 
   return (
@@ -47,19 +81,12 @@ export default function InfoSection() {
                 </h3>
                 <p className="text-[var(--dark)] text-justify">
                   Niché au cœur du Tarn, entouré de champs de tournesols et de
-                  collines verdoyantes, le Domaine d’en Naudet est un petit
+                  collines verdoyantes, le Domaine d'en Naudet est un petit
                   paradis où le temps semble suspendu. Une grande allée bordée
                   de chênes, une grange rénovée aux pierres apparentes, un parc
-                  avec des coins d’ombre centenaires… Tout est réuni pour que
+                  avec des coins d'ombre centenaires… Tout est réuni pour que
                   cette journée dont on se souviendra toute la vie.
                 </p>
-                {/* <img
-                  src={`${
-                    process.env.NEXT_PUBLIC_BASE_PATH || ''
-                  }/images/domaine-aquarelle.png`}
-                  alt="Domaine d'en Naudet"
-                  className="w-full rounded-xl my-2"
-                /> */}
               </div>
               <img
                 src={`${
@@ -101,7 +128,7 @@ export default function InfoSection() {
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-center">
                   Août dans le Tarn = grand soleil et chaleur garantie (30-35 °C
-                  en journée) ! La cérémonie et le vin d’honneur seront en
+                  en journée) ! La cérémonie et le vin d'honneur seront en
                   extérieur, sous les arbres et les guirlandes guinguette.
                   Pensez à la crème solaire, aux lunettes de soleil et à un
                   éventail (on en prévoira aussi).
@@ -134,46 +161,26 @@ export default function InfoSection() {
         </div>
       </section>
 
-      {/* Section Programme */}
-      <section id="programme" className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)] via-[var(--primary)]/5 to-[var(--accent)]"></div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
-            Programme du week-end
-          </h2>
-
-          <div className="max-w-2xl mx-auto">
-            <p className="max-w-2xl mx-auto text-center text-lg text-[var(--dark)] mb-8">
-              A venir ...
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Section Confirmation */}
+      {/* Section Confirmation et Galerie */}
       <section id="confirmation" className="py-20 bg-[var(--accent)]">
         <div className="container mx-auto px-4">
           <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
-            Confirmer votre présence
+            Votre espace personnel
           </h2>
 
           <div className="max-w-2xl mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-8 border-2 border-[var(--secondary)]/20">
               <div className="text-center mb-8">
-                <CardGiftcardIcon
-                  sx={{ fontSize: 60, color: 'var(--secondary)' }}
-                />
+                <QrCode sx={{ fontSize: 60, color: 'var(--secondary)' }} />
               </div>
 
               <p className="text-lg text-[var(--dark)] mb-6 text-center">
-                On a trop hâte de savoir si vous serez là pour faire la fête
-                avec nous ! Chaque invitation contient un{' '}
-                <strong>code unique</strong> qui vous permet de confirmer (ou
-                pas) votre présence, de nous indiquer vos allergies ou régimes
-                particuliers, et même de nous dire si vous venez avec vos
-                enfants. Vous pourrez modifier vos réponses autant de fois que
-                vous voulez jusqu’au 31 décembre 2025.
+                Chaque invitation contient un <strong>code unique</strong> qui
+                vous permet de confirmer votre présence, accéder à la galerie
+                photos, et nous indiquer vos préférences (allergies, régimes
+                particuliers, présence d'enfants). Vous pourrez modifier vos
+                réponses autant de fois que vous voulez jusqu'au 31 décembre
+                2026.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -202,12 +209,26 @@ export default function InfoSection() {
                   )}
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg"
-                >
-                  Accéder à ma confirmation
-                </button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg"
+                  >
+                    Confirmer ma présence
+                  </button>
+                  {process.env.NODE_ENV === 'development' && (
+                    <button
+                      type="button"
+                      onClick={handleGalleryAccess}
+                      disabled={isLoadingGallery}
+                      className="w-full bg-gradient-to-r from-[var(--secondary)] to-[var(--primary)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isLoadingGallery
+                        ? 'Vérification...'
+                        : 'Accéder à la galerie 📸 (DEV)'}
+                    </button>
+                  )}
+                </div>
               </form>
 
               <div className="mt-8 pt-6 border-t border-[var(--secondary)]/20">
@@ -226,6 +247,23 @@ export default function InfoSection() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Programme */}
+      <section id="programme" className="py-20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)] via-[var(--primary)]/5 to-[var(--accent)]"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
+            Programme du week-end
+          </h2>
+
+          <div className="max-w-2xl mx-auto">
+            <p className="max-w-2xl mx-auto text-center text-lg text-[var(--dark)] mb-8">
+              A venir ...
+            </p>
           </div>
         </div>
       </section>

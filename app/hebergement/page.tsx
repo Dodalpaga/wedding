@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, Suspense } from 'react';
 import Hebergement from '@/components/Hebergement';
-import ReturnButton from '@/components/ReturnButton';
+import ReturnHomeButton from '@/components/ReturnButton';
 
 function HebergementContent() {
   const searchParams = useSearchParams();
@@ -24,10 +24,7 @@ function HebergementContent() {
 
   return (
     <div>
-      <ReturnButton
-        label="Retour à la confirmation"
-        href={`/confirmation?code=${code}`}
-      />
+      <ReturnHomeButton />
       <Hebergement code={code} />
     </div>
   );

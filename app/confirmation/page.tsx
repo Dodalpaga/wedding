@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import ReturnButton from '@/components/ReturnButton';
+import ReturnHomeButton from '@/components/ReturnButton';
 import RSVPFormFirebase from '@/components/RSVPFormFirebase';
 import Link from 'next/link';
 import {
@@ -137,7 +137,7 @@ function ConfirmationContent() {
       </p>
       <p className="text-center text-[var(--dark)] max-w-2xl mx-auto mb-8">
         Merci de remplir ce formulaire avant le{' '}
-        <strong>31 décembre 2025</strong>
+        <strong>31 décembre 2026</strong>
       </p>
 
       {/* Badges d'invitation */}
@@ -197,7 +197,7 @@ export default function Page() {
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
         rel="stylesheet"
       />
-      <ReturnButton label="Retour à l'accueil" href="/" />
+      <ReturnHomeButton />
       <Suspense
         fallback={
           <div className="text-center py-20">
