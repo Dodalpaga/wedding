@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Wedding';
+  src: url('../public/fonts/Wedding.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --primary: #003b4e; /* Bleu profond aurore */
+  --secondary: #137e41; /* Vert émeraude aurore */
+  --accent: #e9edef; /* Blanc glacé */
+  --dark: #034861; /* Bleu nuit */
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--accent);
+}
+
+.font-wedding {
+  font-family: 'Wedding', serif;
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--accent);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 6px;
+  border: 2px solid var(--accent);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--dark) 0%, var(--primary) 100%);
+}
+
+/* Pour Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--accent);
+}
+
+/* Animation aurores boréales */
+@keyframes aurora {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-20px) scale(1.1);
+  }
+}
+
+.aurora-bg {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--dark) 30%,
+    var(--secondary) 60%,
+    var(--primary) 100%
+  );
+  background-size: 200% 200%;
+  animation: aurora-shift 15s ease infinite;
+}
+
+@keyframes aurora-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}

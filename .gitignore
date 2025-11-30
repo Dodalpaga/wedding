@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Testing
+coverage/
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Production
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment Variables - TRÈS IMPORTANT !
+.env
+.env.local
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Firebase (optionnel, si vous utilisez Firebase CLI)
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# ⚠️ IMPORTANT : 
+# Ne committez JAMAIS votre fichier .env.local qui contient vos clés Firebase !
+# Ces clés doivent rester secrètes et être configurées uniquement :
+# - En local dans .env.local
+# - Dans les secrets GitHub Actions
+# - Dans les variables d'environnement Vercel
