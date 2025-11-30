@@ -475,21 +475,58 @@ export default function RSVPFormFirebase({
                       </span>
                       Quand prévois-tu d'arriver ? *
                     </label>
-                    <select
-                      required
-                      value={formData.arrivee}
-                      onChange={(e) =>
-                        setFormData({ ...formData, arrivee: e.target.value })
-                      }
-                      className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-[var(--secondary)] focus:outline-none transition-colors"
-                    >
-                      <option value="">Sélectionnez un moment</option>
-                      <option value="Vendredi soir">Vendredi soir</option>
-                      <option value="Samedi midi">Samedi pour le midi</option>
-                      <option value="Samedi après-midi">
-                        Samedi après-midi
-                      </option>
-                    </select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <button
+                        onClick={() =>
+                          setFormData({ ...formData, arrivee: 'Vendredi' })
+                        }
+                        className={`p-4 rounded-lg border-2 transition-all text-left ${
+                          formData.arrivee === 'Vendredi'
+                            ? 'border-[var(--primary)] bg-blue-50'
+                            : 'border-gray-300 hover:border-[var(--primary)]'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="material-icons text-3xl text-[var(--primary)] flex-shrink-0">
+                            nightlight
+                          </span>
+                          <div>
+                            <p className="font-semibold text-[var(--dark)] mb-1">
+                              Vendredi
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              Un repas simple pour se retrouver tous ensemble
+                              avant la grande journée de samedi
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() =>
+                          setFormData({ ...formData, arrivee: 'Samedi' })
+                        }
+                        className={`p-4 rounded-lg border-2 transition-all text-left ${
+                          formData.arrivee === 'Samedi'
+                            ? 'border-[var(--primary)] bg-blue-50'
+                            : 'border-gray-300 hover:border-[var(--primary)]'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className="material-icons text-3xl text-[var(--primary)] flex-shrink-0">
+                            wb_sunny
+                          </span>
+                          <div>
+                            <p className="font-semibold text-[var(--dark)] mb-1">
+                              Samedi
+                            </p>
+                            <p className="text-xs text-gray-600">
+                              Programme encore à définir, plus d'infos à venir
+                              prochainement
+                            </p>
+                          </div>
+                        </div>
+                      </button>
+                    </div>
                   </div>
 
                   {/* Brunch du Dimanche */}

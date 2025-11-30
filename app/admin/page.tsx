@@ -50,15 +50,32 @@ export default function AdminDashboard() {
   // Charger les données en temps réel
   const loadData = async () => {
     try {
-      // Charger les codes d'invitation
       const codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
-      const codesMap = new Map();
-      codesSnapshot.docs.forEach((doc) => {
-        codesMap.set(doc.id, { id: doc.id, ...doc.data() });
-      });
+      const codesMap = new Map<string, any>();
+
+      for (const codeDoc of codesSnapshot.docs) {
+        const code = codeDoc.id; // ex: "ABC123"
+        if (code.length !== 6) continue; // sécurité
+
+        // On va lire la collection qui porte ce nom
+        const membresSnapshot = await getDocs(collection(db, code));
+        const infoDoc = membresSnapshot.docs.find(
+          (d) => d.id === 'info' || d.id === 'membres'
+        );
+
+        if (infoDoc) {
+          const data = infoDoc.data();
+          codesMap.set(code, {
+            id: code,
+            membres: data.membres || [],
+            description: data.description || code,
+          });
+        }
+      }
+
       setCodesInvitation(codesMap);
 
-      // Écouter les changements de statuts en temps réel
+      // 2. Écouter les statuts en temps réel (inchangé)
       const q = query(
         collection(db, 'statuts'),
         orderBy('date_modification', 'desc')
@@ -82,20 +99,24 @@ export default function AdminDashboard() {
   // Obtenir tous les membres de tous les codes
   const getAllMembres = () => {
     const allMembres: any[] = [];
-    codesInvitation.forEach((code) => {
-      (code.membres || []).forEach((nom: string) => {
+
+    codesInvitation.forEach((codeData, code) => {
+      // code = "ABC123"
+      (codeData.membres || []).forEach((nom: string) => {
         const statut = statuts.find((s) => s.nom_membre === nom);
+
         allMembres.push({
           nom,
-          codeInvitation: code.id,
+          codeInvitation: code, // ← maintenant c’est bien le code 6 lettres
           statut: statut?.statut || 'en_attente',
           arrivee: statut?.arrivee || '',
-          brunch: statut?.brunch || '', // Ajout de l'attribut brunch
+          brunch: statut?.brunch || '',
           commentaires: statut?.commentaires || '',
           dateModification: statut?.date_modification,
         });
       });
     });
+
     return allMembres;
   };
 
@@ -121,7 +142,7 @@ export default function AdminDashboard() {
           aValue = a.arrivee || '';
           bValue = b.arrivee || '';
           break;
-        case 'brunch': // Ajout du tri par brunch
+        case 'brunch':
           aValue = a.brunch || '';
           bValue = b.brunch || '';
           break;
@@ -231,7 +252,6 @@ export default function AdminDashboard() {
     return acc + (s.nombre || 1);
   }, 0);
 
-  // Modification pour compter le nombre de personnes (Element 1 & 2)
   const totalAcceptes = statuts
     .filter((s) => s.statut === 'accepte')
     .reduce((acc, s) => acc + (s.nombre || 1), 0);
@@ -240,7 +260,6 @@ export default function AdminDashboard() {
     .filter((s) => s.statut === 'refuse')
     .reduce((acc, s) => acc + (s.nombre || 1), 0);
 
-  // Calcul du nombre de brunchs positifs
   const totalBrunch = statuts
     .filter((s) => s.brunch === 'oui')
     .reduce((acc, s) => acc + (s.nombre || 1), 0);
@@ -251,7 +270,7 @@ export default function AdminDashboard() {
     acceptes: totalAcceptes,
     refuses: totalRefuses,
     enAttente: totalInvites - totalReponses,
-    brunch: totalBrunch, // Ajout aux stats
+    brunch: totalBrunch,
   };
 
   // Export CSV
@@ -380,14 +399,8 @@ export default function AdminDashboard() {
   const confirmedMembers = allMembres.filter((m) => m.statut === 'accepte');
 
   const arrivalStats = {
-    'Vendredi soir': confirmedMembers.filter(
-      (m) => m.arrivee === 'Vendredi soir'
-    ).length,
-    'Samedi midi': confirmedMembers.filter((m) => m.arrivee === 'Samedi midi')
-      .length,
-    'Samedi après-midi': confirmedMembers.filter(
-      (m) => m.arrivee === 'Samedi après-midi'
-    ).length,
+    Vendredi: confirmedMembers.filter((m) => m.arrivee === 'Vendredi').length,
+    Samedi: confirmedMembers.filter((m) => m.arrivee === 'Samedi').length,
     'Non précisé': confirmedMembers.filter(
       (m) => !m.arrivee || m.arrivee === ''
     ).length,
@@ -395,56 +408,59 @@ export default function AdminDashboard() {
 
   const maxArrival = Math.max(...Object.values(arrivalStats), 1);
 
-  // Statistiques par code d'invitation
+  // Statistiques par code d'invitation - Tous les codes triés par pourcentage
   const topCodes = Array.from(codesInvitation.entries())
     .map(([code, data]) => {
       const membres = data.membres || [];
       const description = data.description || '';
-      const statutEntry = statuts.find(
-        (s) => s.code_invitation === code && s.statut === 'accepte'
-      );
       const confirmed = membres.filter((nom: string) =>
         statuts.find((s) => s.nom_membre === nom && s.statut === 'accepte')
       ).length;
+      const percentage =
+        membres.length > 0 ? (confirmed / membres.length) * 100 : 0;
 
-      return { code, description, total: membres.length, confirmed };
+      return {
+        code,
+        description,
+        total: membres.length,
+        confirmed,
+        percentage,
+      };
     })
-    .sort((a, b) => b.confirmed - a.confirmed)
-    .slice(0, 5);
-
-  // Taux de réponse par jour (simulé avec dates de modification)
-  const responsesOverTime = statuts
-    .filter((s) => s.date_modification?.toDate)
-    .reduce((acc: any, s) => {
-      const date = new Date(s.date_modification.toDate()).toLocaleDateString(
-        'fr-FR'
-      );
-      acc[date] = (acc[date] || 0) + 1;
-      return acc;
-    }, {});
-
-  const sortedDates = Object.entries(responsesOverTime)
-    .sort(
-      ([a], [b]) =>
-        new Date(a.split('/').reverse().join('-')).getTime() -
-        new Date(b.split('/').reverse().join('-')).getTime()
-    )
-    .slice(-7);
+    .sort((a, b) => b.percentage - a.percentage);
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-[#003b4e]">
-              📊 Dashboard Admin
-            </h1>
-            <p className="text-sm text-gray-600">Mise à jour en temps réel</p>
+      <header className="bg-gradient-to-r from-[#003b4e] to-[#137e41] shadow-lg">
+        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Dashboard Admin</h1>
+              <p className="text-sm text-white/80 flex items-center gap-2">
+                <span className="inline-block w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                Mise à jour en temps réel
+              </p>
+            </div>
           </div>
           <button
             onClick={handleLogout}
-            className="text-red-600 hover:text-red-700 flex items-center gap-2"
+            className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200 hover:scale-105"
           >
             <svg
               className="w-5 h-5"
@@ -520,14 +536,14 @@ export default function AdminDashboard() {
             </p>
 
             <div className="space-y-6">
-              {/* Vendredi soir */}
+              {/* Vendredi */}
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    🌙 Vendredi soir
+                    🌙 Vendredi
                   </span>
                   <span className="text-lg font-bold text-[#003b4e]">
-                    {arrivalStats['Vendredi soir']}
+                    {arrivalStats['Vendredi']}
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
@@ -535,52 +551,28 @@ export default function AdminDashboard() {
                     className="bg-gradient-to-r from-[#003b4e] to-[#005a70] h-3 rounded-full transition-all duration-500"
                     style={{
                       width: `${
-                        (arrivalStats['Vendredi soir'] / maxArrival) * 100
+                        (arrivalStats['Vendredi'] / maxArrival) * 100
                       }%`,
                     }}
                   />
                 </div>
               </div>
 
-              {/* Samedi midi */}
+              {/* Samedi */}
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    ☀️ Samedi midi
+                    ☀️ Samedi
                   </span>
                   <span className="text-lg font-bold text-[#137e41]">
-                    {arrivalStats['Samedi midi']}
+                    {arrivalStats['Samedi']}
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                   <div
                     className="bg-gradient-to-r from-[#137e41] to-[#1a9e52] h-3 rounded-full transition-all duration-500"
                     style={{
-                      width: `${
-                        (arrivalStats['Samedi midi'] / maxArrival) * 100
-                      }%`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Samedi après-midi */}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                    🌤️ Samedi après-midi
-                  </span>
-                  <span className="text-lg font-bold text-[#f59e0b]">
-                    {arrivalStats['Samedi après-midi']}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                  <div
-                    className="bg-gradient-to-r from-[#f59e0b] to-[#fbbf24] h-3 rounded-full transition-all duration-500"
-                    style={{
-                      width: `${
-                        (arrivalStats['Samedi après-midi'] / maxArrival) * 100
-                      }%`,
+                      width: `${(arrivalStats['Samedi'] / maxArrival) * 100}%`,
                     }}
                   />
                 </div>
@@ -628,13 +620,14 @@ export default function AdminDashboard() {
                   d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
                 />
               </svg>
-              Top 5 codes d'invitation
+              Status des codes d'invitation ({topCodes.length} code(s)
+              d'invitation)
             </h3>
             <p className="text-sm text-gray-600 mb-6">
-              Par nombre de confirmations
+              Triés par taux de confirmation
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-56 overflow-y-auto pr-2">
               {topCodes.map((code, index) => (
                 <div key={code.code}>
                   <div className="flex justify-between items-center mb-2">
