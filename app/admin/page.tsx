@@ -49,51 +49,40 @@ export default function AdminDashboard() {
   }, []);
 
   // Charger les données en temps réel
+  // Dans loadData()
   const loadData = async () => {
     try {
+      console.log('🔍 Chargement des codes...');
       const codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
+      console.log('✅ Codes trouvés:', codesSnapshot.size);
+
       const codesMap = new Map<string, any>();
 
       for (const codeDoc of codesSnapshot.docs) {
-        const code = codeDoc.id; // ex: "ABC123"
-        if (code.length !== 6) continue; // sécurité
+        const code = codeDoc.id;
+        console.log('📋 Traitement du code:', code);
 
-        // On va lire la collection qui porte ce nom
-        const membresSnapshot = await getDocs(collection(db, code));
-        const infoDoc = membresSnapshot.docs.find(
-          (d) => d.id === 'info' || d.id === 'membres'
-        );
+        if (code.length !== 6) {
+          console.warn('⚠️ Code invalide ignoré:', code);
+          continue;
+        }
 
-        if (infoDoc) {
-          const data = infoDoc.data();
-          codesMap.set(code, {
-            id: code,
-            membres: data.membres || [],
-            description: data.description || code,
-          });
+        try {
+          const membresSnapshot = await getDocs(collection(db, code));
+          console.log(`✅ Membres pour ${code}:`, membresSnapshot.size);
+
+          // ... reste du code
+        } catch (err) {
+          console.error(`❌ Erreur lecture membres pour ${code}:`, err);
         }
       }
 
+      console.log('📊 Total codes chargés:', codesMap.size);
       setCodesInvitation(codesMap);
 
-      // 2. Écouter les statuts en temps réel (inchangé)
-      const q = query(
-        collection(db, 'statuts'),
-        orderBy('date_modification', 'desc')
-      );
-
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setStatuts(data);
-        setFilteredStatuts(data);
-      });
-
-      return unsubscribe;
+      // ... reste du code
     } catch (err) {
-      console.error('Erreur chargement:', err);
+      console.error('❌ Erreur chargement globale:', err);
     }
   };
 
