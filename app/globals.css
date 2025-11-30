@@ -4,10 +4,10 @@
 
 @font-face {
   font-family: 'Wedding';
-  src: url('../public/fonts/Wedding.otf') format('opentype');
+  src: url('/fonts/Wedding.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block; /* Prevents flash - waits for font to load */
 }
 
 :root {
