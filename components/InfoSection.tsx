@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import VillaIcon from '@mui/icons-material/Villa';
+import EmailIcon from '@mui/icons-material/Email';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import CheckroomIcon from '@mui/icons-material/Checkroom';
@@ -220,16 +221,20 @@ export default function InfoSection() {
                     type="button"
                     onClick={handleGalleryAccess}
                     disabled={true}
-                    // disabled={isLoadingGallery}
-                    className="w-full bg-gradient-to-r from-[var(--secondary)] to-[var(--primary)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="relative w-full overflow-hidden bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-500 text-amber-900 py-4 rounded-lg font-semibold text-lg shadow-[0_8px_30px_rgb(251,191,36,0.4)] transition-all hover:shadow-[0_12px_40px_rgb(251,191,36,0.6)] hover:scale-[1.02] disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:scale-100 before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/40 before:via-transparent before:to-transparent before:opacity-60 after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.8),transparent_70%)] after:opacity-40"
                   >
-                    {isLoadingGallery ? (
-                      'Vérification...'
-                    ) : (
-                      <>
-                        Accéder à la galerie 📸 <br /> (En développement)
-                      </>
-                    )}
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {isLoadingGallery ? (
+                        'Vérification...'
+                      ) : (
+                        <>
+                          ✨ Accéder à la galerie 📸 ✨<br /> (En développement)
+                        </>
+                      )}
+                    </span>
+                    <span className="absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full animate-ping opacity-75"></span>
+                    <span className="absolute top-3/4 right-1/3 w-1.5 h-1.5 bg-yellow-100 rounded-full animate-pulse delay-150"></span>
+                    <span className="absolute top-1/2 right-1/4 w-1 h-1 bg-white rounded-full animate-ping delay-300"></span>
                   </button>
                 </div>
               </form>
@@ -254,23 +259,6 @@ export default function InfoSection() {
         </div>
       </section>
 
-      {/* Section Programme */}
-      <section id="programme" className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)] via-[var(--primary)]/5 to-[var(--accent)]"></div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
-            Programme du week-end
-          </h2>
-
-          <div className="max-w-2xl mx-auto">
-            <p className="max-w-2xl mx-auto text-center text-lg text-[var(--dark)] mb-8">
-              A venir ...
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Section Contact */}
       <section id="contact" className="py-20 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)] via-[var(--primary)]/5 to-[var(--accent)]"></div>
@@ -286,52 +274,18 @@ export default function InfoSection() {
               la robe verte ou la robe jaune ? On est là !
             </p>
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-center gap-3 bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <svg
-                  className="w-6 h-6 text-[var(--secondary)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                  />
-                </svg>
-                <p className="text-[var(--primary)] font-medium">Solenne :</p>
-                <a
-                  href="tel:+33689710193"
-                  className="text-[var(--primary)] hover:text-[var(--secondary)] transition-colors font-medium"
-                >
-                  06 89 71 01 93
-                </a>
+            <a
+              href="mailto:solenne.lamaud@gmail.com,dorian.voydie@gmail.com"
+              className="flex flex-col items-center gap-3 bg-white px-8 py-5 rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-[1.02] font-medium text-[var(--primary)]"
+            >
+              <div>
+                <EmailIcon className="w-7 h-7 text-[var(--secondary)]" />
+                <span style={{ marginLeft: '10px' }}>
+                  Écrivez-nous à toutes les deux en cliquant ici !
+                </span>
               </div>
-              <div className="flex items-center justify-center gap-3 bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <svg
-                  className="w-6 h-6 text-[var(--secondary)]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-                  />
-                </svg>
-                <p className="text-[var(--primary)] font-medium">Dorian :</p>
-                <a
-                  href="tel:+33627860206"
-                  className="text-[var(--primary)] hover:text-[var(--secondary)] transition-colors font-medium"
-                >
-                  06 27 86 02 06
-                </a>
-              </div>
-            </div>
+              <span> solenne.lamaud@gmail.com + dorian.voydie@gmail.com</span>
+            </a>
           </div>
         </div>
       </section>
