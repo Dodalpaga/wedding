@@ -278,11 +278,11 @@ export default function InfoSection() {
               href="mailto:solenne.lamaud@gmail.com,dorian.voydie@gmail.com"
               className="flex flex-col items-center gap-3 bg-white px-8 py-5 rounded-xl shadow-md hover:shadow-xl transition-all hover:scale-[1.02] font-medium text-[var(--primary)]"
             >
-              <div>
+              <div className="flex flex-row items-center">
                 <EmailIcon className="w-7 h-7 text-[var(--secondary)]" />
-                <span style={{ marginLeft: '10px' }}>
+                <div style={{ marginLeft: '10px' }}>
                   Écrivez-nous à toutes les deux en cliquant ici !
-                </span>
+                </div>
               </div>
               <span> solenne.lamaud@gmail.com + dorian.voydie@gmail.com</span>
             </a>
