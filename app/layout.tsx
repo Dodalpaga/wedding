@@ -22,7 +22,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased select-none">{children}</body>
     </html>
   );
 }

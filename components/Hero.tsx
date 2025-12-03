@@ -156,7 +156,7 @@ export default function Hero() {
       {/* Fond aurores boréales */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#003b4e] via-[#034861] to-[#137e41]"></div>
       {/* Effet de particules aurore boréale */}
-      {/* <WeddingBackground /> */}
+      <WeddingBackground />
       <AuroraBackground>
         <motion.div
           initial={{ opacity: 0.0, y: 40 }}
