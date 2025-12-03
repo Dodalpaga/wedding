@@ -162,9 +162,9 @@ export default function InfoSection() {
       </section>
 
       {/* Section Confirmation et Galerie */}
-      <section id="confirmation" className="py-20 bg-[var(--accent)]">
+      <section id="confirmation" className="py-20 bg-[var(--primary)]">
         <div className="container mx-auto px-4">
-          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
+          <h2 className="text-9xl font-wedding text-center text-[var(--accent)] mb-16">
             Votre espace personnel
           </h2>
 
@@ -216,18 +216,21 @@ export default function InfoSection() {
                   >
                     Confirmer ma présence
                   </button>
-                  {process.env.NODE_ENV === 'development' && (
-                    <button
-                      type="button"
-                      onClick={handleGalleryAccess}
-                      disabled={isLoadingGallery}
-                      className="w-full bg-gradient-to-r from-[var(--secondary)] to-[var(--primary)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isLoadingGallery
-                        ? 'Vérification...'
-                        : 'Accéder à la galerie 📸 (DEV)'}
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    onClick={handleGalleryAccess}
+                    disabled={true}
+                    // disabled={isLoadingGallery}
+                    className="w-full bg-gradient-to-r from-[var(--secondary)] to-[var(--primary)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isLoadingGallery ? (
+                      'Vérification...'
+                    ) : (
+                      <>
+                        Accéder à la galerie 📸 <br /> (En développement)
+                      </>
+                    )}
+                  </button>
                 </div>
               </form>
 
