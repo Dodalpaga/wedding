@@ -200,7 +200,7 @@ export default function Hero() {
           Nous nous marions !
         </p>
         <div className="text-2xl md:text-3xl font-light text-[var(--accent)] mb-12">
-          <p className="font-semibold">17 Juillet 2027</p>
+          17 Juillet 2027
         </div>
       </div>
 
