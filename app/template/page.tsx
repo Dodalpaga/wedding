@@ -1,6 +1,6 @@
 'use client';
 
-import ReturnHomeButton from '@/components/ReturnButton';
+import ReturnHomeButton from '@/components/HomeButton';
 
 export default function Template() {
   return (

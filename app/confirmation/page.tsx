@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import ReturnHomeButton from '@/components/ReturnButton';
+import ReturnHomeButton from '@/components/HomeButton';
 import RSVPFormFirebase from '@/components/RSVPFormFirebase';
 import Link from 'next/link';
 import {
@@ -134,6 +134,9 @@ function ConfirmationContent() {
       </h2>
       <p className="text-center text-[var(--dark)] mb-4">
         Bonjour <strong>{inviteData.code}</strong> 👋
+      </p>
+      <p className="text-center text-[var(--dark)] mb-4">
+        {inviteData.message}
       </p>
       <p className="text-center text-[var(--dark)] max-w-2xl mx-auto mb-8">
         Merci de remplir ce formulaire avant le{' '}

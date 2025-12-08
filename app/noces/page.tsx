@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import ReturnHomeButton from '@/components/ReturnButton';
+import ReturnHomeButton from '@/components/HomeButton';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 // --- Données du voyage (A personnaliser) ---

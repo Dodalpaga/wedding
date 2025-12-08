@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, Suspense } from 'react';
 import Hebergement from '@/components/Hebergement';
-import ReturnHomeButton from '@/components/ReturnButton';
+import ReturnBackButton from '@/components/BackButton';
 
 function HebergementContent() {
   const searchParams = useSearchParams();
@@ -24,7 +24,7 @@ function HebergementContent() {
 
   return (
     <div>
-      <ReturnHomeButton />
+      <ReturnBackButton />
       <Hebergement code={code} />
     </div>
   );

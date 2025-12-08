@@ -235,7 +235,7 @@ export default function RSVPFormFirebase({
             <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded text-left">
               <p className="text-[var(--dark)]">
                 <strong>Récapitulatif :</strong>
-                <br />• Membre : {membreSelectionne}
+                <br />• Invité : {membreSelectionne}
                 {formData.statut === 'accepte' && (
                   <>
                     <br />• Statut : ✅ Confirmé
