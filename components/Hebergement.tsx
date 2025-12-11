@@ -145,9 +145,9 @@ export default function HebergementPersonnalise({
   };
 
   return (
-    <section id="hebergement" className="py-5 bg-[var(--accent)]">
+    <section id="hebergement" className="bg-[var(--accent)]">
       <div className="container mx-auto px-4">
-        <h2 className="text-6xl md:text-8xl font-wedding text-center text-[var(--primary)] mb-8">
+        <h2 className="text-6xl md:text-8xl font-wedding text-center text-[var(--primary)]">
           Où dormir ?
         </h2>
 
@@ -329,7 +329,7 @@ export default function HebergementPersonnalise({
         </div>
 
         {/* Note importante */}
-        <div className="mt-12 max-w-3xl mx-auto bg-[var(--secondary)]/10 border-l-4 border-[var(--secondary)] p-6 rounded">
+        <div className="m-12 max-w-3xl mx-auto bg-[var(--secondary)]/10 border-l-4 border-[var(--secondary)] p-6 rounded">
           <div className="flex items-start">
             <svg
               className="w-6 h-6 text-[var(--secondary)] mt-0.5 mr-3 flex-shrink-0"

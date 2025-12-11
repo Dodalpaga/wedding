@@ -4,10 +4,10 @@ import Link from 'next/link';
 
 export default function ReturnHomeButton() {
   return (
-    <div className="absolute top-4 left-4 z-30">
+    <div className="mb-2 ml-4">
       <Link
         href="/"
-        className="text-sm font-medium text-[#003b4e] hover:text-[#137e41] transition-colors flex items-center gap-1 bg-white/90 backdrop-blur px-3 py-2 rounded-full shadow-sm border border-gray-100"
+        className="inline-flex text-sm font-medium text-[#003b4e] hover:text-[#137e41] transition-colors items-center gap-1 bg-white/90 backdrop-blur px-3 py-2 rounded-full shadow-sm border border-gray-100"
       >
         <svg
           className="w-4 h-4"

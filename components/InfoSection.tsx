@@ -64,7 +64,7 @@ export default function InfoSection() {
     <>
       {/* Section Informations */}
       <section id="infos" className="py-20 bg-[var(--accent)]">
-        <div className="container mx-auto">
+        <div className="container mx-auto px-4">
           <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
             Informations pratiques
           </h2>
