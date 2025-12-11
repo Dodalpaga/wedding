@@ -64,13 +64,13 @@ export default function InfoSection() {
     <>
       {/* Section Informations */}
       <section id="infos" className="py-20 bg-[var(--accent)]">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
             Informations pratiques
           </h2>
 
           {/* Nouvelle disposition : 2 colonnes principales */}
-          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8">
             {/* Colonne 1 : Le Lieu */}
             <div className="bg-white rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all overflow-hidden flex flex-col">
               <div className="p-8 flex-grow">
@@ -81,12 +81,16 @@ export default function InfoSection() {
                   Le Domaine d'en Naudet
                 </h3>
                 <p className="text-[var(--dark)] text-justify">
-                  Niché au cœur du Tarn, entouré de champs de tournesols et de
-                  collines verdoyantes, le Domaine d'en Naudet est un petit
-                  paradis où le temps semble suspendu. Une grande allée bordée
-                  de chênes, une grange rénovée aux pierres apparentes, un parc
-                  avec des coins d'ombre centenaires… Tout est réuni pour que
-                  cette journée dont on se souviendra toute la vie.
+                  Niché entre forêts de chênes et courbes douces des collines
+                  tarnaises, le Domaine d’en Naudet est un véritable havre de
+                  paix où le charme de la campagne rencontre l’élégance d’un
+                  lieu de réception authentique. En arrivant, vous emprunterez
+                  une longue allée bordée d’arbres centenaires avant de
+                  découvrir une cour chaleureuse, une grange aux pierres dorées
+                  et des espaces extérieurs baignés de lumière. C’est un endroit
+                  qui respire la tranquillité, le partage et les moments
+                  suspendus — parfait pour accueillir une journée dont nous
+                  espérons qu’elle restera gravée dans les mémoires.
                 </p>
               </div>
               <img
@@ -111,9 +115,12 @@ export default function InfoSection() {
                   Parking
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-center">
-                  Un grand parking gratuit est prévu sur le domaine (plus de 100
-                  places). Pas de stress : vous pourrez garer votre voiture
-                  juste à côté de la fête !
+                  Un parking privé est disponible directement sur le domaine,
+                  avec plus de 100 places. Vous pourrez donc arriver en toute
+                  sérénité, sans avoir à marcher des kilomètres ni à chercher en
+                  pleine campagne où poser votre voiture. Si vous souhaitez
+                  organiser du covoiturage avec d’autres invités, n’hésitez pas
+                  à nous le signaler : nous pourrons vous mettre en relation.
                 </p>
               </div>
 
@@ -128,11 +135,14 @@ export default function InfoSection() {
                   Côté Météo
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-center">
-                  Août dans le Tarn = grand soleil et chaleur garantie (30-35 °C
-                  en journée) ! La cérémonie et le vin d'honneur seront en
-                  extérieur, sous les arbres et les guirlandes guinguette.
-                  Pensez à la crème solaire, aux lunettes de soleil et à un
-                  éventail (on en prévoira aussi).
+                  Le mois de juillet dans le Tarn est synonyme de ciel bleu, de
+                  chaleur douce en soirée et de belles journées lumineuses. Les
+                  après-midis tournent souvent autour de 30–35°C, mais le
+                  domaine offre de nombreux coins d’ombre, des tonnelles
+                  naturelles et une brise légère venue des collines. La
+                  cérémonie et une partie des festivités auront lieu en
+                  extérieur : pensez crème solaire, lunettes et pourquoi pas un
+                  éventail pour ajouter une petite touche bohème chic !
                 </p>
               </div>
 
@@ -147,12 +157,18 @@ export default function InfoSection() {
                   Code Vestimentaire
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-center mb-4">
-                  <strong>Chic et Champêtre</strong>. Privilégiez les tenues
-                  élégantes tout en <strong>restant à l'aise</strong>. N'oubliez
-                  pas un châle ou une veste pour le soir !
+                  Nous avons imaginé une ambiance élégante mais décontractée, où
+                  chacun puisse profiter pleinement de la journée tout en se
+                  sentant à son avantage. Les robes fluides, les costumes
+                  légers, les matières naturelles (lin, coton, mousseline) et
+                  les couleurs douces s’y prêtent parfaitement. Les talons fins
+                  peuvent être remplacés par des sandales confortables ou des
+                  wedges : le domaine est grand, et l’herbe aussi ! Et pour la
+                  soirée, un foulard, une veste légère ou un châle seront
+                  parfaits lorsque le soleil commencera à descendre.
                 </p>
                 <div className="text-center">
-                  <span className="text-xs text-[var(--secondary)] font-semibold uppercase tracking-wider">
+                  <span className="text-[var(--secondary)] font-semibold uppercase tracking-wider">
                     Cérémonie en extérieur prévue
                   </span>
                 </div>
@@ -180,7 +196,7 @@ export default function InfoSection() {
                 vous permet de confirmer votre présence, accéder à la galerie
                 photos, et nous indiquer vos préférences (allergies, régimes
                 particuliers, présence d'enfants). Vous pourrez modifier vos
-                réponses autant de fois que vous voulez jusqu'au 31 décembre
+                réponses autant de fois que vous voulez jusqu'au 17 juillet
                 2026.
               </p>
 
@@ -251,7 +267,7 @@ export default function InfoSection() {
               <div className="mt-6 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 p-4 rounded-lg">
                 <p className="text-sm text-[var(--dark)] text-center">
                   📅 <strong>Date limite :</strong> Merci de confirmer votre
-                  présence avant le <strong>31 décembre 2026</strong>
+                  présence avant le <strong>17 juillet 2026</strong>
                 </p>
               </div>
             </div>

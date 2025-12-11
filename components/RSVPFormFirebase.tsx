@@ -120,7 +120,6 @@ export default function RSVPFormFirebase({
   }, [inviteData.code]);
 
   // Charger les données du membre sélectionné
-  // Charger les données du membre sélectionné → CORRIGÉ
   useEffect(() => {
     if (membreSelectionne) {
       const membre = membres.find((m) => m.nom === membreSelectionne);
@@ -149,7 +148,7 @@ export default function RSVPFormFirebase({
 
   const handleSubmit = async () => {
     if (!membreSelectionne) {
-      alert('Veuillez sélectionner un membre');
+      alert('Veuillez sélectionner un invité');
       return;
     }
 
@@ -369,7 +368,7 @@ export default function RSVPFormFirebase({
           <div className="max-w-3xl mx-auto bg-blue-50 border-2 border-blue-300 p-6 rounded-lg text-center mb-8">
             <p className="text-[var(--dark)] flex items-center justify-center gap-2">
               <span className="material-icons">touch_app</span>
-              Cliquez sur un membre ci-dessus pour confirmer sa présence
+              Cliquez sur un invité ci-dessus pour confirmer sa présence
             </p>
           </div>
         )}

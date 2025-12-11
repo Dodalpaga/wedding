@@ -139,8 +139,7 @@ function ConfirmationContent() {
         {inviteData.message}
       </p>
       <p className="text-center text-[var(--dark)] max-w-2xl mx-auto mb-8">
-        Merci de remplir ce formulaire avant le{' '}
-        <strong>31 décembre 2026</strong>
+        Merci de remplir ce formulaire avant le <strong>17 juillet 2026</strong>
       </p>
 
       {/* Badges d'invitation */}
