@@ -185,9 +185,9 @@ export default function Hero() {
       <WeddingBackground />
       <div className="container mx-auto px-4 text-center relative z-10">
         <img
-          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/SD Logo.svg`}
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/SD Logo white.svg`}
           alt="Logo"
-          className="h-24 w-24 mx-auto mb-8 object-contain drop-shadow-2xl brightness-0 invert"
+          className="h-48 w-48 mx-auto mb-8 object-contain drop-shadow-2xl"
           onError={(e) => (e.currentTarget.style.display = 'none')}
         />
 

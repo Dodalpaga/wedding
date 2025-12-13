@@ -370,6 +370,12 @@ export default function RSVPFormFirebase({
               <span className="material-icons">touch_app</span>
               Cliquez sur un invité ci-dessus pour confirmer sa présence
             </p>
+            <p className="text-sm text-[var(--dark)] text-center mt-4">
+              <strong>Rassurez-vous !</strong> Toutes les informations sont
+              modifiables à tout moment. Vous pourrez mettre à jour votre
+              présence, vos préférences alimentaires et autres détails quand
+              vous le souhaitez.
+            </p>
           </div>
         )}
 

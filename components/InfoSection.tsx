@@ -6,7 +6,7 @@ import VillaIcon from '@mui/icons-material/Villa';
 import EmailIcon from '@mui/icons-material/Email';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
-import CheckroomIcon from '@mui/icons-material/Checkroom';
+import Event from '@mui/icons-material/Event';
 import QrCode from '@mui/icons-material/QrCode';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -103,9 +103,68 @@ export default function InfoSection() {
             </div>
 
             {/* Colonne 2 : Grille 2x2 */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 max-[525px]:grid-cols-3">
+              {/* Planning */}
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all col-span-2 max-[525px]:col-span-3">
+                <div className="text-center mb-4">
+                  <Event sx={{ fontSize: 50, color: 'var(--secondary)' }} />
+                </div>
+
+                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
+                  Planning
+                </h3>
+
+                <table className="w-full text-[var(--dark)] text-sm mb-4 border-collapse">
+                  <tbody>
+                    <tr className="align-top">
+                      <td className="w-1/6 pr-3 text-right">
+                        <span className="font-wedding text-[var(--primary)] text-4xl">
+                          Vendredi
+                        </span>
+                      </td>
+                      <td className="text-justify">
+                        Accueil des personnes arrivant de loin autour d’un repas
+                        improvisé, l’occasion de se retrouver tranquillement
+                        après le voyage.
+                      </td>
+                    </tr>
+
+                    <tr className="align-top">
+                      <td className="pt-3 pr-3 text-right">
+                        <span className="font-wedding text-[var(--primary)] text-4xl">
+                          Samedi
+                        </span>
+                      </td>
+                      <td className="text-justify pt-3">
+                        Le cœur de la célébration : cérémonie laïque, vin
+                        d’honneur, photos, jeux, repas puis soirée dansante
+                        jusqu’au bout de la nuit.
+                      </td>
+                    </tr>
+
+                    <tr className="align-top">
+                      <td className="pt-3 pr-3 text-right">
+                        <span className="font-wedding text-[var(--primary)] text-4xl">
+                          Dimanche
+                        </span>
+                      </td>
+                      <td className="text-justify pt-3">
+                        Brunch convivial pour prolonger ces beaux moments avant
+                        la fin du week-end et les départs.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div className="text-center">
+                  <span className="text-[var(--secondary)] font-semibold uppercase tracking-wider">
+                    Cérémonie en extérieur prévue
+                  </span>
+                </div>
+              </div>
+
               {/* Parking */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all">
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all max-[525px]:col-span-3">
                 <div className="text-center mb-4">
                   <LocalParkingIcon
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
@@ -114,7 +173,7 @@ export default function InfoSection() {
                 <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
                   Parking
                 </h3>
-                <p className="text-[var(--dark)] text-sm text-center">
+                <p className="text-[var(--dark)] text-sm text-justify">
                   Un parking privé est disponible directement sur le domaine,
                   avec plus de 100 places. Vous pourrez donc arriver en toute
                   sérénité, sans avoir à marcher des kilomètres ni à chercher en
@@ -125,7 +184,7 @@ export default function InfoSection() {
               </div>
 
               {/* Météo */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all">
+              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all max-[525px]:col-span-3">
                 <div className="text-center mb-4">
                   <WbSunnyIcon
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
@@ -134,7 +193,7 @@ export default function InfoSection() {
                 <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
                   Côté Météo
                 </h3>
-                <p className="text-[var(--dark)] text-sm text-center">
+                <p className="text-[var(--dark)] text-sm text-justify">
                   Le mois de juillet dans le Tarn est synonyme de ciel bleu, de
                   chaleur douce en soirée et de belles journées lumineuses. Les
                   après-midis tournent souvent autour de 30–35°C, mais le
@@ -144,34 +203,6 @@ export default function InfoSection() {
                   extérieur : pensez crème solaire, lunettes et pourquoi pas un
                   éventail pour ajouter une petite touche bohème chic !
                 </p>
-              </div>
-
-              {/* Code Vestimentaire */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all col-span-2">
-                <div className="text-center mb-4">
-                  <CheckroomIcon
-                    sx={{ fontSize: 50, color: 'var(--secondary)' }}
-                  />
-                </div>
-                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
-                  Code Vestimentaire
-                </h3>
-                <p className="text-[var(--dark)] text-sm text-center mb-4">
-                  Nous avons imaginé une ambiance élégante mais décontractée, où
-                  chacun puisse profiter pleinement de la journée tout en se
-                  sentant à son avantage. Les robes fluides, les costumes
-                  légers, les matières naturelles (lin, coton, mousseline) et
-                  les couleurs douces s’y prêtent parfaitement. Les talons fins
-                  peuvent être remplacés par des sandales confortables ou des
-                  wedges : le domaine est grand, et l’herbe aussi ! Et pour la
-                  soirée, un foulard, une veste légère ou un châle seront
-                  parfaits lorsque le soleil commencera à descendre.
-                </p>
-                <div className="text-center">
-                  <span className="text-[var(--secondary)] font-semibold uppercase tracking-wider">
-                    Cérémonie en extérieur prévue
-                  </span>
-                </div>
               </div>
             </div>
           </div>
@@ -195,9 +226,7 @@ export default function InfoSection() {
                 Chaque invitation contient un <strong>code unique</strong> qui
                 vous permet de confirmer votre présence, accéder à la galerie
                 photos, et nous indiquer vos préférences (allergies, régimes
-                particuliers, présence d'enfants). Vous pourrez modifier vos
-                réponses autant de fois que vous voulez jusqu'au 17 juillet
-                2026.
+                particuliers, présence d'enfants).
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -255,19 +284,13 @@ export default function InfoSection() {
                 </div>
               </form>
 
-              <div className="mt-8 pt-6 border-t border-[var(--secondary)]/20">
-                <p className="text-sm text-[var(--dark)] text-center">
-                  <strong>Rassurez-vous !</strong> Toutes les informations sont
-                  modifiables à tout moment. Vous pourrez mettre à jour votre
-                  présence, vos préférences alimentaires et autres détails quand
-                  vous le souhaitez.
-                </p>
-              </div>
-
+              <p className="text-center text-[var(--primary)] max-w-2xl mx-auto mb-8"></p>
               <div className="mt-6 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 p-4 rounded-lg">
                 <p className="text-sm text-[var(--dark)] text-center">
-                  📅 <strong>Date limite :</strong> Merci de confirmer votre
-                  présence avant le <strong>17 juillet 2026</strong>
+                  📅 <strong>Date limite :</strong> Pour des raisons
+                  d'organisation, nous vous demandons de remplir ce formulaire
+                  le plus tôt possible et avant le{' '}
+                  <strong>17 juillet 2026</strong>
                 </p>
               </div>
             </div>
