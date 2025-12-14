@@ -131,7 +131,7 @@ function ConfirmationContent() {
         rel="stylesheet"
       />
       <h2 className="text-6xl md:text-8xl font-wedding text-center text-[var(--primary)] mb-4">
-        Confirmer ma présence
+        Confirmer sa présence
       </h2>
       {/* <p className="text-center text-[var(--dark)] mb-4">
         Bonjour <strong>{inviteData.code}</strong> 👋

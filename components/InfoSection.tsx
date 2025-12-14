@@ -462,7 +462,7 @@ export default function InfoSection() {
                     type="submit"
                     className="w-full bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg"
                   >
-                    Confirmer ma présence
+                    Confirmer sa présence
                   </button>
                   <button
                     type="button"
