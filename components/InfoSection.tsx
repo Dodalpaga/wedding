@@ -356,13 +356,8 @@ export default function InfoSection() {
                   Accessibilité
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-justify leading-relaxed">
-                  Un <strong>parking privé</strong> est disponible directement
-                  sur le domaine, avec <strong>plus de 100 places</strong>. Vous
-                  pourrez donc arriver en toute sérénité.
-                  <br />
-                  <br />
                   Si vous avez des difficultés à organiser votre transport
-                  contactez nous, nousvous mettrons en relation avec des
+                  contactez nous, nous vous mettrons en relation avec des
                   personnes pouvant proposer du covoiturage.
                 </p>
                 <div className="text-l mt-6 pb-6 underline text-center">
@@ -376,6 +371,11 @@ export default function InfoSection() {
                     <span>2365 route de Pratviel, 81220 Teyssode</span>
                   </a>
                 </div>
+                <p className="text-[var(--dark)] text-sm text-justify leading-relaxed">
+                  Un <strong>parking privé</strong> est disponible directement
+                  sur le domaine, avec <strong>plus de 100 places</strong>. Vous
+                  pourrez donc arriver en toute sérénité.
+                </p>
               </AnimatedCard>
 
               {/* Météo */}
@@ -425,10 +425,10 @@ export default function InfoSection() {
               </div>
 
               <p className="text-lg text-[var(--dark)] mb-6 text-center">
-                Chaque invitation contient un <strong>code unique</strong> qui
-                vous permet de confirmer votre présence, accéder à la galerie
-                photos, et nous indiquer vos préférences (allergies, régimes
-                particuliers).
+                Chaque invitation contient un <strong>code</strong> qui vous
+                permet de confirmer votre présence, accéder à la galerie photos,
+                et nous indiquer vos préférences (allergies, régimes
+                particuliers, etc...).
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -502,9 +502,8 @@ export default function InfoSection() {
               <div className="bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 p-4 rounded-lg">
                 <p className="text-m text-[var(--dark)] text-center">
                   📅 <strong>Date limite :</strong> Pour des raisons
-                  d'organisation, nous vous demandons de remplir ce formulaire
-                  le plus tôt possible et avant le{' '}
-                  <strong>17 juillet 2026</strong>
+                  d'organisation, merci de bien vouloir remplir ce formulaire le
+                  plus tôt possible et avant le <strong>17 juillet 2026</strong>
                 </p>
               </div>
             </div>
@@ -524,8 +523,8 @@ export default function InfoSection() {
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-lg text-[var(--dark)] mb-8">
               Vous avez une question à 2 h du matin parce que vous hésitez entre
-              la robe verte ou la robe jaune ? Un noeud papillon ou une cravate
-              ? On est là !
+              la robe verte et un noeud papillon, entre la robe jaune et une
+              cravate ? On est là !
             </p>
 
             <a
