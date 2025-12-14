@@ -288,7 +288,7 @@ export default function InfoSection() {
                   <tbody>
                     <tr className="items-center">
                       <td className="w-1/6 pr-4 text-right">
-                        <span className="font-wedding text-[var(--primary)] text-6xl">
+                        <span className="font-wedding text-[var(--primary)] text-6xl max-sm:text-5xl">
                           Vendredi
                         </span>
                       </td>
@@ -303,7 +303,7 @@ export default function InfoSection() {
 
                     <tr className="items-center">
                       <td className="pt-3 pr-4 text-right">
-                        <span className="font-wedding text-[var(--primary)] text-6xl">
+                        <span className="font-wedding text-[var(--primary)] text-6xl max-sm:text-5xl">
                           Samedi
                         </span>
                       </td>
@@ -318,7 +318,7 @@ export default function InfoSection() {
 
                     <tr className="items-center">
                       <td className="pt-3 pr-4 text-right">
-                        <span className="font-wedding text-[var(--primary)] text-6xl">
+                        <span className="font-wedding text-[var(--primary)] text-6xl max-sm:text-5xl">
                           Dimanche
                         </span>
                       </td>

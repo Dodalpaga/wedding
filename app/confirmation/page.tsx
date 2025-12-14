@@ -153,18 +153,11 @@ function ConfirmationContent() {
 
       {/* Badges d'invitation */}
       <div className="max-w-3xl mx-auto px-4 mb-8">
-        {isVinHonneurOnly ? (
+        {isVinHonneurOnly && (
           <div className="bg-purple-50 border-2 border-purple-300 p-4 rounded-lg">
             <p className="text-center text-purple-800 flex items-center justify-center gap-2">
               <span className="material-icons">local_bar</span>
               <strong>Invitation : Cérémonie & Vin d'Honneur</strong>
-            </p>
-          </div>
-        ) : (
-          <div className="bg-gradient-to-r from-pink-50 to-purple-50 border-2 border-pink-300 p-4 rounded-lg">
-            <p className="text-center text-pink-800 flex items-center justify-center gap-2">
-              <span className="material-icons">celebration</span>
-              <strong>Invitation sur l'ensemble du week-end</strong>
             </p>
           </div>
         )}
