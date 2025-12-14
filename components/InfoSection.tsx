@@ -239,7 +239,7 @@ export default function InfoSection() {
                 <div className="text-center mb-6">
                   <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
                 </div>
-                <h3 className="text-8xl font-wedding text-[var(--primary)] mb-4 text-center">
+                <h3 className="text-7xl font-wedding text-[var(--primary)] mb-4 text-center">
                   Le Domaine d'en Naudet
                 </h3>
                 <p className="text-[var(--dark)] text-justify leading-relaxed">
@@ -280,7 +280,7 @@ export default function InfoSection() {
                   <Event sx={{ fontSize: 50, color: 'var(--secondary)' }} />
                 </div>
 
-                <h3 className="text-8xl font-wedding text-[var(--primary)] mb-3 text-center">
+                <h3 className="text-7xl font-wedding text-[var(--primary)] mb-3 text-center">
                   Planning
                 </h3>
 
@@ -334,8 +334,8 @@ export default function InfoSection() {
 
                 <div className="text-[var(--secondary)] tracking-wider mb-4">
                   <strong>Note</strong> : Le programme détaillé est en cours de
-                  construction. Nous vous tiendrons au courant par mail des
-                  nouvelles informations
+                  construction. Nous vous tiendrons informés par mail des mises
+                  à jour
                 </div>
 
                 <div className="text-center">
@@ -352,7 +352,7 @@ export default function InfoSection() {
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
                   />
                 </div>
-                <h3 className="text-8xl font-wedding text-[var(--primary)] mb-3 text-center">
+                <h3 className="text-7xl font-wedding text-[var(--primary)] mb-3 text-center">
                   Accessibilité
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-justify leading-relaxed">
@@ -385,7 +385,7 @@ export default function InfoSection() {
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
                   />
                 </div>
-                <h3 className="text-8xl font-wedding text-[var(--primary)] mb-3 text-center">
+                <h3 className="text-7xl font-wedding text-[var(--primary)] mb-3 text-center">
                   Côté Météo
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-justify leading-relaxed">
@@ -522,7 +522,7 @@ export default function InfoSection() {
 
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-lg text-[var(--dark)] mb-8">
-              Vous avez une question à 2 h du matin parce que vous hésitez entre
+              Vous avez une question à 2h du matin parce que vous hésitez entre
               la robe verte et un noeud papillon, entre la robe jaune et une
               cravate ? On est là !
             </p>

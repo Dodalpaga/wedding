@@ -60,7 +60,7 @@ export default function Hero() {
         </div>
 
         {/* Indicateur de scroll */}
-        <div className="animate-bounce">
+        <div className="animate-bounce mb-16">
           <svg
             className="w-6 h-6 text-[var(--accent)] mx-auto"
             fill="none"
