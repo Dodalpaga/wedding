@@ -1,7 +1,7 @@
 import Hero from '@/components/Hero';
 import InfoSection from '@/components/InfoSection';
 import Footer from '@/components/Footer';
-import Trailing from '@/components/Tailing';
+import Trailing from '@/components/Trailing';
 
 export default function Home() {
   return (
