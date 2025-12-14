@@ -228,7 +228,7 @@ export default function InfoSection() {
       {/* Section Informations */}
       <section id="infos" className="py-20 bg-[var(--accent)]">
         <div className="container mx-auto px-4">
-          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-8">
+          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-8 max-sm:text-8xl">
             Informations pratiques
           </h2>
 
@@ -239,7 +239,7 @@ export default function InfoSection() {
                 <div className="text-center mb-6">
                   <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
                 </div>
-                <h3 className="text-7xl font-wedding text-[var(--primary)] mb-4 text-center">
+                <h3 className="text-7xl font-wedding text-[var(--primary)] mb-4 text-center max-sm:text-6xl">
                   Le Domaine d'en Naudet
                 </h3>
                 <p className="text-[var(--dark)] text-justify leading-relaxed">
@@ -280,7 +280,7 @@ export default function InfoSection() {
                   <Event sx={{ fontSize: 50, color: 'var(--secondary)' }} />
                 </div>
 
-                <h3 className="text-7xl font-wedding text-[var(--primary)] mb-3 text-center">
+                <h3 className="text-7xl font-wedding text-[var(--primary)] mb-3 text-center max-sm:text-6xl">
                   Planning
                 </h3>
 
@@ -414,7 +414,7 @@ export default function InfoSection() {
       {/* Section Confirmation et Galerie */}
       <section id="confirmation" className="py-20 bg-[var(--primary)]">
         <div className="container mx-auto px-4">
-          <h2 className="text-9xl font-wedding text-center text-[var(--accent)] mb-8">
+          <h2 className="text-9xl font-wedding text-center text-[var(--accent)] mb-8 max-sm:text-8xl">
             Votre espace personnel
           </h2>
 
@@ -516,7 +516,7 @@ export default function InfoSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)] via-[var(--primary)]/5 to-[var(--accent)]"></div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-8">
+          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-8 max-sm:text-8xl">
             Nous contacter
           </h2>
 
