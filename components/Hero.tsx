@@ -58,23 +58,23 @@ export default function Hero() {
         <div className="text-2xl md:text-3xl font-light text-[var(--accent)] mb-12">
           17 Juillet 2027
         </div>
-      </div>
 
-      {/* Indicateur de scroll */}
-      <div className="transform -translate-x-1/2 animate-bounce z-10">
-        <svg
-          className="w-6 h-6 text-[var(--accent)]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 14l-7 7m0 0l-7-7m7 7V3"
-          />
-        </svg>
+        {/* Indicateur de scroll */}
+        <div className="animate-bounce">
+          <svg
+            className="w-6 h-6 text-[var(--accent)] mx-auto"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
+        </div>
       </div>
     </section>
   );
