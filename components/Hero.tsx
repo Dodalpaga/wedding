@@ -61,7 +61,7 @@ export default function Hero() {
       </div>
 
       {/* Indicateur de scroll */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
+      <div className="transform -translate-x-1/2 animate-bounce z-10">
         <svg
           className="w-6 h-6 text-[var(--accent)]"
           fill="none"

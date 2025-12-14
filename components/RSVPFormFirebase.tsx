@@ -225,7 +225,7 @@ export default function RSVPFormFirebase({
               </span>
             </div>
             <h2 className="text-5xl font-wedding text-[var(--primary)] mb-4">
-              Merci pour ta confirmation !
+              Confirmation enregistrée !
             </h2>
             <p className="text-lg text-[var(--dark)] mb-6">
               La présence de <strong>{membreSelectionne}</strong> a bien été

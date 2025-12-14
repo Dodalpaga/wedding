@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import VillaIcon from '@mui/icons-material/Villa';
 import EmailIcon from '@mui/icons-material/Email';
-import LocalParkingIcon from '@mui/icons-material/LocalParking';
+import DirectionsCar from '@mui/icons-material/DirectionsCar';
+import LocationOn from '@mui/icons-material/LocationOn';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import Event from '@mui/icons-material/Event';
 import QrCode from '@mui/icons-material/QrCode';
@@ -227,7 +228,7 @@ export default function InfoSection() {
       {/* Section Informations */}
       <section id="infos" className="py-20 bg-[var(--accent)]">
         <div className="container mx-auto px-4">
-          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
+          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-8">
             Informations pratiques
           </h2>
 
@@ -243,10 +244,10 @@ export default function InfoSection() {
                 </h3>
                 <p className="text-[var(--dark)] text-justify leading-relaxed">
                   Niché entre <strong>forêts de chênes centenaires</strong> et
-                  courbes douces des collines tarnaises, le Domaine d'en Naudet
+                  courbes douces des collines Tarnaises, le Domaine d'en Naudet
                   est un véritable <strong>havre de paix</strong> où le charme
-                  de la campagne rencontre l'élégance d'un lieu de réception
-                  authentique.
+                  de la campagne rencontre l'élégance d'un lieu{' '}
+                  <strong>authentique</strong>.
                   <br />
                   <br />
                   En arrivant, vous emprunterez une{' '}
@@ -307,8 +308,8 @@ export default function InfoSection() {
                         </span>
                       </td>
                       <td className="text-justify pt-3">
-                        Le <strong>cœur de la célébration</strong> : cérémonie
-                        laïque sous le ciel tarnais, vin d'honneur, photos,
+                        Le <strong>cœur des festivités</strong> : cérémonie
+                        laïque sous le ciel Tarnais, vin d'honneur, photos,
                         jeux, repas puis <em>soirée dansante</em> jusqu'au{' '}
                         <strong>bout de la nuit</strong> — ou jusqu'à ce que vos
                         pieds demandent grâce.
@@ -331,6 +332,12 @@ export default function InfoSection() {
                   </tbody>
                 </table>
 
+                <div className="text-[var(--secondary)] tracking-wider mb-4">
+                  <strong>Note</strong> : Le programme détaillé est en cours de
+                  construction. Nous vous tiendrons au courant par mail des
+                  nouvelles informations
+                </div>
+
                 <div className="text-center">
                   <span className="text-[var(--secondary)] font-semibold uppercase tracking-wider">
                     Cérémonie en extérieur prévue
@@ -341,27 +348,34 @@ export default function InfoSection() {
               {/* Parking */}
               <AnimatedCard className="p-6 max-[525px]:col-span-3">
                 <div className="text-center mb-4">
-                  <LocalParkingIcon
+                  <DirectionsCar
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
                   />
                 </div>
                 <h3 className="text-8xl font-wedding text-[var(--primary)] mb-3 text-center">
-                  Parking
+                  Accessibilité
                 </h3>
                 <p className="text-[var(--dark)] text-sm text-justify leading-relaxed">
                   Un <strong>parking privé</strong> est disponible directement
                   sur le domaine, avec <strong>plus de 100 places</strong>. Vous
-                  pourrez donc arriver en toute sérénité, sans avoir à marcher
-                  des kilomètres ni à chercher en pleine campagne où poser votre
-                  voiture.
+                  pourrez donc arriver en toute sérénité.
                   <br />
                   <br />
-                  Si vous souhaitez organiser du <strong>
-                    covoiturage
-                  </strong>{' '}
-                  avec d'autres invités, n'hésitez pas à nous le signaler : nous
-                  pourrons vous mettre en relation.
+                  Si vous avez des difficultés à organiser votre transport
+                  contactez nous, nousvous mettrons en relation avec des
+                  personnes pouvant proposer du covoiturage.
                 </p>
+                <div className="text-l mt-6 pb-6 underline text-center">
+                  <a
+                    href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x12ae7c9aacde77c7:0x2fc264a84876dbee?sa=X&ved=1t:8290&ictx=111"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-[var(--primary)] hover:text-[var(--secondary)] transition-colors"
+                  >
+                    <LocationOn sx={{ fontSize: 20 }} />
+                    <span>2365 route de Pratviel, 81220 Teyssode</span>
+                  </a>
+                </div>
               </AnimatedCard>
 
               {/* Météo */}
@@ -377,16 +391,17 @@ export default function InfoSection() {
                 <p className="text-[var(--dark)] text-sm text-justify leading-relaxed">
                   Le mois de juillet dans le Tarn est synonyme de{' '}
                   <strong>ciel bleu</strong>, de chaleur douce en soirée et de{' '}
-                  <strong>belles journées lumineuses</strong>. Les après-midis
-                  tournent souvent autour de <strong>30–35°C</strong>, mais le
+                  <strong>belles journées lumineuses</strong>. Les après-midi
+                  tournent souvent autour de <strong>35°C</strong>, mais le
                   domaine offre de <strong>nombreux coins d'ombre</strong>, des
                   tonnelles naturelles et une <em>brise légère</em> venue des
                   collines.
                   <br />
                   <br />
                   La cérémonie et une partie des festivités auront lieu en
-                  extérieur : pensez <strong>crème solaire</strong>,{' '}
-                  <strong>lunettes</strong> et pourquoi pas un
+                  extérieur : n'oubliez pas d'apporter votre{' '}
+                  <strong>crème solaire</strong>, vos <strong>lunettes</strong>{' '}
+                  et pourquoi pas un
                   <strong> éventail</strong> pour ajouter une petite touche{' '}
                   <em>bohème chic</em> !
                 </p>
@@ -399,7 +414,7 @@ export default function InfoSection() {
       {/* Section Confirmation et Galerie */}
       <section id="confirmation" className="py-20 bg-[var(--primary)]">
         <div className="container mx-auto px-4">
-          <h2 className="text-9xl font-wedding text-center text-[var(--accent)] mb-16">
+          <h2 className="text-9xl font-wedding text-center text-[var(--accent)] mb-8">
             Votre espace personnel
           </h2>
 
@@ -413,7 +428,7 @@ export default function InfoSection() {
                 Chaque invitation contient un <strong>code unique</strong> qui
                 vous permet de confirmer votre présence, accéder à la galerie
                 photos, et nous indiquer vos préférences (allergies, régimes
-                particuliers, présence d'enfants).
+                particuliers).
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -471,8 +486,20 @@ export default function InfoSection() {
                 </div>
               </form>
 
-              <p className="text-center text-[var(--primary)] max-w-2xl mx-auto mb-8"></p>
-              <div className="mt-6 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 p-4 rounded-lg">
+              <div className="mt-6 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 rounded-lg p-4">
+                <p className="text-m text-[var(--dark)] text-center">
+                  Vous ne retrouvez pas votre code ?{' '}
+                  <a
+                    href="mailto:solenne.lamaud@gmail.com,dorian.voydie@gmail.com"
+                    className="font-bold underline text-[var(--primary)]
+                  hover:text-[var(--secondary)] transition-colors"
+                  >
+                    Contactez-nous
+                  </a>
+                </p>
+              </div>
+
+              <div className="bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 p-4 rounded-lg">
                 <p className="text-m text-[var(--dark)] text-center">
                   📅 <strong>Date limite :</strong> Pour des raisons
                   d'organisation, nous vous demandons de remplir ce formulaire
@@ -490,14 +517,15 @@ export default function InfoSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)] via-[var(--primary)]/5 to-[var(--accent)]"></div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-16">
+          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-8">
             Nous contacter
           </h2>
 
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-lg text-[var(--dark)] mb-8">
               Vous avez une question à 2 h du matin parce que vous hésitez entre
-              la robe verte ou la robe jaune ? On est là !
+              la robe verte ou la robe jaune ? Un noeud papillon ou une cravate
+              ? On est là !
             </p>
 
             <a
@@ -507,7 +535,7 @@ export default function InfoSection() {
               <div className="flex flex-row items-center">
                 <EmailIcon className="w-7 h-7 text-[var(--secondary)]" />
                 <div style={{ marginLeft: '10px' }}>
-                  Écrivez-nous à toutes les deux en cliquant ici !
+                  Écrivez-nous en cliquant ici !
                 </div>
               </div>
               <span> solenne.lamaud@gmail.com + dorian.voydie@gmail.com</span>
