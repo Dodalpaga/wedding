@@ -523,7 +523,7 @@ export default function InfoSection() {
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-lg text-[var(--dark)] mb-8">
               Vous avez une question à 2h du matin parce que vous hésitez entre
-              la robe verte et un noeud papillon, entre la robe jaune et une
+              la robe verte et la robe jaune, entre un noeud papillon et une
               cravate ? On est là !
             </p>
 
