@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import VillaIcon from '@mui/icons-material/Villa';
 import EmailIcon from '@mui/icons-material/Email';
 import LocalParkingIcon from '@mui/icons-material/LocalParking';
@@ -10,6 +11,173 @@ import Event from '@mui/icons-material/Event';
 import QrCode from '@mui/icons-material/QrCode';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+
+// Composant pour les décorations florales
+const FloralDecoration = ({
+  position,
+}: {
+  position: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+}) => {
+  const positionStyles = {
+    'top-left': 'top-2 left-2',
+    'top-right': 'top-2 right-2',
+    'bottom-left': 'bottom-2 left-2',
+    'bottom-right': 'bottom-2 right-2',
+  };
+
+  const rotations = {
+    'top-left': 0,
+    'top-right': 0,
+    'bottom-left': 0,
+    'bottom-right': 0,
+  };
+
+  return (
+    <motion.div
+      className={`absolute ${positionStyles[position]} pointer-events-none z-10`}
+      initial={{ opacity: 0, scale: 0, rotate: rotations[position] }}
+      animate={{ opacity: 1, scale: 3, rotate: rotations[position] }}
+      exit={{ opacity: 0, scale: 0 }}
+      transition={{ duration: 0.5, ease: 'backOut' }}
+    >
+      <svg
+        width="50"
+        height="50"
+        viewBox="0 0 50 50"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Feuille principale */}
+        <motion.path
+          d="M10 25 Q15 10, 25 5 Q30 10, 25 20 Q20 25, 10 25 Z"
+          fill="var(--secondary)"
+          opacity="0.4"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 0.4 }}
+          transition={{ duration: 0.8, ease: 'easeInOut' }}
+        />
+
+        {/* Petite feuille secondaire */}
+        <motion.path
+          d="M25 20 Q30 15, 35 12 Q38 16, 34 22 Q30 24, 25 20 Z"
+          fill="var(--secondary)"
+          opacity="0.3"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 0.3 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: 'easeInOut' }}
+        />
+
+        {/* Fleur - pétales */}
+        <motion.circle
+          cx="20"
+          cy="15"
+          r="4"
+          fill="var(--primary)"
+          opacity="0.6"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+        />
+        <motion.circle
+          cx="16"
+          cy="19"
+          r="3.5"
+          fill="var(--primary)"
+          opacity="0.5"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.35 }}
+        />
+        <motion.circle
+          cx="24"
+          cy="19"
+          r="3.5"
+          fill="var(--primary)"
+          opacity="0.5"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+        />
+        <motion.circle
+          cx="20"
+          cy="23"
+          r="3.5"
+          fill="var(--primary)"
+          opacity="0.5"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.4, delay: 0.45 }}
+        />
+
+        {/* Centre de la fleur */}
+        <motion.circle
+          cx="20"
+          cy="19"
+          r="3"
+          fill="var(--accent)"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3, delay: 0.5 }}
+        />
+
+        {/* Petites étincelles */}
+        <motion.circle
+          cx="30"
+          cy="8"
+          r="1.5"
+          fill="var(--secondary)"
+          opacity="0.6"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: [0, 1.2, 1], opacity: [0, 0.8, 0.6] }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        />
+        <motion.circle
+          cx="12"
+          cy="12"
+          r="1"
+          fill="var(--primary)"
+          opacity="0.5"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: [0, 1.3, 1], opacity: [0, 0.7, 0.5] }}
+          transition={{ duration: 0.6, delay: 0.65 }}
+        />
+      </svg>
+    </motion.div>
+  );
+};
+
+// Composant carte avec animations
+const AnimatedCard = ({
+  children,
+  className = '',
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      className={`bg-white rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all relative ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      transition={{ duration: 0.3 }}
+      style={{ overflow: 'visible' }}
+    >
+      <AnimatePresence>
+        {isHovered && (
+          <>
+            <FloralDecoration position="top-left" />
+            {/* <FloralDecoration position="top-right" /> */}
+            {/* <FloralDecoration position="bottom-left" /> */}
+            {/* <FloralDecoration position="bottom-right" /> */}
+          </>
+        )}
+      </AnimatePresence>
+      <div className="relative z-0">{children}</div>
+    </motion.div>
+  );
+};
 
 export default function InfoSection() {
   const router = useRouter();
@@ -25,7 +193,6 @@ export default function InfoSection() {
       return;
     }
 
-    // Redirection vers la page de confirmation avec le code
     router.push(`/confirmation/?code=${encodeURIComponent(code.trim())}`);
   };
 
@@ -39,15 +206,10 @@ export default function InfoSection() {
     setError('');
 
     try {
-      // Référence au document dans la collection 'codes_invitation'
       const codeRef = doc(db, 'codes_invitation', code.trim());
-
-      // Récupération du document
       const codeSnap = await getDoc(codeRef);
 
-      // Vérification de l'existence du code
       if (codeSnap.exists()) {
-        // Accès accordé - redirection vers la galerie avec le code
         router.push(`/gallerie/?code=${encodeURIComponent(code.trim())}`);
       } else {
         setError("Code invalide. Veuillez vérifier votre code d'invitation.");
@@ -69,28 +231,35 @@ export default function InfoSection() {
             Informations pratiques
           </h2>
 
-          {/* Nouvelle disposition : 2 colonnes principales */}
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Colonne 1 : Le Lieu */}
-            <div className="bg-white rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all overflow-hidden flex flex-col">
+            <AnimatedCard className="flex flex-col">
               <div className="p-8 flex-grow">
                 <div className="text-center mb-6">
                   <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
                 </div>
-                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-4 text-center">
+                <h3 className="text-8xl font-wedding text-[var(--primary)] mb-4 text-center">
                   Le Domaine d'en Naudet
                 </h3>
-                <p className="text-[var(--dark)] text-justify">
-                  Niché entre forêts de chênes et courbes douces des collines
-                  tarnaises, le Domaine d’en Naudet est un véritable havre de
-                  paix où le charme de la campagne rencontre l’élégance d’un
-                  lieu de réception authentique. En arrivant, vous emprunterez
-                  une longue allée bordée d’arbres centenaires avant de
-                  découvrir une cour chaleureuse, une grange aux pierres dorées
-                  et des espaces extérieurs baignés de lumière. C’est un endroit
-                  qui respire la tranquillité, le partage et les moments
-                  suspendus — parfait pour accueillir une journée dont nous
-                  espérons qu’elle restera gravée dans les mémoires.
+                <p className="text-[var(--dark)] text-justify leading-relaxed">
+                  Niché entre <strong>forêts de chênes centenaires</strong> et
+                  courbes douces des collines tarnaises, le Domaine d'en Naudet
+                  est un véritable <strong>havre de paix</strong> où le charme
+                  de la campagne rencontre l'élégance d'un lieu de réception
+                  authentique.
+                  <br />
+                  <br />
+                  En arrivant, vous emprunterez une{' '}
+                  <strong>longue allée bordée d'arbres majestueux</strong> avant
+                  de découvrir une cour chaleureuse, une{' '}
+                  <strong>grange aux pierres dorées</strong> et des espaces
+                  extérieurs <strong>baignés de lumière</strong>.
+                  <br />
+                  <br />
+                  C'est un endroit qui respire la <em>tranquillité</em>, le{' '}
+                  <em>partage</em> et les <em>moments suspendus</em> — l'écrin
+                  parfait pour accueillir une journée dont nous espérons qu'elle
+                  restera <strong>gravée dans les mémoires</strong>.
                 </p>
               </div>
               <img
@@ -98,59 +267,65 @@ export default function InfoSection() {
                   process.env.NEXT_PUBLIC_BASE_PATH || ''
                 }/images/domaine.svg`}
                 alt="Domaine d'en Naudet"
-                className="w-full"
+                className="w-full rounded-b-lg"
               />
-            </div>
+            </AnimatedCard>
 
             {/* Colonne 2 : Grille 2x2 */}
             <div className="grid grid-cols-2 gap-4 max-[525px]:grid-cols-3">
               {/* Planning */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all col-span-2 max-[525px]:col-span-3">
+              <AnimatedCard className="p-6 col-span-2 max-[525px]:col-span-3">
                 <div className="text-center mb-4">
                   <Event sx={{ fontSize: 50, color: 'var(--secondary)' }} />
                 </div>
 
-                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
+                <h3 className="text-8xl font-wedding text-[var(--primary)] mb-3 text-center">
                   Planning
                 </h3>
 
-                <table className="w-full text-[var(--dark)] text-sm mb-4 border-collapse">
+                <table className="w-full text-[var(--dark)] text-m mb-4 border-collapse">
                   <tbody>
-                    <tr className="align-top">
-                      <td className="w-1/6 pr-3 text-right">
-                        <span className="font-wedding text-[var(--primary)] text-4xl">
+                    <tr className="items-center">
+                      <td className="w-1/6 pr-4 text-right">
+                        <span className="font-wedding text-[var(--primary)] text-6xl">
                           Vendredi
                         </span>
                       </td>
                       <td className="text-justify">
-                        Accueil des personnes arrivant de loin autour d’un repas
-                        improvisé, l’occasion de se retrouver tranquillement
-                        après le voyage.
+                        Accueil des <strong>voyageurs de loin</strong> autour
+                        d'un repas improvisé — l'occasion de se retrouver{' '}
+                        <em>tranquillement</em> après la route, de poser les
+                        valises et de <strong>commencer les festivités</strong>{' '}
+                        en douceur.
                       </td>
                     </tr>
 
-                    <tr className="align-top">
-                      <td className="pt-3 pr-3 text-right">
-                        <span className="font-wedding text-[var(--primary)] text-4xl">
+                    <tr className="items-center">
+                      <td className="pt-3 pr-4 text-right">
+                        <span className="font-wedding text-[var(--primary)] text-6xl">
                           Samedi
                         </span>
                       </td>
                       <td className="text-justify pt-3">
-                        Le cœur de la célébration : cérémonie laïque, vin
-                        d’honneur, photos, jeux, repas puis soirée dansante
-                        jusqu’au bout de la nuit.
+                        Le <strong>cœur de la célébration</strong> : cérémonie
+                        laïque sous le ciel tarnais, vin d'honneur, photos,
+                        jeux, repas puis <em>soirée dansante</em> jusqu'au{' '}
+                        <strong>bout de la nuit</strong> — ou jusqu'à ce que vos
+                        pieds demandent grâce.
                       </td>
                     </tr>
 
-                    <tr className="align-top">
-                      <td className="pt-3 pr-3 text-right">
-                        <span className="font-wedding text-[var(--primary)] text-4xl">
+                    <tr className="items-center">
+                      <td className="pt-3 pr-4 text-right">
+                        <span className="font-wedding text-[var(--primary)] text-6xl">
                           Dimanche
                         </span>
                       </td>
                       <td className="text-justify pt-3">
-                        Brunch convivial pour prolonger ces beaux moments avant
-                        la fin du week-end et les départs.
+                        Brunch convivial pour{' '}
+                        <em>prolonger ces beaux moments</em>, échanger quelques{' '}
+                        <strong>derniers rires</strong> et se quitter avec la
+                        promesse de se revoir bientôt.
                       </td>
                     </tr>
                   </tbody>
@@ -161,49 +336,61 @@ export default function InfoSection() {
                     Cérémonie en extérieur prévue
                   </span>
                 </div>
-              </div>
+              </AnimatedCard>
 
               {/* Parking */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all max-[525px]:col-span-3">
+              <AnimatedCard className="p-6 max-[525px]:col-span-3">
                 <div className="text-center mb-4">
                   <LocalParkingIcon
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
                   />
                 </div>
-                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
+                <h3 className="text-8xl font-wedding text-[var(--primary)] mb-3 text-center">
                   Parking
                 </h3>
-                <p className="text-[var(--dark)] text-sm text-justify">
-                  Un parking privé est disponible directement sur le domaine,
-                  avec plus de 100 places. Vous pourrez donc arriver en toute
-                  sérénité, sans avoir à marcher des kilomètres ni à chercher en
-                  pleine campagne où poser votre voiture. Si vous souhaitez
-                  organiser du covoiturage avec d’autres invités, n’hésitez pas
-                  à nous le signaler : nous pourrons vous mettre en relation.
+                <p className="text-[var(--dark)] text-sm text-justify leading-relaxed">
+                  Un <strong>parking privé</strong> est disponible directement
+                  sur le domaine, avec <strong>plus de 100 places</strong>. Vous
+                  pourrez donc arriver en toute sérénité, sans avoir à marcher
+                  des kilomètres ni à chercher en pleine campagne où poser votre
+                  voiture.
+                  <br />
+                  <br />
+                  Si vous souhaitez organiser du <strong>
+                    covoiturage
+                  </strong>{' '}
+                  avec d'autres invités, n'hésitez pas à nous le signaler : nous
+                  pourrons vous mettre en relation.
                 </p>
-              </div>
+              </AnimatedCard>
 
               {/* Météo */}
-              <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20 transition-all max-[525px]:col-span-3">
+              <AnimatedCard className="p-6 max-[525px]:col-span-3">
                 <div className="text-center mb-4">
                   <WbSunnyIcon
                     sx={{ fontSize: 50, color: 'var(--secondary)' }}
                   />
                 </div>
-                <h3 className="text-6xl font-wedding text-[var(--primary)] mb-3 text-center">
+                <h3 className="text-8xl font-wedding text-[var(--primary)] mb-3 text-center">
                   Côté Météo
                 </h3>
-                <p className="text-[var(--dark)] text-sm text-justify">
-                  Le mois de juillet dans le Tarn est synonyme de ciel bleu, de
-                  chaleur douce en soirée et de belles journées lumineuses. Les
-                  après-midis tournent souvent autour de 30–35°C, mais le
-                  domaine offre de nombreux coins d’ombre, des tonnelles
-                  naturelles et une brise légère venue des collines. La
-                  cérémonie et une partie des festivités auront lieu en
-                  extérieur : pensez crème solaire, lunettes et pourquoi pas un
-                  éventail pour ajouter une petite touche bohème chic !
+                <p className="text-[var(--dark)] text-sm text-justify leading-relaxed">
+                  Le mois de juillet dans le Tarn est synonyme de{' '}
+                  <strong>ciel bleu</strong>, de chaleur douce en soirée et de{' '}
+                  <strong>belles journées lumineuses</strong>. Les après-midis
+                  tournent souvent autour de <strong>30–35°C</strong>, mais le
+                  domaine offre de <strong>nombreux coins d'ombre</strong>, des
+                  tonnelles naturelles et une <em>brise légère</em> venue des
+                  collines.
+                  <br />
+                  <br />
+                  La cérémonie et une partie des festivités auront lieu en
+                  extérieur : pensez <strong>crème solaire</strong>,{' '}
+                  <strong>lunettes</strong> et pourquoi pas un
+                  <strong> éventail</strong> pour ajouter une petite touche{' '}
+                  <em>bohème chic</em> !
                 </p>
-              </div>
+              </AnimatedCard>
             </div>
           </div>
         </div>
@@ -249,7 +436,7 @@ export default function InfoSection() {
                     className="w-full px-4 py-3 border-2 border-[var(--secondary)]/30 rounded-lg focus:border-[var(--secondary)] focus:outline-none text-center text-lg uppercase tracking-wider"
                   />
                   {error && (
-                    <p className="text-red-500 text-sm mt-2 text-center">
+                    <p className="text-red-500 text-m mt-2 text-center">
                       {error}
                     </p>
                   )}
@@ -286,7 +473,7 @@ export default function InfoSection() {
 
               <p className="text-center text-[var(--primary)] max-w-2xl mx-auto mb-8"></p>
               <div className="mt-6 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 p-4 rounded-lg">
-                <p className="text-sm text-[var(--dark)] text-center">
+                <p className="text-m text-[var(--dark)] text-center">
                   📅 <strong>Date limite :</strong> Pour des raisons
                   d'organisation, nous vous demandons de remplir ce formulaire
                   le plus tôt possible et avant le{' '}
