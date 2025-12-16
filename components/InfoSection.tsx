@@ -232,10 +232,10 @@ export default function InfoSection() {
             Informations pratiques
           </h2>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-8 lg:items-start">
             {/* Colonne 1 : Le Lieu */}
             <AnimatedCard className="flex flex-col">
-              <div className="p-8 flex-grow">
+              <div className="p-8">
                 <div className="text-center mb-6">
                   <VillaIcon sx={{ fontSize: 60, color: 'var(--secondary)' }} />
                 </div>
@@ -268,12 +268,12 @@ export default function InfoSection() {
                   process.env.NEXT_PUBLIC_BASE_PATH || ''
                 }/images/domaine.svg`}
                 alt="Domaine d'en Naudet"
-                className="w-full rounded-b-lg"
+                className="w-full rounded-b-lg object-cover min-h-[500px]"
               />
             </AnimatedCard>
 
             {/* Colonne 2 : Grille 2x2 */}
-            <div className="grid grid-cols-2 gap-4 max-[525px]:grid-cols-3">
+            <div className="grid grid-cols-2 gap-4 max-[525px]:grid-cols-3 auto-rows-min">
               {/* Planning */}
               <AnimatedCard className="p-6 col-span-2 max-[525px]:col-span-3">
                 <div className="text-center mb-4">
