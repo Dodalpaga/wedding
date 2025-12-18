@@ -40,7 +40,7 @@ export default function HebergementPersonnalise() {
         'Cadre champêtre',
         'Plusieurs gammes de prix',
       ],
-      image: '/hebergements/sainte_catherine.jpg',
+      image: '/wedding/hebergements/sainte_catherine.jpg',
     },
     {
       type: 'Gîte',
@@ -57,7 +57,7 @@ export default function HebergementPersonnalise() {
         "Cuisine d'été avec plancha",
         'Adapté aux familles',
       ],
-      image: '/hebergements/l_heritier.jpg',
+      image: '/wedding/hebergements/l_heritier.jpg',
     },
     {
       type: 'Gîte',
@@ -75,7 +75,7 @@ export default function HebergementPersonnalise() {
         'Jacuzzi',
         'Salle de fitness',
       ],
-      image: '/hebergements/segur.jpg',
+      image: '/wedding/hebergements/segur.jpg',
     },
     {
       type: "Chambres d'hôtes",
@@ -94,7 +94,7 @@ export default function HebergementPersonnalise() {
         'Bar et terrasse',
         'Réservation à la chambre',
       ],
-      image: '/hebergements/mas_de_marie.jpg',
+      image: '/wedding/hebergements/mas_de_marie.jpg',
     },
     {
       type: 'Maison',
@@ -112,7 +112,7 @@ export default function HebergementPersonnalise() {
         '2 espaces extérieurs',
         'Au calme avec les chevaux',
       ],
-      image: '/hebergements/chevaux_en_belaval.jpg',
+      image: '/wedding/hebergements/chevaux_en_belaval.jpg',
     },
     {
       type: 'Domaine',
@@ -131,7 +131,7 @@ export default function HebergementPersonnalise() {
         'Pierre, brique et bois',
         'Grand jardin',
       ],
-      image: '/hebergements/nature_et_cocagne.jpg',
+      image: '/wedding/hebergements/nature_et_cocagne.jpg',
     },
     {
       type: 'Gîte',
@@ -150,7 +150,7 @@ export default function HebergementPersonnalise() {
         'WiFi haut débit',
         'Grand espace vert',
       ],
-      image: '/hebergements/le_leou.jpg',
+      image: '/wedding/hebergements/le_leou.jpg',
     },
     {
       type: 'Maison',
@@ -170,7 +170,7 @@ export default function HebergementPersonnalise() {
         'WiFi gratuit',
         'Excentré',
       ],
-      image: '/hebergements/maison_vermeille.jpg',
+      image: '/wedding/hebergements/maison_vermeille.jpg',
     },
     {
       type: 'Gîte',
@@ -184,7 +184,7 @@ export default function HebergementPersonnalise() {
       capacity: 6,
       description: 'Gîte confortable pour petits groupes',
       features: ['3 chambres', 'Cadre calme', 'Centre ville'],
-      image: '/hebergements/impasse_boeuf.jpg',
+      image: '/wedding/hebergements/impasse_boeuf.jpg',
     },
   ];
 
