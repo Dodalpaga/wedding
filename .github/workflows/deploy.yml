@@ -34,9 +34,6 @@ jobs:
             echo "command=ci" >> $GITHUB_OUTPUT
             echo "runner=npx --no-install" >> $GITHUB_OUTPUT
             exit 0
-          else
-            echo "Unable to determine package manager"
-            exit 1
           fi
 
       - name: Setup Node
@@ -61,10 +58,6 @@ jobs:
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }} --legacy-peer-deps
 
-      - name: Debug Secrets
-        run: |
-          echo "NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}"
-
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
@@ -76,21 +69,16 @@ jobs:
           NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
 
-          # Codes d'invitation - Configuration principale
+          # Codes d'invitation
           NEXT_PUBLIC_CODES_RSVP: ${{ secrets.NEXT_PUBLIC_CODES_RSVP }}
           NEXT_PUBLIC_CODES_AVEC_HEBERGEMENT: ${{ secrets.NEXT_PUBLIC_CODES_AVEC_HEBERGEMENT }}
           NEXT_PUBLIC_CODES_VIN_HONNEUR: ${{ secrets.NEXT_PUBLIC_CODES_VIN_HONNEUR }}
-
-          # Codes d'invitation - Groupes d'hébergement
-          NEXT_PUBLIC_CODES_HEBERGEMENT_VOYDIE: ${{ secrets.NEXT_PUBLIC_CODES_HEBERGEMENT_VOYDIE }}
-          NEXT_PUBLIC_CODES_HEBERGEMENT_LAMAUD: ${{ secrets.NEXT_PUBLIC_CODES_HEBERGEMENT_LAMAUD }}
-          NEXT_PUBLIC_CODES_AIRBNB: ${{ secrets.NEXT_PUBLIC_CODES_AIRBNB }}
-          NEXT_PUBLIC_CODES_COUPLES: ${{ secrets.NEXT_PUBLIC_CODES_COUPLES }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
+
   deploy:
     environment:
       name: github-pages

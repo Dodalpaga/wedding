@@ -1,31 +1,13 @@
 'use client';
-
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, Suspense } from 'react';
-import Hebergement from '@/components/Hebergement';
+import { Suspense } from 'react';
+import HebergementPersonnalise from '@/components/Hebergement';
 import ReturnBackButton from '@/components/BackButton';
 
 function HebergementContent() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const code = searchParams.get('code');
-
-  // Rediriger si pas de code
-  useEffect(() => {
-    if (!code) {
-      router.push('/');
-    }
-  }, [code, router]);
-
-  // Ne rien afficher pendant la redirection
-  if (!code) {
-    return null;
-  }
-
   return (
     <div>
       <ReturnBackButton />
-      <Hebergement code={code} />
+      <HebergementPersonnalise />
     </div>
   );
 }

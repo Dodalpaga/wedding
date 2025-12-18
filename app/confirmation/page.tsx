@@ -167,7 +167,7 @@ function ConfirmationContent() {
       {afficherHebergement && (
         <div className="max-w-3xl mx-auto mb-8 px-4">
           <Link
-            href={`/hebergement?code=${inviteData.code}`}
+            href={`/hebergement`}
             className="block bg-gradient-to-r from-[var(--secondary)] to-[var(--primary)] text-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all text-center"
           >
             <div className="flex items-center justify-center gap-3 mb-2">
