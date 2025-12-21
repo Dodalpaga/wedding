@@ -13,6 +13,8 @@ import {
   getCodesVinHonneur,
   getCodesRSVP,
 } from '@/config/codes';
+import LocalBar from '@mui/icons-material/LocalBar';
+import Home from '@mui/icons-material/Home';
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
@@ -126,25 +128,12 @@ function ConfirmationContent() {
   // Affichage du formulaire si tout est OK
   return (
     <div>
-      <link
-        href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        rel="stylesheet"
-      />
       <h2 className="text-6xl md:text-8xl font-wedding text-center text-[var(--primary)] mb-4">
         Confirmer sa présence
       </h2>
-      {/* <p className="text-center text-[var(--dark)] mb-4">
-        Bonjour <strong>{inviteData.code}</strong> 👋
-      </p> */}
       <p className="max-w-6xl mx-auto px-6 text-[var(--dark)] whitespace-pre-line text-justify">
         {inviteData.message}
       </p>
-      {/* <div
-        className="max-w-6xl mx-auto px-4 text-center text-[var(--dark)] mb-4"
-        dangerouslySetInnerHTML={{
-          __html: inviteData.message.replace(/\n/g, '<br/>'),
-        }}
-      /> */}
       <div className="w-full max-w-6xl mx-auto px-4 mb-4 flex justify-end">
         <div className="w-full max-w-[200px]">
           <Signature theme="dark" />
@@ -156,7 +145,7 @@ function ConfirmationContent() {
         {isVinHonneurOnly && (
           <div className="bg-purple-50 border-2 border-purple-300 p-4 rounded-lg">
             <p className="text-center text-purple-800 flex items-center justify-center gap-2">
-              <span className="material-icons">local_bar</span>
+              <LocalBar />
               <strong>Invitation : Cérémonie & Vin d'Honneur</strong>
             </p>
           </div>
@@ -171,7 +160,7 @@ function ConfirmationContent() {
             className="block bg-gradient-to-r from-[var(--secondary)] to-[var(--primary)] text-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all text-center"
           >
             <div className="flex items-center justify-center gap-3 mb-2">
-              <span className="material-icons text-3xl">home</span>
+              <Home sx={{ fontSize: 30 }} />
               <h3 className="text-4xl font-wedding">Où dormir ?</h3>
             </div>
             <p className="text-sm opacity-90">
@@ -195,10 +184,6 @@ function ConfirmationContent() {
 export default function Page() {
   return (
     <div className="pt-4 md:pt-4">
-      <link
-        href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        rel="stylesheet"
-      />
       <ReturnHomeButton />
       <Suspense
         fallback={

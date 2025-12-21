@@ -10,6 +10,13 @@ import {
   onSnapshot,
 } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
+import NightlightRound from '@mui/icons-material/NightlightRound';
+import LunchDining from '@mui/icons-material/LunchDining';
+import Favorite from '@mui/icons-material/Favorite';
+import BrunchDining from '@mui/icons-material/BrunchDining';
+import LockOutlined from '@mui/icons-material/LockOutlined';
+import BarChart from '@mui/icons-material/BarChart';
+import Logout from '@mui/icons-material/Logout';
 
 type SortField =
   | 'code'
@@ -323,19 +330,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
             <div className="inline-block bg-gradient-to-br from-[#003b4e] to-[#137e41] p-4 rounded-full mb-4">
-              <svg
-                className="w-12 h-12 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
+              <LockOutlined sx={{ fontSize: 48, color: 'white' }} />
             </div>
             <h1 className="text-3xl font-bold text-gray-800">
               Admin Dashboard
@@ -382,19 +377,7 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
+              <BarChart sx={{ fontSize: 32, color: 'white' }} />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">Dashboard Admin</h1>
@@ -408,19 +391,7 @@ export default function AdminDashboard() {
             onClick={handleLogout}
             className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg flex items-center gap-2"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
+            <Logout sx={{ fontSize: 20 }} />
             Déconnexion
           </button>
         </div>
@@ -467,45 +438,37 @@ export default function AdminDashboard() {
             Présence par événement
           </h3>
 
-          {/* Ajoute cette ligne juste après le <h3> (une seule fois) */}
-          <link
-            href="https://fonts.googleapis.com/icon?family=Material+Icons"
-            rel="stylesheet"
-          />
-
           <div className="space-y-5">
             {[
               {
                 key: 'vendredi_soir',
                 label: 'Vendredi soir',
-                icon: 'nightlight_round',
+                Icon: NightlightRound,
                 color: 'from-indigo-500 to-purple-600',
               },
               {
                 key: 'samedi_midi',
                 label: 'Samedi midi',
-                icon: 'lunch_dining',
+                Icon: LunchDining,
                 color: 'from-orange-400 to-red-500',
               },
               {
                 key: 'samedi_soir',
                 label: 'Samedi après-midi / soir (Mariage)',
-                icon: 'favorite',
+                Icon: Favorite,
                 color: 'from-pink-500 to-rose-600',
               },
               {
                 key: 'dimanche_brunch',
                 label: 'Dimanche brunch',
-                icon: 'brunch_dining',
+                Icon: BrunchDining,
                 color: 'from-amber-400 to-orange-500',
               },
             ].map((evt) => (
               <div key={evt.key}>
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-semibold text-gray-700 flex items-center gap-3">
-                    <span className="material-icons text-2xl text-[#137e41]">
-                      {evt.icon}
-                    </span>
+                    <evt.Icon sx={{ fontSize: 28, color: '#137e41' }} />
                     {evt.label}
                   </span>
                   <span className="text-2xl font-bold text-[#137e41]">

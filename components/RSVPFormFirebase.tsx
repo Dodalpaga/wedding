@@ -11,7 +11,21 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { serverTimestamp } from 'firebase/firestore';
-// 1. MODIFIER L'INTERFACE Membre
+import CheckCircle from '@mui/icons-material/CheckCircle';
+import Cancel from '@mui/icons-material/Cancel';
+import Schedule from '@mui/icons-material/Schedule';
+import ChevronRight from '@mui/icons-material/ChevronRight';
+import TouchApp from '@mui/icons-material/TouchApp';
+import Close from '@mui/icons-material/Close';
+import Email from '@mui/icons-material/Email';
+import Nightlight from '@mui/icons-material/Nightlight';
+import LunchDining from '@mui/icons-material/LunchDining';
+import Favorite from '@mui/icons-material/Favorite';
+import BrunchDining from '@mui/icons-material/BrunchDining';
+import Comment from '@mui/icons-material/Comment';
+import Send from '@mui/icons-material/Send';
+import Error from '@mui/icons-material/Error';
+
 interface Membre {
   nom: string;
   email: string;
@@ -144,7 +158,7 @@ export default function RSVPFormFirebase({
         }));
       }
     }
-  }, [membreSelectionne, membres]); // ← "membres" est crucial ici !
+  }, [membreSelectionne, membres]);
 
   const handleSubmit = async () => {
     if (!membreSelectionne) {
@@ -220,9 +234,7 @@ export default function RSVPFormFirebase({
         <div className="max-w-2xl w-full bg-white p-8 rounded-2xl shadow-2xl border-2 border-green-400">
           <div className="text-center">
             <div className="inline-block bg-green-100 p-6 rounded-full mb-6">
-              <span className="material-icons text-green-500 text-6xl">
-                check_circle
-              </span>
+              <CheckCircle sx={{ fontSize: 60, color: 'rgb(34, 197, 94)' }} />
             </div>
             <h2 className="text-5xl font-wedding text-[var(--primary)] mb-4">
               Confirmation enregistrée !
@@ -270,10 +282,6 @@ export default function RSVPFormFirebase({
 
   return (
     <section className="py-5 bg-gradient-to-b from-[var(--accent)] via-white to-[var(--accent)]">
-      <link
-        href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        rel="stylesheet"
-      />
       <div className="container mx-auto px-4">
         {/* Liste des membres du cercle */}
         {isLoading ? (
@@ -312,34 +320,25 @@ export default function RSVPFormFirebase({
                         <p className="text-sm text-gray-600 flex items-center gap-1">
                           {membre.statut === 'accepte' && (
                             <>
-                              <span
-                                className="material-icons text-green-600"
-                                style={{ fontSize: '16px' }}
-                              >
-                                check_circle
-                              </span>
+                              <CheckCircle
+                                sx={{ fontSize: 16, color: 'rgb(22, 163, 74)' }}
+                              />
                               Confirmé
                             </>
                           )}
                           {membre.statut === 'refuse' && (
                             <>
-                              <span
-                                className="material-icons text-red-600"
-                                style={{ fontSize: '16px' }}
-                              >
-                                cancel
-                              </span>
+                              <Cancel
+                                sx={{ fontSize: 16, color: 'rgb(220, 38, 38)' }}
+                              />
                               Ne vient pas
                             </>
                           )}
                           {membre.statut === 'en_attente' && (
                             <>
-                              <span
-                                className="material-icons text-gray-600"
-                                style={{ fontSize: '16px' }}
-                              >
-                                schedule
-                              </span>
+                              <Schedule
+                                sx={{ fontSize: 16, color: 'rgb(75, 85, 99)' }}
+                              />
                               En attente
                             </>
                           )}
@@ -353,9 +352,9 @@ export default function RSVPFormFirebase({
                           </p>
                         )}
                       </div>
-                      <span className="material-icons text-[var(--secondary)] flex-shrink-0 ml-2">
-                        chevron_right
-                      </span>
+                      <ChevronRight
+                        sx={{ fontSize: 24, color: 'var(--secondary)' }}
+                      />
                     </div>
                   </button>
                 ))}
@@ -367,7 +366,7 @@ export default function RSVPFormFirebase({
         {!membreSelectionne && (
           <div className="max-w-3xl mx-auto bg-blue-50 border-2 border-blue-300 p-6 rounded-lg text-center mb-8">
             <p className="text-[var(--dark)] flex items-center justify-center gap-2">
-              <span className="material-icons">touch_app</span>
+              <TouchApp />
               Cliquez sur un invité ci-dessus pour confirmer sa présence
             </p>
             <p className="text-sm text-[var(--dark)] text-center mt-4">
@@ -392,7 +391,7 @@ export default function RSVPFormFirebase({
                 onClick={() => setMembreSelectionne('')}
                 className="text-gray-500 hover:text-gray-700"
               >
-                <span className="material-icons">close</span>
+                <Close />
               </button>
             </div>
 
@@ -413,9 +412,9 @@ export default function RSVPFormFirebase({
                   }`}
                 >
                   <div className="text-center">
-                    <span className="material-icons text-4xl mb-2 text-green-600">
-                      check_circle
-                    </span>
+                    <CheckCircle
+                      sx={{ fontSize: 40, color: 'rgb(22, 163, 74)', mb: 2 }}
+                    />
                     <p className="font-semibold">J'accepte avec plaisir</p>
                   </div>
                 </button>
@@ -428,9 +427,9 @@ export default function RSVPFormFirebase({
                   }`}
                 >
                   <div className="text-center">
-                    <span className="material-icons text-4xl mb-2 text-red-600">
-                      cancel
-                    </span>
+                    <Cancel
+                      sx={{ fontSize: 40, color: 'rgb(220, 38, 38)', mb: 2 }}
+                    />
                     <p className="font-semibold">Je ne peux pas venir</p>
                   </div>
                 </button>
@@ -447,9 +446,7 @@ export default function RSVPFormFirebase({
                   htmlFor="email"
                   className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2"
                 >
-                  <span className="material-icons" style={{ fontSize: '18px' }}>
-                    email
-                  </span>
+                  <Email sx={{ fontSize: 18 }} />
                   Quelle est ton adresse mail pour te donner toutes les news sur
                   notre évènement ? (Optionnel)
                 </label>
@@ -497,9 +494,9 @@ export default function RSVPFormFirebase({
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="material-icons text-[var(--primary)]">
-                            nightlight
-                          </span>
+                          <Nightlight
+                            sx={{ fontSize: 20, color: 'var(--primary)' }}
+                          />
                           <span className="font-semibold text-[var(--dark)]">
                             Vendredi soir
                           </span>
@@ -525,9 +522,9 @@ export default function RSVPFormFirebase({
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="material-icons text-[var(--primary)]">
-                            lunch_dining
-                          </span>
+                          <LunchDining
+                            sx={{ fontSize: 20, color: 'var(--primary)' }}
+                          />
                           <span className="font-semibold text-[var(--dark)]">
                             Samedi midi
                           </span>
@@ -553,9 +550,9 @@ export default function RSVPFormFirebase({
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="material-icons text-pink-600">
-                            favorite
-                          </span>
+                          <Favorite
+                            sx={{ fontSize: 20, color: 'rgb(219, 39, 119)' }}
+                          />
                           <span className="font-semibold text-[var(--dark)]">
                             Samedi soir - Repas de mariage
                           </span>
@@ -581,9 +578,9 @@ export default function RSVPFormFirebase({
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="material-icons text-[var(--primary)]">
-                            brunch_dining
-                          </span>
+                          <BrunchDining
+                            sx={{ fontSize: 20, color: 'var(--primary)' }}
+                          />
                           <span className="font-semibold text-[var(--dark)]">
                             Dimanche midi - Brunch
                           </span>
@@ -600,9 +597,7 @@ export default function RSVPFormFirebase({
               {/* Commentaires */}
               <div className="mb-8">
                 <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
-                  <span className="material-icons" style={{ fontSize: '18px' }}>
-                    comment
-                  </span>
+                  <Comment sx={{ fontSize: 18 }} />
                   Commentaires ou besoins particuliers (Optionnel)
                 </label>
                 <textarea
@@ -638,14 +633,14 @@ export default function RSVPFormFirebase({
                 }
                 className="bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto"
               >
-                <span className="material-icons">send</span>
+                <Send />
                 {isSubmitting ? 'Envoi en cours...' : 'Confirmer ma réponse'}
               </button>
             </div>
 
             {submitStatus === 'error' && (
               <div className="mt-6 p-4 bg-red-100 border-2 border-red-400 text-red-800 rounded-lg text-center flex items-center justify-center gap-2">
-                <span className="material-icons">error</span>
+                <Error />
                 Une erreur s'est produite. Veuillez réessayer.
               </div>
             )}
