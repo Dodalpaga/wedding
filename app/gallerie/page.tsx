@@ -121,7 +121,7 @@ function GalleryContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc]">
+    <div className="pt-4 md:pt-4">
       <ReturnHomeButton />
 
       {!selectedCategory && (
