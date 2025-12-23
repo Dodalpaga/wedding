@@ -399,7 +399,7 @@ export default function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Cartes statistiques */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-4 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow">
             <p className="text-sm text-gray-600">Total invités</p>
             <p className="text-3xl font-bold">{totalInvites}</p>
@@ -416,18 +416,6 @@ export default function AdminDashboard() {
             <p className="text-sm text-yellow-600">En attente</p>
             <p className="text-3xl font-bold text-yellow-700">
               {totalEnAttente}
-            </p>
-          </div>
-          <div className="bg-purple-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-purple-600">Brunch</p>
-            <p className="text-3xl font-bold text-purple-700">
-              {presenceParEvenement.dimanche_brunch}
-            </p>
-          </div>
-          <div className="bg-blue-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-blue-600">Mariage</p>
-            <p className="text-3xl font-bold text-blue-700">
-              {presenceParEvenement.samedi_soir}
             </p>
           </div>
         </div>
