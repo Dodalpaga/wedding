@@ -179,6 +179,65 @@ const FloralDecoration = ({
   );
 };
 
+// Composant FAQ Item avec expander
+const FAQItem = ({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <motion.div
+      className="bg-white rounded-lg shadow-md border-2 border-[var(--secondary)]/20 overflow-hidden"
+      initial={false}
+    >
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[var(--primary)]/5 transition-colors"
+      >
+        <span className="text-lg font-semibold text-[var(--primary)] pr-4">
+          {question}
+        </span>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex-shrink-0"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--secondary)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            <div className="px-6 pb-5 pt-2 text-[var(--dark)] leading-relaxed border-t border-[var(--secondary)]/10">
+              {answer}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
 // Composant carte avec animations
 const AnimatedCard = ({
   children,
@@ -624,7 +683,7 @@ export default function InfoSection() {
                   </button>
                   <button
                     onClick={handleGalleryAccess}
-                    disabled={true}
+                    disabled={false}
                     className="relative w-full overflow-hidden bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-500 text-amber-900 py-4 rounded-lg font-semibold text-lg shadow-[0_8px_30px_rgb(251,191,36,0.4)] transition-all hover:shadow-[0_12px_40px_rgb(251,191,36,0.6)] hover:scale-[1.02] disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:scale-100 before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/40 before:via-transparent before:to-transparent before:opacity-60 after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.8),transparent_70%)] after:opacity-40"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
@@ -664,6 +723,44 @@ export default function InfoSection() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="faq"
+        className="py-20 bg-gradient-to-b from-[var(--primary)]/5 to-[var(--accent)]"
+      >
+        <div className="container mx-auto px-4">
+          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-8 max-sm:text-8xl">
+            Questions fréquentes
+          </h2>
+
+          <div className="max-w-3xl mx-auto space-y-4">
+            {[
+              {
+                question: 'Les animaux sont-ils acceptés dans le domaine ?',
+                answer:
+                  "Nous adorons nos amis à quatre pattes, mais pour des raisons pratiques et pour garantir le confort de tous nos invités, nous avons fait le choix de ne pas accueillir d'animaux lors de notre mariage. Nous espérons que vous comprendrez cette décision et que vous pourrez confier vos compagnons à des proches pour ce week-end. Merci de votre compréhension ! 🐾",
+              },
+              {
+                question: 'Y a-t-il un code vestimentaire ?',
+                answer:
+                  "Nous souhaitons que vous vous sentiez à l'aise et élégants ! L'événement sera en extérieur avec une ambiance chic et champêtre. Pour les dames, pensez à des chaussures adaptées au terrain (les talons aiguilles et l'herbe ne font pas toujours bon ménage 😉). Côté couleurs, laissez libre cours à votre créativité — évitez simplement le blanc intégral, tradition oblige !",
+              },
+              {
+                question:
+                  "Que faire si j'ai des allergies ou un régime alimentaire particulier ?",
+                answer:
+                  "Nous prenons cela très au sérieux ! Lors de votre confirmation de présence, un champ est prévu pour nous indiquer vos allergies, intolérances ou régimes particuliers (végétarien, végétalien, sans gluten, etc.). Notre traiteur s'adaptera pour que chacun puisse profiter pleinement du repas.",
+              },
+            ].map((faq, index) => (
+              <FAQItem
+                key={index}
+                question={faq.question}
+                answer={faq.answer}
+              />
+            ))}
           </div>
         </div>
       </section>
