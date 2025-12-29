@@ -741,7 +741,7 @@ export default function InfoSection() {
               {
                 question: 'Les animaux sont-ils acceptés dans le domaine ?',
                 answer:
-                  "Nous adorons nos amis à quatre pattes, mais pour des raisons pratiques et pour garantir le confort de tous nos invités, nous avons fait le choix de ne pas accueillir d'animaux lors de notre mariage. Nous espérons que vous comprendrez cette décision et que vous pourrez confier vos compagnons à des proches pour ce week-end. Merci de votre compréhension ! 🐾",
+                  "Nous adorons nos amis à quatre pattes, mais pour des raisons pratiques et pour garantir le confort de tous nos invités, le domaine a fait le choix de ne pas accueillir d'animaux lors des mariages. Nous espérons que vous comprendrez cette décision et que vous pourrez confier vos compagnons à des proches pour ce week-end. Merci de votre compréhension ! 🐾",
               },
               {
                 question: 'Y a-t-il un code vestimentaire ?',

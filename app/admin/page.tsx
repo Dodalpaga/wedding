@@ -112,6 +112,18 @@ export default function AdminDashboard() {
     }
   };
 
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(
+    new Set()
+  );
+
+  const toggleComment = (key: string) => {
+    setExpandedComments((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  };
+
   // Construire la liste complète des membres avec leurs réponses
   const getAllMembres = () => {
     const allMembres: any[] = [];
@@ -122,6 +134,7 @@ export default function AdminDashboard() {
 
         allMembres.push({
           nom,
+          email: statut.email || '',
           codeInvitation: code,
           statut: statut.statut || 'en_attente',
           vendredi_soir: statut.vendredi_soir || false,
@@ -562,6 +575,10 @@ export default function AdminDashboard() {
                       Statut <SortIcon field="statut" />
                     </div>
                   </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200">
+                    <div className="flex items-center gap-2">Email</div>
+                  </th>
+
                   <th
                     onClick={() => handleSort('vendredi_soir')}
                     className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
@@ -636,6 +653,9 @@ export default function AdminDashboard() {
                           : 'En attente'}
                       </span>
                     </td>
+                    <td className="px-4 py-3 text-sm text-gray-600 break-all">
+                      {m.email || '-'}
+                    </td>
                     <td className="px-4 py-3 text-center">
                       {m.vendredi_soir ? 'Oui' : '-'}
                     </td>
@@ -648,8 +668,38 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 text-center">
                       {m.dimanche_brunch ? 'Oui' : '-'}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
-                      {m.commentaires || '-'}
+                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs">
+                      {m.commentaires ? (
+                        <>
+                          <div
+                            className={
+                              expandedComments.has(
+                                `${m.codeInvitation}-${m.nom}`
+                              )
+                                ? 'whitespace-pre-wrap'
+                                : 'line-clamp-2'
+                            }
+                          >
+                            {m.commentaires}
+                          </div>
+                          {m.commentaires.length > 80 && (
+                            <button
+                              onClick={() =>
+                                toggleComment(`${m.codeInvitation}-${m.nom}`)
+                              }
+                              className="text-[#137e41] text-xs mt-1 hover:underline"
+                            >
+                              {expandedComments.has(
+                                `${m.codeInvitation}-${m.nom}`
+                              )
+                                ? 'Voir moins'
+                                : 'Voir plus'}
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        '-'
+                      )}
                     </td>
                     <td className="px-4 py-3 text-xs text-gray-500">
                       {m.dateModification?.toDate?.()
