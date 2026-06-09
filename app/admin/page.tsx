@@ -10,6 +10,13 @@ import {
   onSnapshot,
 } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
+import NightlightRound from '@mui/icons-material/NightlightRound';
+import LunchDining from '@mui/icons-material/LunchDining';
+import Favorite from '@mui/icons-material/Favorite';
+import BrunchDining from '@mui/icons-material/BrunchDining';
+import LockOutlined from '@mui/icons-material/LockOutlined';
+import BarChart from '@mui/icons-material/BarChart';
+import Logout from '@mui/icons-material/Logout';
 
 type SortField =
   | 'code'
@@ -105,6 +112,18 @@ export default function AdminDashboard() {
     }
   };
 
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(
+    new Set()
+  );
+
+  const toggleComment = (key: string) => {
+    setExpandedComments((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  };
+
   // Construire la liste complète des membres avec leurs réponses
   const getAllMembres = () => {
     const allMembres: any[] = [];
@@ -115,6 +134,7 @@ export default function AdminDashboard() {
 
         allMembres.push({
           nom,
+          email: statut.email || '',
           codeInvitation: code,
           statut: statut.statut || 'en_attente',
           vendredi_soir: statut.vendredi_soir || false,
@@ -329,19 +349,7 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
           <div className="text-center mb-8">
             <div className="inline-block bg-gradient-to-br from-[#003b4e] to-[#137e41] p-4 rounded-full mb-4">
-              <svg
-                className="w-12 h-12 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
+              <LockOutlined sx={{ fontSize: 48, color: 'white' }} />
             </div>
             <h1 className="text-3xl font-bold text-gray-800">
               Admin Dashboard
@@ -388,19 +396,7 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="flex items-center gap-4">
             <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
+              <BarChart sx={{ fontSize: 32, color: 'white' }} />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">Dashboard Admin</h1>
@@ -414,19 +410,7 @@ export default function AdminDashboard() {
             onClick={handleLogout}
             className="bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-lg flex items-center gap-2"
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
+            <Logout sx={{ fontSize: 20 }} />
             Déconnexion
           </button>
         </div>
@@ -434,7 +418,7 @@ export default function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Cartes statistiques */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-4 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow">
             <p className="text-sm text-gray-600">Total invités</p>
             <p className="text-3xl font-bold">{totalInvites}</p>
@@ -453,18 +437,6 @@ export default function AdminDashboard() {
               {totalEnAttente}
             </p>
           </div>
-          <div className="bg-purple-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-purple-600">Brunch</p>
-            <p className="text-3xl font-bold text-purple-700">
-              {presenceParEvenement.dimanche_brunch}
-            </p>
-          </div>
-          <div className="bg-blue-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-blue-600">Mariage</p>
-            <p className="text-3xl font-bold text-blue-700">
-              {presenceParEvenement.samedi_soir}
-            </p>
-          </div>
         </div>
 
         {/* Timeline des événements */}
@@ -473,45 +445,37 @@ export default function AdminDashboard() {
             Présence par événement
           </h3>
 
-          {/* Ajoute cette ligne juste après le <h3> (une seule fois) */}
-          <link
-            href="https://fonts.googleapis.com/icon?family=Material+Icons"
-            rel="stylesheet"
-          />
-
           <div className="space-y-5">
             {[
               {
                 key: 'vendredi_soir',
                 label: 'Vendredi soir',
-                icon: 'nightlight_round',
+                Icon: NightlightRound,
                 color: 'from-indigo-500 to-purple-600',
               },
               {
                 key: 'samedi_midi',
                 label: 'Samedi midi',
-                icon: 'lunch_dining',
+                Icon: LunchDining,
                 color: 'from-orange-400 to-red-500',
               },
               {
                 key: 'samedi_soir',
                 label: 'Samedi après-midi / soir (Mariage)',
-                icon: 'favorite',
+                Icon: Favorite,
                 color: 'from-pink-500 to-rose-600',
               },
               {
                 key: 'dimanche_brunch',
                 label: 'Dimanche brunch',
-                icon: 'brunch_dining',
+                Icon: BrunchDining,
                 color: 'from-amber-400 to-orange-500',
               },
             ].map((evt) => (
               <div key={evt.key}>
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-semibold text-gray-700 flex items-center gap-3">
-                    <span className="material-icons text-2xl text-[#137e41]">
-                      {evt.icon}
-                    </span>
+                    <evt.Icon sx={{ fontSize: 28, color: '#137e41' }} />
                     {evt.label}
                   </span>
                   <span className="text-2xl font-bold text-[#137e41]">
@@ -617,6 +581,10 @@ export default function AdminDashboard() {
                       Statut <SortIcon field="statut" />
                     </div>
                   </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200">
+                    <div className="flex items-center gap-2">Email</div>
+                  </th>
+
                   <th
                     onClick={() => handleSort('vendredi_soir')}
                     className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
@@ -691,6 +659,9 @@ export default function AdminDashboard() {
                             : 'En attente'}
                       </span>
                     </td>
+                    <td className="px-4 py-3 text-sm text-gray-600 break-all">
+                      {m.email || '-'}
+                    </td>
                     <td className="px-4 py-3 text-center">
                       {m.vendredi_soir ? 'Oui' : '-'}
                     </td>
@@ -703,8 +674,38 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 text-center">
                       {m.dimanche_brunch ? 'Oui' : '-'}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
-                      {m.commentaires || '-'}
+                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs">
+                      {m.commentaires ? (
+                        <>
+                          <div
+                            className={
+                              expandedComments.has(
+                                `${m.codeInvitation}-${m.nom}`
+                              )
+                                ? 'whitespace-pre-wrap'
+                                : 'line-clamp-2'
+                            }
+                          >
+                            {m.commentaires}
+                          </div>
+                          {m.commentaires.length > 80 && (
+                            <button
+                              onClick={() =>
+                                toggleComment(`${m.codeInvitation}-${m.nom}`)
+                              }
+                              className="text-[#137e41] text-xs mt-1 hover:underline"
+                            >
+                              {expandedComments.has(
+                                `${m.codeInvitation}-${m.nom}`
+                              )
+                                ? 'Voir moins'
+                                : 'Voir plus'}
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        '-'
+                      )}
                     </td>
                     <td className="px-4 py-3 text-xs text-gray-500">
                       {m.dateModification?.toDate?.()

@@ -1,8 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+  animate,
+} from 'framer-motion';
 import VillaIcon from '@mui/icons-material/Villa';
 import EmailIcon from '@mui/icons-material/Email';
 import DirectionsCar from '@mui/icons-material/DirectionsCar';
@@ -10,8 +16,34 @@ import LocationOn from '@mui/icons-material/LocationOn';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import Event from '@mui/icons-material/Event';
 import QrCode from '@mui/icons-material/QrCode';
-import { doc, getDoc } from 'firebase/firestore';
+import PeopleIcon from '@mui/icons-material/People';
+import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+
+// Composant pour l'animation du compteur
+const AnimatedCounter = ({ value }: { value: number }) => {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (latest) => Math.round(latest));
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const controls = animate(count, value, {
+      duration: 2,
+      ease: 'easeOut',
+    });
+
+    const unsubscribe = rounded.on('change', (latest) => {
+      setDisplayValue(latest);
+    });
+
+    return () => {
+      controls.stop();
+      unsubscribe();
+    };
+  }, [value, count, rounded]);
+
+  return <span>{displayValue}</span>;
+};
 
 // Composant pour les décorations florales
 const FloralDecoration = ({
@@ -147,6 +179,65 @@ const FloralDecoration = ({
   );
 };
 
+// Composant FAQ Item avec expander
+const FAQItem = ({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <motion.div
+      className="bg-white rounded-lg shadow-md border-2 border-[var(--secondary)]/20 overflow-hidden"
+      initial={false}
+    >
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-[var(--primary)]/5 transition-colors"
+      >
+        <span className="text-lg font-semibold text-[var(--primary)] pr-4">
+          {question}
+        </span>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex-shrink-0"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--secondary)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </motion.div>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+          >
+            <div className="px-6 pb-5 pt-2 text-[var(--dark)] leading-relaxed border-t border-[var(--secondary)]/10">
+              {answer}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
 // Composant carte avec animations
 const AnimatedCard = ({
   children,
@@ -185,9 +276,73 @@ export default function InfoSection() {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [isLoadingGallery, setIsLoadingGallery] = useState(false);
+  const [totalParticipants, setTotalParticipants] = useState(0);
+  const [isLoadingParticipants, setIsLoadingParticipants] = useState(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Charger le nombre de participants
+  useEffect(() => {
+    const loadParticipants = async () => {
+      try {
+        // Charger les codes d'invitation
+        const codesSnapshot = await getDocs(collection(db, 'codes_invitation'));
+        const codesMap = new Map<string, any>();
+
+        codesSnapshot.docs.forEach((codeDoc) => {
+          const code = codeDoc.id;
+          const data = codeDoc.data();
+          if (
+            code.length === 6 &&
+            data.membres &&
+            Array.isArray(data.membres)
+          ) {
+            codesMap.set(code, {
+              id: code,
+              membres: data.membres,
+            });
+          }
+        });
+
+        // Charger les statuts
+        const statutsSnapshot = await getDocs(collection(db, 'statuts'));
+        const statuts = statutsSnapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+            } as any)
+        );
+
+        // Construire la liste des membres
+        const allMembres: any[] = [];
+        codesMap.forEach((codeData) => {
+          (codeData.membres || []).forEach((nom: string) => {
+            const statut = statuts.find((s) => s.nom_membre === nom) || {};
+            allMembres.push({
+              nom,
+              statut: statut.statut || 'en_attente',
+            });
+          });
+        });
+
+        // Compter les participants confirmés
+        const confirmes = allMembres.filter(
+          (m) => m.statut === 'accepte'
+        ).length;
+        setTotalParticipants(confirmes);
+        setIsLoadingParticipants(false);
+      } catch (err) {
+        console.error('Erreur chargement participants:', err);
+        setIsLoadingParticipants(false);
+      }
+    };
+
+    loadParticipants();
+  }, []);
+
+  const handleSubmit = (e?: React.MouseEvent | React.KeyboardEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
 
     if (!code.trim()) {
       setError('Veuillez entrer votre code');
@@ -424,14 +579,71 @@ export default function InfoSection() {
                 <QrCode sx={{ fontSize: 60, color: 'var(--secondary)' }} />
               </div>
 
-              <p className="text-lg text-[var(--dark)] mb-6 text-center">
+              <p className="text-lg text-[var(--dark)] text-center">
                 Chaque invitation contient un <strong>code</strong> qui vous
                 permet de confirmer votre présence, accéder à la galerie photos,
                 et nous indiquer vos préférences (allergies, régimes
                 particuliers, etc...).
               </p>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Compteur de participants */}
+              <div className="bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 rounded-lg p-4">
+                <div className="flex items-center justify-center flex-col">
+                  <PeopleIcon
+                    sx={{ fontSize: 30, color: 'var(--secondary)' }}
+                  />
+                  <div className="text-center">
+                    {isLoadingParticipants ? (
+                      <div className="flex items-center gap-2 text-[var(--secondary)]">
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: 'linear',
+                          }}
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                          </svg>
+                        </motion.div>
+                        <span className="text-sm">Chargement...</span>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)]">
+                          <AnimatedCounter value={totalParticipants} />
+                        </p>
+                        <p className="text-sm text-[var(--dark)]">
+                          {totalParticipants === 0
+                            ? 'Soyez le premier à confirmer !'
+                            : totalParticipants === 1
+                            ? 'participant confirmé 🎉'
+                            : 'participants confirmés 🎉'}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-6">
                 <div>
                   <label
                     htmlFor="code"
@@ -447,6 +659,11 @@ export default function InfoSection() {
                       setCode(e.target.value);
                       setError('');
                     }}
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSubmit(e);
+                      }
+                    }}
                     placeholder="Entrez votre code"
                     className="w-full px-4 py-3 border-2 border-[var(--secondary)]/30 rounded-lg focus:border-[var(--secondary)] focus:outline-none text-center text-lg uppercase tracking-wider"
                   />
@@ -459,13 +676,12 @@ export default function InfoSection() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <button
-                    type="submit"
+                    onClick={handleSubmit}
                     className="w-full bg-gradient-to-r from-[var(--primary)] to-[var(--dark)] text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity shadow-lg"
                   >
                     Confirmer sa présence
                   </button>
                   <button
-                    type="button"
                     onClick={handleGalleryAccess}
                     disabled={true}
                     className="relative w-full overflow-hidden bg-gradient-to-br from-yellow-300 via-yellow-400 to-amber-500 text-amber-900 py-4 rounded-lg font-semibold text-lg shadow-[0_8px_30px_rgb(251,191,36,0.4)] transition-all hover:shadow-[0_12px_40px_rgb(251,191,36,0.6)] hover:scale-[1.02] disabled:opacity-80 disabled:cursor-not-allowed disabled:hover:scale-100 before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/40 before:via-transparent before:to-transparent before:opacity-60 after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.8),transparent_70%)] after:opacity-40"
@@ -484,7 +700,7 @@ export default function InfoSection() {
                     <span className="absolute top-1/2 right-1/4 w-1 h-1 bg-white rounded-full animate-ping delay-300"></span>
                   </button>
                 </div>
-              </form>
+              </div>
 
               <div className="mt-6 bg-gradient-to-r from-[var(--primary)]/10 to-[var(--secondary)]/10 rounded-lg p-4">
                 <p className="text-m text-[var(--dark)] text-center">
@@ -507,6 +723,44 @@ export default function InfoSection() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="faq"
+        className="py-20 bg-gradient-to-b from-[var(--primary)]/5 to-[var(--accent)]"
+      >
+        <div className="container mx-auto px-4">
+          <h2 className="text-9xl font-wedding text-center text-[var(--primary)] mb-8 max-sm:text-8xl">
+            Questions fréquentes
+          </h2>
+
+          <div className="max-w-3xl mx-auto space-y-4">
+            {[
+              {
+                question: 'Les animaux sont-ils acceptés dans le domaine ?',
+                answer:
+                  "Nous adorons nos amis à quatre pattes, mais pour des raisons pratiques et pour garantir le confort de tous nos invités, le domaine a fait le choix de ne pas accueillir d'animaux lors des mariages. Nous espérons que vous comprendrez cette décision et que vous pourrez confier vos compagnons à des proches pour ce week-end. Merci de votre compréhension ! 🐾",
+              },
+              {
+                question: 'Y a-t-il un code vestimentaire ?',
+                answer:
+                  "Nous souhaitons que vous vous sentiez à l'aise et élégants ! L'événement sera en extérieur avec une ambiance chic et champêtre. Pour les dames, pensez à des chaussures adaptées au terrain (les talons aiguilles et l'herbe ne font pas toujours bon ménage 😉). Côté couleurs, laissez libre cours à votre créativité — évitez simplement le blanc intégral, tradition oblige !",
+              },
+              {
+                question:
+                  "Que faire si j'ai des allergies ou un régime alimentaire particulier ?",
+                answer:
+                  "Nous prenons cela très au sérieux ! Lors de votre confirmation de présence, un champ est prévu pour nous indiquer vos allergies, intolérances ou régimes particuliers (végétarien, végétalien, sans gluten, etc.). Notre traiteur s'adaptera pour que chacun puisse profiter pleinement du repas.",
+              },
+            ].map((faq, index) => (
+              <FAQItem
+                key={index}
+                question={faq.question}
+                answer={faq.answer}
+              />
+            ))}
           </div>
         </div>
       </section>

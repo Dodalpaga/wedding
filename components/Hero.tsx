@@ -11,6 +11,13 @@ export default function Hero() {
     '#003b4e',
   ]);
 
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
   useEffect(() => {
     const updateColors = () => {
       if (window.innerWidth < 1000) {
@@ -23,6 +30,30 @@ export default function Hero() {
     updateColors();
     window.addEventListener('resize', updateColors);
     return () => window.removeEventListener('resize', updateColors);
+  }, []);
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const weddingDate = new Date('2027-07-17T15:00:00').getTime();
+      const now = new Date().getTime();
+      const difference = weddingDate - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60),
+        });
+      } else {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   return (
@@ -43,20 +74,40 @@ export default function Hero() {
         <img
           src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/SD Logo white.svg`}
           alt="Logo"
-          className="h-48 w-48 mx-auto mb-8 object-contain drop-shadow-2xl"
+          className="w-[50%] max-w-[240px] aspect-square mx-auto drop-shadow-2xl"
           onError={(e) => (e.currentTarget.style.display = 'none')}
         />
 
         {/* Conteneur avec contraintes de taille pour la signature */}
-        <div className="w-full max-w-2xl mx-auto mb-8">
+        <div className="w-full max-w-2xl mx-auto">
           <Signature theme="light" />
         </div>
 
         <p className="text-xl md:text-2xl text-[var(--accent)] mb-8 font-light">
           Nous nous marions !
         </p>
-        <div className="text-2xl md:text-3xl font-light text-[var(--accent)] mb-12">
+        <div className="text-2xl md:text-3xl font-bold text-[var(--accent)] mb-8">
           17 Juillet 2027
+        </div>
+
+        {/* Compte à rebours */}
+        <div className="flex justify-center gap-4 md:gap-8 mb-8 text-[var(--accent)]">
+          {[
+            { value: timeLeft.days, label: 'Jours' },
+            { value: timeLeft.hours, label: 'Heures' },
+            { value: timeLeft.minutes, label: 'Minutes' },
+            { value: timeLeft.seconds, label: 'Secondes' },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="backdrop-blur-sm bg-white/10 rounded-lg p-3 md:p-4 min-w-[60px] md:min-w-[80px] border border-white/20 shadow-lg"
+            >
+              <div className="text-2xl md:text-4xl font-bold mb-1">
+                {String(item.value).padStart(2, '0')}
+              </div>
+              <div className="text-xs md:text-sm font-light">{item.label}</div>
+            </div>
+          ))}
         </div>
 
         {/* Indicateur de scroll */}
