@@ -35,7 +35,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterName, setFilterName] = useState('');
   const [codesInvitation, setCodesInvitation] = useState<Map<string, any>>(
-    new Map()
+    new Map(),
   );
 
   // États pour le tri
@@ -81,7 +81,7 @@ export default function AdminDashboard() {
       // Écouter les statuts en temps réel
       const q = query(
         collection(db, 'statuts'),
-        orderBy('date_modification', 'desc')
+        orderBy('date_modification', 'desc'),
       );
 
       const unsubscribe = onSnapshot(
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
         },
         (error) => {
           console.error('Erreur écoute statuts:', error);
-        }
+        },
       );
 
       return unsubscribe;
@@ -253,7 +253,7 @@ export default function AdminDashboard() {
   const totalAcceptes = allMembres.filter((m) => m.statut === 'accepte').length;
   const totalRefuses = allMembres.filter((m) => m.statut === 'refuse').length;
   const totalEnAttente = allMembres.filter(
-    (m) => m.statut === 'en_attente'
+    (m) => m.statut === 'en_attente',
   ).length;
 
   const presenceParEvenement = {
@@ -275,7 +275,7 @@ export default function AdminDashboard() {
       const matchName =
         !filterName || m.nom.toLowerCase().includes(filterName.toLowerCase());
       return matchStatus && matchSearch && matchName;
-    })
+    }),
   );
 
   // Export CSV
@@ -306,14 +306,20 @@ export default function AdminDashboard() {
         : '',
     ]);
 
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const csvString = [headers.join(','), ...rows.map((r) => r.join(','))].join(
+      '\n',
+    );
+
+    const blob = new Blob(['\uFEFF' + csvString], {
+      type: 'text/csv;charset=utf-8;',
+    });
+    const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
-    link.href = encodeURI(csvContent);
+    link.href = url;
     link.download = `rsvp_${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
+    URL.revokeObjectURL(url); // clean up
   };
 
   // Écran de connexion
@@ -674,15 +680,15 @@ export default function AdminDashboard() {
                           m.statut === 'accepte'
                             ? 'bg-green-100 text-green-700'
                             : m.statut === 'refuse'
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-yellow-100 text-yellow-700'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-yellow-100 text-yellow-700'
                         }`}
                       >
                         {m.statut === 'accepte'
                           ? 'Confirmé'
                           : m.statut === 'refuse'
-                          ? 'Refusé'
-                          : 'En attente'}
+                            ? 'Refusé'
+                            : 'En attente'}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -709,7 +715,7 @@ export default function AdminDashboard() {
                               month: '2-digit',
                               hour: '2-digit',
                               minute: '2-digit',
-                            }
+                            },
                           )
                         : '-'}
                     </td>
