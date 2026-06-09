@@ -23,7 +23,6 @@ type SortField =
   | 'nom'
   | 'statut'
   | 'vendredi_soir'
-  | 'samedi_midi'
   | 'samedi_soir'
   | 'dimanche_brunch'
   | 'date';
@@ -113,7 +112,7 @@ export default function AdminDashboard() {
   };
 
   const [expandedComments, setExpandedComments] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   const toggleComment = (key: string) => {
@@ -138,7 +137,6 @@ export default function AdminDashboard() {
           codeInvitation: code,
           statut: statut.statut || 'en_attente',
           vendredi_soir: statut.vendredi_soir || false,
-          samedi_midi: statut.samedi_midi || false,
           samedi_soir: statut.samedi_soir || false,
           dimanche_brunch: statut.dimanche_brunch || false,
           commentaires: statut.commentaires || '',
@@ -169,7 +167,6 @@ export default function AdminDashboard() {
           bValue = b.statut;
           break;
         case 'vendredi_soir':
-        case 'samedi_midi':
         case 'samedi_soir':
         case 'dimanche_brunch':
           aValue = a[sortField] ? 1 : 0;
@@ -278,7 +275,6 @@ export default function AdminDashboard() {
 
   const presenceParEvenement = {
     vendredi_soir: allMembres.filter((m) => m.vendredi_soir).length,
-    samedi_midi: allMembres.filter((m) => m.samedi_midi).length,
     samedi_soir: allMembres.filter((m) => m.samedi_soir).length,
     dimanche_brunch: allMembres.filter((m) => m.dimanche_brunch).length,
   };
@@ -317,7 +313,6 @@ export default function AdminDashboard() {
       m.nom,
       m.statut,
       m.vendredi_soir ? 'Oui' : 'Non',
-      m.samedi_midi ? 'Oui' : 'Non',
       m.samedi_soir ? 'Oui' : 'Non',
       m.dimanche_brunch ? 'Oui' : 'Non',
       (m.commentaires || '').replace(/,/g, ';'),
@@ -454,12 +449,6 @@ export default function AdminDashboard() {
                 color: 'from-indigo-500 to-purple-600',
               },
               {
-                key: 'samedi_midi',
-                label: 'Samedi midi',
-                Icon: LunchDining,
-                color: 'from-orange-400 to-red-500',
-              },
-              {
                 key: 'samedi_soir',
                 label: 'Samedi après-midi / soir (Mariage)',
                 Icon: Favorite,
@@ -594,14 +583,6 @@ export default function AdminDashboard() {
                     </div>
                   </th>
                   <th
-                    onClick={() => handleSort('samedi_midi')}
-                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
-                  >
-                    <div className="flex items-center gap-2">
-                      Sam. midi <SortIcon field="samedi_midi" />
-                    </div>
-                  </th>
-                  <th
                     onClick={() => handleSort('samedi_soir')}
                     className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
                   >
@@ -666,9 +647,6 @@ export default function AdminDashboard() {
                       {m.vendredi_soir ? 'Oui' : '-'}
                     </td>
                     <td className="px-4 py-3 text-center">
-                      {m.samedi_midi ? 'Oui' : '-'}
-                    </td>
-                    <td className="px-4 py-3 text-center">
                       {m.samedi_soir ? 'Oui' : '-'}
                     </td>
                     <td className="px-4 py-3 text-center">
@@ -680,7 +658,7 @@ export default function AdminDashboard() {
                           <div
                             className={
                               expandedComments.has(
-                                `${m.codeInvitation}-${m.nom}`
+                                `${m.codeInvitation}-${m.nom}`,
                               )
                                 ? 'whitespace-pre-wrap'
                                 : 'line-clamp-2'
@@ -696,7 +674,7 @@ export default function AdminDashboard() {
                               className="text-[#137e41] text-xs mt-1 hover:underline"
                             >
                               {expandedComments.has(
-                                `${m.codeInvitation}-${m.nom}`
+                                `${m.codeInvitation}-${m.nom}`,
                               )
                                 ? 'Voir moins'
                                 : 'Voir plus'}

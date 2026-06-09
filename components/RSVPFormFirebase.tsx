@@ -32,7 +32,6 @@ interface Membre {
   statut?: 'accepte' | 'refuse' | 'en_attente';
   commentaires?: string;
   vendredi_soir?: boolean;
-  samedi_midi?: boolean;
   samedi_soir?: boolean;
   dimanche_brunch?: boolean;
 }
@@ -51,7 +50,6 @@ export default function RSVPFormFirebase({
     commentaires: '',
     statut: 'accepte' as 'accepte' | 'refuse',
     vendredi_soir: false,
-    samedi_midi: false,
     samedi_soir: false,
     dimanche_brunch: false,
   });
@@ -95,7 +93,6 @@ export default function RSVPFormFirebase({
                     statut: statutData.statut || 'en_attente',
                     commentaires: statutData.commentaires || '',
                     vendredi_soir: statutData.vendredi_soir || false,
-                    samedi_midi: statutData.samedi_midi || false,
                     samedi_soir: statutData.samedi_soir || false,
                     dimanche_brunch: statutData.dimanche_brunch || false,
                   };
@@ -107,11 +104,10 @@ export default function RSVPFormFirebase({
                   statut: 'en_attente' as const,
                   commentaires: '',
                   vendredi_soir: false,
-                  samedi_midi: false,
                   samedi_soir: false,
                   dimanche_brunch: false,
                 };
-              }
+              },
             );
 
             setMembres(membresAvecStatut);
@@ -143,7 +139,6 @@ export default function RSVPFormFirebase({
           commentaires: membre.commentaires || '',
           statut: membre.statut === 'refuse' ? 'refuse' : 'accepte',
           vendredi_soir: Boolean(membre.vendredi_soir),
-          samedi_midi: Boolean(membre.samedi_midi),
           samedi_soir: Boolean(membre.samedi_soir),
           dimanche_brunch: Boolean(membre.dimanche_brunch),
         });
@@ -152,7 +147,6 @@ export default function RSVPFormFirebase({
         setFormData((prev) => ({
           ...prev,
           vendredi_soir: false,
-          samedi_midi: false,
           samedi_soir: false,
           dimanche_brunch: false,
         }));
@@ -171,12 +165,11 @@ export default function RSVPFormFirebase({
     if (formData.statut === 'accepte' && !isVinHonneurOnly) {
       if (
         !formData.vendredi_soir &&
-        !formData.samedi_midi &&
         !formData.samedi_soir &&
         !formData.dimanche_brunch
       ) {
         alert(
-          'Veuillez sélectionner au moins un événement auquel vous participerez.'
+          'Veuillez sélectionner au moins un événement auquel vous participerez.',
         );
         return;
       }
@@ -194,7 +187,6 @@ export default function RSVPFormFirebase({
         email: formData.email,
         commentaires: formData.commentaires,
         vendredi_soir: formData.vendredi_soir,
-        samedi_midi: formData.samedi_midi,
         samedi_soir: formData.samedi_soir,
         dimanche_brunch: formData.dimanche_brunch,
         date_modification: serverTimestamp(),
@@ -215,7 +207,6 @@ export default function RSVPFormFirebase({
           commentaires: '',
           statut: 'accepte',
           vendredi_soir: false,
-          samedi_midi: false,
           samedi_soir: false,
           dimanche_brunch: false,
         });
@@ -254,8 +245,6 @@ export default function RSVPFormFirebase({
                       <>
                         <br />• Vendredi soir :{' '}
                         {formData.vendredi_soir ? '✅ Oui' : '❌ Non'}
-                        <br />• Samedi midi :{' '}
-                        {formData.samedi_midi ? '✅ Oui' : '❌ Non'}
                         <br />• Samedi après-midi / soir (mariage) :{' '}
                         {formData.samedi_soir ? '✅ Oui' : '❌ Non'}
                         <br />• Dimanche brunch :{' '}
@@ -308,8 +297,8 @@ export default function RSVPFormFirebase({
                       membre.statut === 'accepte'
                         ? 'bg-green-50 border-green-300 hover:border-green-400'
                         : membre.statut === 'refuse'
-                        ? 'bg-red-50 border-red-300 hover:border-red-400'
-                        : 'bg-gray-50 border-gray-300 hover:border-gray-400'
+                          ? 'bg-red-50 border-red-300 hover:border-red-400'
+                          : 'bg-gray-50 border-gray-300 hover:border-gray-400'
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -346,7 +335,6 @@ export default function RSVPFormFirebase({
                         {membre.statut === 'accepte' && !isVinHonneurOnly && (
                           <p className="text-xs text-gray-500 mt-1 flex items-center gap-1 flex-wrap">
                             {membre.vendredi_soir && <span>🌙 Ven</span>}
-                            {membre.samedi_midi && <span>🍽️ Sam midi</span>}
                             {membre.samedi_soir && <span>💒 Mariage</span>}
                             {membre.dimanche_brunch && <span>🥞 Brunch</span>}
                           </p>
@@ -508,32 +496,30 @@ export default function RSVPFormFirebase({
                     </label>
 
                     {/* Samedi midi */}
-                    <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-blue-50">
+                    <div className="flex items-start gap-4 p-4 border-2 border-gray-500 rounded-lg bg-gray-50 opacity-70 cursor-not-allowed">
                       <input
                         type="checkbox"
-                        checked={formData.samedi_midi}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            samedi_midi: e.target.checked,
-                          })
-                        }
-                        className="mt-1 w-5 h-5 text-[var(--primary)] rounded focus:ring-[var(--primary)]"
+                        checked={false}
+                        disabled
+                        className="mt-1 w-5 h-5 text-gray-400 rounded cursor-not-allowed"
                       />
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <LunchDining
-                            sx={{ fontSize: 20, color: 'var(--primary)' }}
+                            sx={{ fontSize: 20, color: 'rgb(40, 43, 49)' }}
                           />
-                          <span className="font-semibold text-[var(--dark)]">
+                          <span className="font-semibold text-gray-400">
                             Samedi midi
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600">
-                          Repas simple, picorages et buffet de grignotage
+                        <p className="text-sm text-gray-400">
+                          Repas en autonomie — chacun s'organise de son côté 🙂
+                          <br />
+                          Attention cependant à ne pas rater le début de la
+                          cérémonie laïque !
                         </p>
                       </div>
-                    </label>
+                    </div>
 
                     {/* Samedi soir - Mariage */}
                     <label className="flex items-start gap-4 p-4 border-2 border-pink-300 rounded-lg cursor-pointer transition-all hover:border-pink-500 hover:bg-pink-50 bg-pink-50/30">
@@ -626,7 +612,6 @@ export default function RSVPFormFirebase({
                   (formData.statut === 'accepte' &&
                     !(
                       formData.vendredi_soir ||
-                      formData.samedi_midi ||
                       formData.samedi_soir ||
                       formData.dimanche_brunch
                     ))
