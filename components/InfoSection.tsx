@@ -719,7 +719,7 @@ export default function InfoSection() {
                 <p className="text-m text-[var(--dark)] text-center">
                   📅 <strong>Date limite :</strong> Pour des raisons
                   d'organisation, merci de bien vouloir remplir ce formulaire le
-                  plus tôt possible et avant le <strong>17 juillet 2026</strong>
+                  plus tôt possible et avant le <strong>31 Décembre 2026</strong>
                 </p>
               </div>
             </div>
