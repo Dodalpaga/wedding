@@ -610,6 +610,7 @@ export default function RSVPFormFirebase({
                 disabled={
                   isSubmitting ||
                   (formData.statut === 'accepte' &&
+                    !isVinHonneurOnly &&
                     !(
                       formData.vendredi_soir ||
                       formData.samedi_soir ||
