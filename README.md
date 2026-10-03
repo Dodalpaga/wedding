@@ -1,175 +1,80 @@
-# 💍 Site de Mariage - Solenne & Dorian
+# Mariage de Solenne & Dorian
 
-Site web de mariage avec système de gestion d'invitations via Firebase.
+Site en français pour le mariage du **17 juillet 2027**, au Domaine d’en Naudet à Teyssode. Il présente les informations pratiques, les invitations et réponses individuelles, les hébergements et le voyage de noces au Japon.
 
-## 🌟 Fonctionnalités
+## Démarrer
 
-- ✨ Design élégant avec thème aurores boréales
-- 🎟️ Système de codes d'invitation uniques
-- 📋 Formulaire de confirmation avec gestion des accompagnants
-- 📊 Dashboard admin pour suivre les réponses
-- 📤 Export CSV des confirmations
-- 🔒 Sécurisé avec Firebase Authentication & Firestore
-- 📱 100% Responsive (mobile, tablette, desktop)
+Utiliser Node.js 20 (version du workflow de déploiement) et npm.
 
-## 🛠️ Technologies
-
-- **Framework** : Next.js 14 (React)
-- **Styling** : Tailwind CSS
-- **Backend** : Firebase (Firestore + Authentication)
-- **Déploiement** : GitHub Pages / Vercel
-- **Langage** : TypeScript
-
-## 📦 Installation
-
-```bash
-# 1. Cloner le projet
-git clone https://github.com/votre-username/votre-repo.git
-cd votre-repo
-
-# 2. Installer les dépendances
-npm install
-
-# 3. Configurer Firebase
-# Créez un fichier .env.local avec vos clés Firebase
-# (Voir .env.local.example pour le template)
-
-# 4. Lancer en développement
+```sh
+npm ci --legacy-peer-deps
+# Créer .env.local suivant docs/CONFIGURATION.md
 npm run dev
 ```
 
-## ⚙️ Configuration
+Le site de développement est disponible sur http://localhost:3000, sans préfixe de chemin. Il n’existe actuellement aucun fichier `.env.local.example` dans le dépôt ; la liste complète des variables est dans [la configuration](docs/CONFIGURATION.md).
 
-### 1. Firebase
+## Fonctionnalités et routes
 
-Créez un projet Firebase et activez :
+| Route | État et rôle |
+| --- | --- |
+| `/` | Hero plein écran, aurore animée, date/lieu, accès RSVP, informations repliables, contact e-mail et lien vers le voyage. |
+| `/confirmation/?code=CODE` | Lecture de l’invitation Firestore, sélection d’un invité et réponse individuelle, selon les catégories configurées. |
+| `/hebergement/` | Neuf suggestions avec filtres par prix/capacité et coordonnées des établissements. Route directement accessible. |
+| `/noces/` | Présentation du roadtrip d’un mois au Japon : escales provisoires, descriptions, visuels temporaires et avion animé. |
+| `/admin/` | Connexion Firebase, suivi des réponses, statistiques, recherche, tri et export CSV. |
+| `/gallerie/?code=CODE` | Prototype d’albums locaux avec visionneuse, zoom, miniatures et téléchargement. |
+| `/gallerie-cloud/?code=CODE` | Prototype d’albums OneDrive ; la plupart des liens restent à compléter. |
 
-- Firestore Database
-- Authentication (Email/Password)
+Les routes des galeries conservent l’orthographe `gallerie` présente dans le code. La landing annonce la galerie comme « bientôt disponible ». Les codes d’invitation sont réutilisables pour modifier les réponses ; ils ne sont pas à usage unique.
 
-Puis créez `.env.local` :
+## Stack et structure
 
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=votre_clé
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=votre-projet.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=votre-projet-id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=votre-projet.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
-NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:abc123
+Next.js 14.2.5 (App Router), React 18, TypeScript, Tailwind CSS 3, Firebase Firestore/Authentication. Framer Motion anime le voyage, OGL rend l’aurore, et les icônes proviennent de Lucide et Material UI.
+
+```text
+app/                    Routes, layout, styles globaux
+components/             Hero, informations, RSVP, hébergements, animations
+config/codes.ts         Catégories d’invitation depuis l’environnement
+lib/firebase.ts         Initialisation du SDK client Firebase
+public/                 Images, SVG, police Wedding et autres assets
+.github/workflows/      Déploiement GitHub Pages
+docs/                   Architecture, configuration, données, état, décisions, plans
 ```
 
-### 2. Règles Firestore
+## Configuration et données
 
-Dans Firebase Console → Firestore → Règles
+Créer `.env.local` avec les six variables Firebase et les trois listes de codes décrites dans [CONFIGURATION.md](docs/CONFIGURATION.md). Ne pas versionner ce fichier ni publier de vrais codes ou de données personnelles dans la documentation.
 
-### 3. Créer un compte admin
+Les collections utilisées sont **`codes_invitation`** et **`statuts`**. Le document d’invitation a pour identifiant son code ; ses `membres` sont les noms des personnes à inviter. Chaque réponse est écrite dans `statuts/{nom_membre}`. Voir [DATA_MODEL.md](docs/DATA_MODEL.md) pour les champs et contraintes.
 
-Firebase Console → Authentication → Users → Add user
+L’admin utilise Firebase Authentication Email/Password. Le dépôt ne contient ni règles Firestore ni définition de rôles admin. Les variables `NEXT_PUBLIC_*` et les contrôles d’interface sont publics côté navigateur : ils ne remplacent pas les règles d’accès Firebase. Les galeries vérifient uniquement la présence d’un paramètre `code`, sans validation Firestore.
 
-Email : `admin@mariage-sd.com`
-Password : `VotreMotDePasse123!`
+## Vérifier et construire
 
-## 🚀 Déploiement
-
-### GitHub Pages
-
-1. Modifiez `next.config.js` avec le nom de votre repo
-2. Ajoutez vos secrets Firebase dans GitHub (Settings → Secrets)
-3. Push vers GitHub
-4. Le déploiement se fait automatiquement via GitHub Actions
-
-### Vercel (Alternative)
-
-1. Importez votre repo sur Vercel
-2. Ajoutez les variables d'environnement
-3. Déployez !
-
-## 📱 URLs
-
-**Développement :**
-
-- Site principal : http://localhost:3000
-- Confirmation : http://localhost:3000/confirmation
-- Admin : http://localhost:3000/admin
-
-**Production :**
-
-- Site : https://votre-username.github.io/votre-repo
-- Confirmation : https://votre-username.github.io/votre-repo/confirmation
-- Admin : https://votre-username.github.io/votre-repo/admin
-
-## 📋 Structure du Projet
-
-```
-├── app/
-│   ├── page.tsx                  # Page d'accueil
-│   ├── confirmation/
-│   │   └── page.tsx             # Formulaire avec code
-│   └── admin/
-│       └── page.tsx             # Dashboard admin
-├── components/
-│   ├── Hero.tsx                 # Section hero
-│   ├── InfoSection.tsx          # Infos pratiques
-│   ├── Hebergement.tsx        # Hébergements
-│   ├── Footer.tsx               # Pied de page
-│   └── RSVPFormFirebase.tsx     # Formulaire Firebase
-├── lib/
-│   └── firebase.ts              # Config Firebase
-└── .env.local                   # Variables (non committé)
+```sh
+npx tsc --noEmit
+npm run build
 ```
 
-## 🎯 Utilisation
+`npm run build` génère directement l’export statique dans `out/`. Le script `npm run export` contient encore `next export`, obsolète avec Next.js 14 : utiliser `build`. `npm run start` appelle `next start` et ne sert pas cet export ; prévisualiser `out/` avec un serveur statique en respectant le préfixe `/wedding`.
 
-### Créer des codes d'invitation
+Aucune suite de tests automatisés ni configuration ESLint dédiée n’est présente. `npm run lint` existe mais peut demander une configuration interactive. Les vérifications visuelles et fonctionnelles réalisées sont documentées dans [PROJECT_STATE.md](docs/PROJECT_STATE.md).
 
-Dans Firestore, collection `codes_invitation` :
+## Déploiement
 
-```javascript
-{
-  code: "FAM-MARTIN-2027",
-  nom: "Famille Martin",
-  email: "martin@email.com",
-  max_accompagnants: 4,
-  type: "moi",
-  utilise: false
-}
-```
+Le workflow [.github/workflows/deploy.yml](.github/workflows/deploy.yml) déploie sur GitHub Pages après un push sur `main` ou un déclenchement manuel. Il installe les dépendances, construit le site et publie `out/`. Les noms exacts des secrets sont dans [CONFIGURATION.md](docs/CONFIGURATION.md).
 
-### Dashboard Admin
+En production, `basePath`, `assetPrefix` et `NEXT_PUBLIC_BASE_PATH` valent `/wedding`. Les URLs finissent par `/`. Le déploiement Vercel évoqué dans l’ancien README n’est pas configuré dans le dépôt.
 
-Accédez à `/admin` avec vos identifiants pour :
+## Modifier le contenu
 
-- Voir les statistiques en temps réel
-- Filtrer par statut/type
-- Exporter en CSV
-- Suivre les confirmations
+- Date, logo, signature et aurore : `components/Hero.tsx`.
+- Lieu, programme, échéance RSVP, FAQ, contacts et lien du voyage : `components/InfoSection.tsx`.
+- Étapes japonaises, textes et futures photos : `tripSteps` dans `app/noces/page.tsx`.
+- Hébergements : tableau dans `components/Hebergement.tsx`.
+- Invitations : Firestore et listes de catégories d’environnement ; une modification de ces listes exige une reconstruction du site.
 
-## 📊 Collections Firestore
+Préserver les proportions du logo, de la signature et de `domaine.svg`, ainsi que les paramètres d’aurore demandés par les propriétaires. Ne pas afficher leurs numéros personnels. Voir [AGENTS.md](AGENTS.md) pour les consignes de contribution et [l’index documentaire](docs/README.md) pour les détails.
 
-### `codes_invitation`
-
-Stocke les codes d'invitation uniques.
-
-### `confirmations`
-
-Stocke les réponses des invités (créées automatiquement).
-
-## 🔒 Sécurité
-
-- ✅ Variables d'environnement pour les clés sensibles
-- ✅ Authentification Firebase pour l'admin
-- ✅ Règles Firestore pour protéger les données
-- ✅ Codes d'invitation à usage unique
-- ✅ .env.local dans .gitignore
-
-## 📝 License
-
-Projet personnel - Tous droits réservés
-
-## 💕 Auteurs
-
-Solenne & Dorian - Mariage du 17 Juillet 2027
-
----
-
-**Fait avec ❤️ et Next.js**
+Projet personnel de Solenne & Dorian. Aucune licence de réutilisation n’est fournie dans le dépôt.

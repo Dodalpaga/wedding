@@ -1,3 +1,5 @@
+> Plan historique : les mentions du hero mobile compact et du fond statique sont remplacées par les décisions actuelles de [DECISIONS.md](../../DECISIONS.md). Consulter [PROJECT_STATE.md](../../PROJECT_STATE.md) pour la référence actuelle.
+
 # Desktop/tablet layout follow-up
 
 ## Requirements

@@ -1,35 +1,46 @@
-# Decisions
+# Décisions
 
-## 2026-10-03: Compact mobile landing page
+Référence actuelle : 3 octobre 2026. Ce fichier distingue les choix en vigueur des propositions remplacées pendant les ajustements visuels.
 
-Guests primarily browse on phones. Replace the full-height hero and expanded information cards with a shorter introduction, immediate RSVP/practical-information links, an early invitation form, and a compact venue card.
+## Choix en vigueur
 
-Keep the monogram, animated signature, blue/green palette, and venue illustration. Use a static gradient instead of continuous canvas decoration, and a single days-until countdown instead of four ticking counters. Honour reduced-motion preferences for the signature.
+### Site statique et données client
 
-Put the weekend programme, venue description, travel/weather advice, and FAQ answers in native disclosures. Preserve the tentative programme and RSVP deadline without introducing new ceremony times. Show the unavailable gallery as a notice rather than a prominent disabled action.
+Conserver Next.js App Router avec export statique GitHub Pages sous `/wedding`. Les invitations et statuts restent dans Firestore, avec Authentication pour la connexion admin. Les règles effectives Firebase ne sont pas versionnées ; ne pas déduire la sécurité du seul affichage client.
 
-Retain the confirmed guest count. Hide it when loading or unavailable so a failed request does not imply zero confirmed guests. Keep the invitation-code route and Firebase RSVP behaviour unchanged.
+### Accès rapide aux informations
 
-## Desktop/tablet refinement requested by the owner
+La landing donne accès au RSVP et aux informations depuis le hero. Les invités passent par leur code pour ouvrir l’invitation, puis répondent individuellement. Les détails secondaires utilisent des disclosures natifs pour limiter le défilement. Deux panneaux ont une hauteur égale dès 768px ; sur téléphone, RSVP puis informations s’empilent. La carte du voyage est visible avant les FAQ.
 
-Use a full-viewport hero from 768px so its introduction occupies a complete screen rather than exposing a cropped next section. Keep the compact phone hero. Add a scroll link at the bottom of the desktop/tablet introduction.
+L’action du code s’appelle « Accéder à mon invitation », car elle ne sauvegarde pas une réponse. Le programme précise que les événements accessibles dépendent de l’invitation. Conserver l’échéance du 31 décembre 2026 et le programme provisoire sans inventer de nouveaux horaires.
 
-Place invitation and practical information in matching panels with CSS grid stretch, including when a disclosure opens. Add desktop instructions explaining that responses are entered per guest, while keeping these extra instructions out of the compact phone landing page. Label the code form action as opening the invitation, since it does not itself save an RSVP. Clarify that weekend participation depends on the invitation.
+### Identité visuelle préservée
 
-Make the personalized RSVP form more compact with smaller headings/icons, tighter spacing, a two-column response/information layout, and two-column event cards on tablet/desktop. Guest-card columns use auto-fit so small groups do not leave an empty column. Align the invitation message with the form and remove empty badge spacing. Email remains optional, consistent with its label. Firebase submission logic is unchanged.
+Le hero remplit au minimum le viewport sur téléphone, tablette et PC, avec un lien de défilement dans le flux et une croissance naturelle sur les écrans courts. Conserver l’aurore initiale (blend 0.4, amplitude 0.7, speed 0.2), ses couleurs au breakpoint de 1000px et son dégradé diagonal. Le logo reprend 50 % de largeur jusqu’à 240px ; les noms prennent pleine largeur jusqu’à 672px. `domaine.svg` garde son ratio, sans recadrage. Les particules ne sont pas remontées.
 
-## Full-screen phone hero and uncropped venue illustration
+Le countdown est simplifié à un nombre de jours, recalculé chaque minute, avec offset horaire français explicite. Les styles de réduction des mouvements concernent la signature/CSS ; ils ne suspendent pas actuellement le canvas Aurora.
 
-Following the owner's clarification, the hero now fills at least one viewport on phones as well as tablets/desktops. Use `100svh` with a `100vh` fallback. Place the content and scroll link in normal grid flow, so short landscape screens can scroll naturally without overlaps. Earlier compact-phone decisions are superseded.
+### RSVP plus compact sur les grands écrans
 
-Render `domaine.svg` with its intrinsic width/height ratio, automatic height, and `object-contain`; remove square dimensions and `object-cover`. Keep the illustration responsive within the venue card.
+Deux colonnes dès 768px pour les champs réponse/email et les cartes d’événements, titres/icônes plus petits, marges réduites, cartes d’invités en auto-fit. Email facultatif conformément au libellé, commentaires associés à leur label. Le mécanisme de sauvegarde Firestore reste celui existant.
 
-## Restore the original hero aurora
-At the user’s request, restore the original Aurora animation and background gradient. Preserve blend 0.4, amplitude 0.7, speed 0.2, and the original color palettes with their 1000px breakpoint. This supersedes the earlier static-background decision; the responsive hero layout stays in place.
+### Contact par e-mail
 
-## Restore the hero identity proportions
-Restore the original monogram sizing (50% width, capped at 240px) and signature width (full width, capped at 672px). Preserve the full-screen hero and practical navigation; short screens can grow naturally to avoid clipping.
+Ne pas afficher les numéros personnels de Solenne et Dorian. Landing et aide en cas d’erreur de confirmation proposent un bouton `mailto:` aux deux mariés. Les coordonnées publiques des établissements d’hébergement restent distinctes.
 
-## Honeymoon journal refresh
+### Voyage de noces encore en préparation
 
-Present a month-long Japan roadtrip rather than the previous three-week/fixed-day itinerary. Retain existing destination ideas but mark every stop as tentative while the couple adjusts the route. Replace broken images and remote placeholders with local illustrated cards, retain the airplane animation, and move home navigation into the hero. Gift information remains an urne at the wedding with no payment action.
+Présenter un roadtrip d’un mois au Japon. Conserver les cinq destinations envisagées comme exemples modifiables, sans plages de jours définitives. Chaque escale dispose d’un titre, texte provisoire et envies. Les visuels SVG locaux remplacent les images cassées et services externes de placeholder ; une image locale optionnelle peut ensuite être ajoutée. Préserver l’avion au défilement et l’alternance desktop ; respecter `useReducedMotion`. Le bouton Accueil appartient à la bannière. La participation reste une urne au mariage, sans paiement en ligne.
+
+### Galeries non annoncées comme prêtes
+
+La landing indique « bientôt disponible ». Les deux routes de prototype existent mais leurs contrôles de code ne valident pas Firestore. La galerie OneDrive garde des liens à compléter et des nombres de photos d’exemple.
+
+## Choix remplacés
+
+- Le premier refactoring proposait un hero compact sur téléphone : remplacé par un hero plein écran sur toutes les tailles à la demande des propriétaires.
+- Le fond statique proposé au début a été remplacé par l’aurore d’origine.
+- Le logo et les noms initialement réduits ont retrouvé leurs proportions d’origine.
+- L’ancienne page voyage évoquait trois semaines et des étapes datées : remplacée par un mois et des escales provisoires.
+
+Les plans terminés documentent les vérifications de chaque étape. Les anciennes captures ne représentent pas nécessairement les paramètres actuellement en vigueur.

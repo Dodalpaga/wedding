@@ -1,67 +1,52 @@
-# Project state
+# État du projet
 
-## Landing page — 2026-10-03
+État du code au **3 octobre 2026**. Ce document consolide les notes de refactoring ; les états intermédiaires sont conservés dans les plans/captures et ne sont pas la référence courante.
 
-The landing page has been refactored for mobile guests:
-- Compact branded introduction with date/venue and direct RSVP/practical-information links.
-- RSVP immediately after the hero; RSVP and information appear side by side on desktop.
-- Venue address, directions, outdoor ceremony, and parking remain visible.
-- Programme, venue description, transport/weather advice, and FAQs use native expandable sections.
-- Countdown simplified to days; continuous particle/WebGL backgrounds removed from the landing page.
-- Invitation routing, Firebase confirmed guest count, RSVP deadline, and contact emails retained. Gallery remains unavailable.
+## Fonctionnalités actuelles
 
-## Verification
+| Zone | État |
+| --- | --- |
+| Landing | Hero plein écran, aurore et proportions logo/noms d’origine, countdown en jours, ancres RSVP/infos. |
+| Informations | RSVP en premier sur mobile, panneaux alignés dès 768px, domaine sans crop, programme/transport/conseils/FAQ repliables, compteur des invités confirmés. |
+| Contact | Boutons e-mail sur la landing et l’erreur de confirmation ; aucun numéro personnel des mariés dans le code des pages. |
+| Confirmation | Invitation Firestore, catégories configurées, réponse par membre et édition des réponses existantes. |
+| RSVP | Layout compact sur tablette/PC, email facultatif, commentaires, événements selon catégorie et réponse. |
+| Hébergement | Neuf suggestions locales filtrables ; coordonnées publiques des prestataires. |
+| Voyage | Un mois au Japon, cinq escales envisagées, textes et visuels provisoires, avion animé, accès depuis la landing. |
+| Admin | Connexion Firebase, statistiques, tri/recherche/filtres et export CSV ; limites ci-dessous. |
+| Galeries | Prototypes existants, non proposés comme disponibles depuis la landing. |
 
-TypeScript passed. Next.js production compilation, type validation, and static export passed for all 11 generated pages in a clean verification copy. The clean copy was necessary because the original `.next/trace` file was locked by another process, and overlapping preview/build activity caused incomplete manifests. No permanent build configuration changes were made.
+Le programme détaillé du mariage et les villes/ordre/durées du Japon restent à finaliser avec les propriétaires. Les visuels du voyage peuvent être remplacés par des photos locales via `tripSteps.image`.
 
-Browser checks covered 320px and 390px mobile widths and a 1440px desktop viewport, with no horizontal overflow. Verified anchor jumps, click/keyboard disclosure controls, empty invitation-code validation, URL encoding/whitespace trimming with a dummy code, and live confirmed guest count. No RSVP records were submitted or changed.
+## Vérifications réalisées
 
-Reviewed screenshots are in `docs/screenshots/landing_mobile_refactored.jpg` and `docs/screenshots/landing_desktop_refactored.jpg`.
+- TypeScript a passé les contrôles après les refactorings et les derniers changements de lien/contact.
+- Compilation de production et export statique réussis dans des copies propres, dont la version avec refactoring du voyage : 11 pages générées par Next. Les derniers petits changements lien/contact ont été contrôlés par TypeScript, sans nouveau build complet.
+- Landing vérifiée à 320/375/390px, tablette portrait/paysage et PC 1440px : pas de débordement horizontal ; hero plein écran sur les tailles portrait et croissance sûre sur écran court/paysage ; panneaux de même hauteur même après expansion. Ces captures précèdent la restauration finale de taille logo/noms et de l’aurore.
+- Trois catégories d’invitation réelles vérifiées en lecture : week-end avec logement réservé, week-end sans logement réservé, cérémonie/vin d’honneur. Les liens, badges et choix correspondent aux catégories ; la saisie de code en minuscules fonctionne.
+- Acceptation week-end sans événement désactivée, sélection d’un événement activée, refus masquant les événements ; valeurs existantes chargées. Aucun clic de sauvegarde finale : aucun RSVP écrit pendant ces vérifications.
+- Voyage vérifié à 320, 390, 820 et 1440px : absence de débordement, colonnes alternées sur tablette/PC, ancre d’itinéraire et avion progressant au scroll.
+- Audit documentaire : README, consignes, docs, scripts, variables, schéma et routes confrontés au code. Aucun déploiement ni changement de données effectué.
 
-The programme is still tentative and the gallery is still in development, matching the original site. Build tooling reports outdated Browserslist/Baseline data; dependencies were left unchanged.
+Les contrôles UI ne valent pas validation de la persistance ou audit complet de sécurité. L’admin et les galeries n’ont pas fait l’objet d’un nouveau contrôle interactif pendant cette mise à jour documentaire. Voir [l’index des captures](screenshots/README.md) pour leur portée.
 
-## Follow-up: real invitation journeys
+## Limites et incohérences connues
 
-Tested all three invitation categories supplied by the owner from the landing form in a 390px mobile preview. The reserved-accommodation invitation shows the reserved-room message and weekend event fields without accommodation suggestions. The weekend invitation without accommodation shows the same event fields and a working link to nine nearby accommodation suggestions. The ceremony/drinks invitation shows its specific badge, no weekend event checkboxes, and no accommodation link. Lowercase code entry is accepted by the confirmation page.
+| Point | Observation dans le code |
+| --- | --- |
+| Export CSV admin | Neuf en-têtes mais huit valeurs par ligne : un en-tête `Samedi midi` sans champ correspondant décale les colonnes suivantes. L’échappement CSV se limite à remplacer les virgules des commentaires ; les autres caractères/champs ne sont pas correctement protégés pour tous les cas. |
+| Modèle de membres | Le statut utilise le nom comme identifiant : collisions possibles entre homonymes, `/` non compatible avec cet identifiant. |
+| Sauvegarde RSVP | Deux écritures séquentielles, sans transaction. Les événements masqués gardent leurs valeurs locales lors de l’écriture. |
+| Accès Firebase/admin | Règles absentes du dépôt ; aucune définition de rôle admin dans le client. Leur configuration réelle n’a pas été auditée. Le compteur et RSVP lisent des collections entières. |
+| Galeries | Présence d’un code dans l’URL seulement ; aucune validation d’invitation. Photos locales de démonstration, nombreux liens OneDrive et compteurs encore provisoires. |
+| Images hébergements | Chemins `/wedding/hebergements/...` codés en dur : erreurs 404 observées en développement sans basePath. Le préfixe correspond à la production, sans établir que toutes les images de production ont été vérifiées. |
+| Préchargement de police | Le layout utilise `/fonts/Wedding.otf` sans basePath ; vérifier le preload sous `/wedding`. La police des styles est aussi chargée via CSS. |
+| Réduction des mouvements | Signature/CSS landing et animations du voyage prises en compte ; canvas Aurora encore animé. |
+| Scripts npm | `export` utilise encore `next export` et `start` n’est pas adapté à l’export statique. Aucune suite automatisée/config ESLint dédiée. |
+| Outils de build | Avertissements Browserslist/Baseline obsolètes ; dépendances inchangées. `.next/trace` a été verrouillé lors de contrôles locaux, d’où les copies propres. |
 
-Verified that accepting a weekend invitation without selecting an event disables confirmation, selecting an event enables it, and declining hides event fields. Existing guest answers load correctly. These checks changed local form state only: the final submission button was never used and no Firebase records were changed. Final persistence remains untested on the live database.
+Ces observations ont été documentées, sans correction applicative supplémentaire dans la tâche de documentation.
 
-Existing development-only issue observed: accommodation images request the hardcoded `/wedding/hebergements/` prefix and return 404 in development, where the configured base path is empty. The production base path is `/wedding`, so this check does not establish a production image failure. No accommodation code was changed during these RSVP checks.
+## Suite possible
 
-
-## Desktop/tablet layout follow-up
-
-The hero now fills the viewport from 768px; phones retain the shorter introduction. Invitation and practical-information panels have matching styling and equal heights from 768px. The form action now says it opens the invitation, and the programme explains invitation-specific attendance.
-
-The personalized RSVP form now groups response/email fields and event cards into two columns from 768px, uses smaller headings/icons and tighter gaps, and fits guest cards to the available width. Invitation text and form widths are aligned. Empty badge spacing was removed. Email is consistently marked optional, and comments have an associated label.
-
-Browser checks passed at desktop 1440×900, landscape tablet 1024×768, portrait tablets 820×1180 and 768×1024, and phones 390×844 and 320×740. Hero heights matched viewport heights on desktop/tablet, both landing panels had equal heights including with the programme expanded, and no horizontal overflow was detected. Weekend and ceremony-only RSVP layouts were checked at tablet/desktop sizes, with the expected event fields and enabled ceremony-only confirmation. No RSVP was saved.
-
-Updated visual evidence: `docs/screenshots/landing_desktop_adjusted.jpg`, `landing_tablet_adjusted.jpg`, and `landing_mobile_adjusted.jpg`.
-
-TypeScript and a clean-copy production static export passed after these adjustments (all 11 pages).
-
-## Phone hero and venue illustration follow-up
-
-The hero now fills the screen on phones too. It uses small-viewport units with a fallback and keeps its scroll link in normal layout flow. In short landscape viewports it grows to fit its content instead of clipping or overlapping controls. `domaine.svg` now retains its original proportions and is shown entirely without cropping.
-
-Browser checks passed at 390×844, 375×667, 320×568, 844×390 (landscape phone), 820×1180, and 1440×900. The hero matched portrait viewport heights; the landscape layout grew safely. No horizontal overflow or overlap between the buttons and scroll link was detected. The displayed venue illustration ratio matched the SVG ratio within subpixel rounding. Screenshot: `docs/screenshots/landing_mobile_fullscreen.jpg`.
-
-## Original aurora restored
-The hero uses its original WebGL Aurora settings and diagonal background gradient again. The full-screen responsive layout, navigation, and uncropped venue illustration remain in place.
-
-## Hero identity proportions restored
-The monogram and names have their original responsive dimensions again: logo at 50% width up to 240px and signature up to 672px. TypeScript validation passed.
-
-## Honeymoon page refresh
-
-The /noces page introduces a month-long Japan roadtrip, with provisional descriptions and highlights for the existing five destination ideas. Fixed day ranges are removed while the itinerary is being adjusted. The home button is integrated into the hero. Compact inline illustrations replace missing photos; optional image paths can be added in tripSteps. The airplane follows scrolling, with reduced-motion support.
-
-Browser checks at 320px, 390px, 820px, and 1440px found no horizontal overflow. Verified itinerary anchor navigation, alternating tablet/desktop layout, and airplane progression on scrolling. TypeScript passed. Visual evidence: docs/screenshots/noces_mobile_refactored.jpg and noces_desktop_refactored.jpg.
-
-Clean-copy production compilation and static export passed for all 11 generated pages.
-
-The landing page now includes a compact, fully clickable Japan honeymoon card between the invitation/practical panels and FAQs, linking to /noces/ with Next Link so the production base path is respected.
-
-## Contact privacy
-The confirmation error/help panel now uses an email contact button matching the landing page. The couple’s personal phone numbers were removed from the source; accommodation providers’ public contact details are unchanged.
+Finaliser le programme, les escales et photos du Japon ; corriger le CSV et les chemins d’assets ; définir/valider les règles d’accès Firebase avant toute affirmation de confidentialité ; terminer ou retirer les prototypes de galeries ; vérifier les sauvegardes sur une base de test. Les demandes de design actuelles et l’accès au voyage depuis la landing sont implémentés.
