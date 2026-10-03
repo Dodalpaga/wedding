@@ -1,0 +1,102 @@
+[
+  {
+    "width": 320,
+    "height": 568,
+    "performance": {
+      "callbacks": 275,
+      "callbackP95Ms": 5,
+      "longTasks": [
+        52,
+        88,
+        83
+      ]
+    }
+  },
+  {
+    "width": 320,
+    "height": 568,
+    "initial": {
+      "width": 270,
+      "height": 480,
+      "alpha": 521368
+    },
+    "advanced": {
+      "width": 270,
+      "height": 480,
+      "alpha": 566920
+    },
+    "reversed": {
+      "width": 270,
+      "height": 480,
+      "alpha": 521368
+    },
+    "idleCallbacks": 0,
+    "errors": []
+  },
+  {
+    "width": 820,
+    "height": 1180,
+    "initial": {
+      "width": 500,
+      "height": 720,
+      "alpha": 1789397
+    },
+    "advanced": {
+      "width": 500,
+      "height": 720,
+      "alpha": 2430848
+    },
+    "reversed": {
+      "width": 500,
+      "height": 720,
+      "alpha": 1789397
+    },
+    "idleCallbacks": 0,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "height": 900,
+    "initial": {
+      "width": 720,
+      "height": 450,
+      "alpha": 946479
+    },
+    "advanced": {
+      "width": 720,
+      "height": 450,
+      "alpha": 1117037
+    },
+    "reversed": {
+      "width": 720,
+      "height": 450,
+      "alpha": 946479
+    },
+    "idleCallbacks": 0,
+    "errors": []
+  },
+  {
+    "width": 844,
+    "height": 390,
+    "initial": {
+      "width": 720,
+      "height": 333,
+      "alpha": 731290
+    },
+    "advanced": {
+      "width": 720,
+      "height": 333,
+      "alpha": 899462
+    },
+    "reversed": {
+      "width": 720,
+      "height": 333,
+      "alpha": 731290
+    },
+    "idleCallbacks": 0,
+    "errors": []
+  },
+  {
+    "reducedInitialFrameRequests": 1
+  }
+]

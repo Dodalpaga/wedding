@@ -21,7 +21,7 @@ Le site de développement est disponible sur http://localhost:3000, sans préfix
 | `/` | Hero plein écran, aurore animée, date/lieu, accès RSVP, informations repliables, contact e-mail et lien vers le voyage. |
 | `/confirmation/?code=CODE` | Lecture de l’invitation Firestore, sélection d’un invité et réponse individuelle, selon les catégories configurées. |
 | `/hebergement/` | Neuf suggestions avec filtres par prix/capacité et coordonnées des établissements. Route directement accessible. |
-| `/noces/` | Hero unique, séquence Torii de 597 WebP : cartes photo fixes en fondu, cinq escales et cadeau avec retour Accueil ; sans navbar, avion, curseur personnalisé ni scrollbar visible. |
+| `/noces/` | Hero unique, séquence Torii de 597 WebP et rayons solaires synchronisés au scroll : cartes photo fixes en fondu, cinq escales et cadeau avec retour Accueil ; sans navbar, avion, curseur personnalisé ni scrollbar visible. |
 | `/admin/` | Connexion Firebase, suivi des réponses, statistiques, recherche, tri et export CSV. |
 | `/gallerie/?code=CODE` | Prototype d’albums locaux avec visionneuse, zoom, miniatures et téléchargement. |
 | `/gallerie-cloud/?code=CODE` | Prototype d’albums OneDrive ; la plupart des liens restent à compléter. |
@@ -30,7 +30,7 @@ Les routes des galeries conservent l’orthographe `gallerie` présente dans le 
 
 ## Stack et structure
 
-Next.js 14.2.5 (App Router), React 18, TypeScript, Tailwind CSS 3, Firebase Firestore/Authentication. Framer Motion anime le voyage, OGL rend l’aurore, et les icônes proviennent de Lucide et Material UI.
+Next.js 14.2.5 (App Router), React 18, TypeScript, Tailwind CSS 3, Firebase Firestore/Authentication. Le voyage utilise des canvas et des fondus sans Framer Motion, avec caches mémoire bornés ; OGL rend l’aurore, et les icônes proviennent de Lucide et Material UI.
 
 ```text
 app/                    Routes, layout, styles globaux

@@ -63,6 +63,8 @@ Pour prévisualiser l’export, servir les fichiers statiques de façon que `out
 
 La séquence active utilise les 597 WebP de `public/assets/torii-better-fps-frames/`, issus de `Torii_better_fps.mp4`, en 1280×720 natif, qualité 85, total 72,55 Mio. Elle conserve chaque frame sans crop ni resize ; un seul jeu sert mobile/tablette/PC. Aucun serveur d’optimisation d’images n’est nécessaire. Les 100 PNG et leurs anciennes variantes WebP sous `public/assets/frames/` restent historiques, intacts et inutilisés par le renderer actuel.
 
+Le cache des blobs compressés est limité à 12/24 Mio (téléphone/grand écran), avec éviction LRU ; les anciens fichiers peuvent être rechargés au retour. Vérification ciblée : `node --test tests/frame-blob-cache.test.cjs`. Les bitmaps décodés restent limités à 16/24.
+
 Le motif, le nombre, le padding et les limites du renderer sont regroupés dans `FRAME_SEQUENCE` de `components/noces/frame-sequence.ts`. Les URLs des frames et des photos d’escales conservent `NEXT_PUBLIC_BASE_PATH`. Pour une photo d’escale, renseigner `image: '/images/nom-du-fichier.jpg'` dans `tripSteps`, puis placer le fichier sous `public/images/`.
 
 Pour régénérer les anciennes copies PNG → WebP, `scripts/prepare-noces-frames.cjs` utilise Sharp ; ce script est historique et ne prépare pas la séquence active. Le build normal ne requiert ni Sharp ni FFmpeg : les assets sont déjà générés.

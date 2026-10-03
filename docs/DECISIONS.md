@@ -1,6 +1,6 @@
 # Décisions
 
-Référence actuelle : 3 octobre 2026. Ce fichier distingue les choix en vigueur des propositions remplacées pendant les ajustements visuels.
+Référence actuelle : 4 octobre 2026. Ce fichier distingue les choix en vigueur des propositions remplacées pendant les ajustements visuels.
 
 ## Choix en vigueur
 
@@ -55,4 +55,17 @@ Conserver le séparateur CSV virgule existant et protéger tous les champs avec 
 
 ## Ombre du voyage et compacité mobile
 
-Le dégradé bleu cinématique précédent est remplacé par une ombre gris foncé diagonale, plus sombre en bas à gauche et sur téléphone. Les textures restent originales : ombres en multiply (variante 2, active), fuite de lumière en screen (variante 1), neutralisées en CSS et masquées vers le haut à droite. Un seul fichier est chargé ; la texture ne fait pas partie du traitement par frame. Le panneau fermé n’affiche plus que numéro/ville/chevron ; tous les textes et envies restent accessibles dans le volet.
+Le dégradé bleu cinématique précédent est remplacé par une ombre gris foncé diagonale, plus sombre en bas à gauche et sur téléphone. Le choix de texture statique de cette étape est remplacé le 4 octobre 2026 par les rayons solaires décrits ci-dessous ; les assets originaux restent conservés. Le panneau fermé n’affiche plus que numéro/ville/chevron ; tous les textes et envies restent accessibles dans le volet.
+
+
+## Rayons solaires synchronisés au scroll — 4 octobre 2026
+
+Remplacer la texture statique par une illusion volumétrique 2D en perspective. Réutiliser la frame affichée pour garder la lumière synchronisée même pendant le chargement ; masque de luminance pour atténuer les rayons sur les arbres. Pas de ray tracing physique, WebGL supplémentaire, animation autonome ou téléchargement de texture. Résolutions bornées, sprite précalculé et boucle existante arrêtée au repos. Effet absent en réduction des mouvements ; voile sombre et contenus conservés.
+
+
+À la demande des propriétaires, les trouées solaires sont accentuées : certains faisceaux atteignent 3–4 fois leur largeur initiale et un gain lumineux jusqu’à ×3. Garder une variation progressive au scroll, des rayons fins entre les nappes larges, le masque des arbres et le voile de lisibilité. Résolutions, nombre de faisceaux et arrêt au repos inchangés.
+
+
+## Cache mémoire du voyage borné
+
+Conserver les 597 frames, le cache décodé 16/24 et le moteur solaire inchangés. Limiter la rétention compressée à 12 Mio sur téléphone et 24 Mio ailleurs avec éviction LRU ; vider ce cache en réduction des mouvements. Préférer cette borne mémoire à une conservation de toute la vidéo (72,55 Mio), avec possibilité de recharger les frames anciennes au retour. Aucune simplification visuelle ni baisse de résolution pour cette passe.

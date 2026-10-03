@@ -2,8 +2,8 @@ export const FRAME_SEQUENCE = {
   pattern: '/assets/torii-better-fps-frames/frame-{frame}.webp',
   count: 597,
   padding: 6,
-  mobile: { maxDimension: 1280, cacheSize: 16, radius: 6 },
-  desktop: { maxDimension: 1280, cacheSize: 24, radius: 9 },
+  mobile: { maxDimension: 1280, cacheSize: 16, radius: 6, blobCacheBytes: 12 * 1024 * 1024 },
+  desktop: { maxDimension: 1280, cacheSize: 24, radius: 9, blobCacheBytes: 24 * 1024 * 1024 },
 } as const;
 
 export function frameUrl(index: number) {

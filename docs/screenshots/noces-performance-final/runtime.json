@@ -1,0 +1,32 @@
+[
+  {
+    "label": "before",
+    "callback": {
+      "count": 375,
+      "p95Ms": 7.5,
+      "maxMs": 15.600000001490116
+    },
+    "solarPaint": {
+      "count": 89,
+      "p95Ms": 10.100000001490116,
+      "maxMs": 14
+    },
+    "longTasks": []
+  },
+  {
+    "label": "after",
+    "callback": {
+      "count": 390,
+      "p95Ms": 7.5,
+      "maxMs": 24.399999998509884
+    },
+    "solarPaint": {
+      "count": 90,
+      "p95Ms": 5.699999995529652,
+      "maxMs": 14.699999995529652
+    },
+    "longTasks": [
+      50
+    ]
+  }
+]

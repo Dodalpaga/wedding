@@ -1,4 +1,4 @@
-// 1 = subtle light leak, 2 = diagonal shadows. Only the selected file is loaded.
+// Historical texture settings, superseded by solar-rays.ts. No longer loaded.
 export const BACKGROUND_TEXTURE: 1 | 2 = 2;
 
 export const BACKGROUND_TEXTURES = {

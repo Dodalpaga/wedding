@@ -1,6 +1,6 @@
 # État du projet
 
-État du code au **3 octobre 2026**. Ce document consolide les notes de refactoring ; les états intermédiaires sont conservés dans les plans/captures et ne sont pas la référence courante.
+État du code au **4 octobre 2026**. Ce document consolide les notes de refactoring ; les états intermédiaires sont conservés dans les plans/captures et ne sont pas la référence courante.
 
 ## Fonctionnalités actuelles
 
@@ -12,7 +12,7 @@
 | Confirmation | Invitation Firestore, catégories configurées, réponse par membre et édition des réponses existantes. |
 | RSVP | Layout compact sur tablette/PC, email facultatif, commentaires, événements selon catégorie et réponse. |
 | Hébergement | Neuf suggestions locales filtrables ; coordonnées publiques des prestataires. |
-| Voyage | Hero Torii 597 WebP : huit scènes fixes en fondu, cinq cartes photo et cadeau avec retour Accueil. Sans navbar/menu/avion/footer/curseur personnalisé/scrollbar visible ; textes V1 conservés, rendu arrêté au repos. |
+| Voyage | Hero Torii 597 WebP et rayons solaires au scroll : huit scènes fixes en fondu, cinq cartes photo et cadeau avec retour Accueil. Sans navbar/menu/avion/footer/curseur personnalisé/scrollbar visible ; textes V1 conservés, rendu arrêté au repos. |
 | Admin | Connexion Firebase, statistiques, tri/recherche/filtres et export CSV ; limites ci-dessous. |
 | Galeries | Prototypes existants, non proposés comme disponibles depuis la landing. |
 
@@ -125,6 +125,34 @@ Essai de texture accentuée : opacité 22→80 %, masque conservant 90 % d’int
 TypeScript validé après ce réglage. Aperçus du CSS/config actuels sur l’export précédent à 390, 820 et 1440px sans débordement horizontal ; pas de nouveau build ni reprise des contrôles fonctionnels complets pour ce changement visuel limité. Captures accentuées dans [l’index](screenshots/README.md).
 
 
-## Dégradé rétabli : état actuel
+## Dégradé rétabli : étape précédente
 
-Dégradé gris diagonal original restauré : PC 88→88→42→0 %, téléphone/écran court 90→86→70→42 %. Les réglages des propriétaires dans `background-treatment.ts` sont conservés : texture 2 en screen à 100 %. Masque de texture étendu conservé ; volets et moteur inchangés. Les captures existantes précèdent cette combinaison.
+Dégradé gris diagonal original restauré : PC 88→88→42→0 %, téléphone/écran court 90→86→70→42 %. Les réglages des propriétaires dans `background-treatment.ts` sont conservés : texture 2 en screen à 100 %. Masque de texture étendu conservé ; volets et moteur inchangés. Les captures existantes précèdent cette combinaison. La texture statique de cette étape est remplacée par les rayons solaires le 4 octobre 2026.
+
+
+## Rayons solaires au scroll : état actuel (4 octobre 2026)
+
+La texture statique est remplacée par des faisceaux procéduraux chauds en perspective synchronisés à la frame Torii visible. Élargissement à l’approche, modulation de canopée et atténuation sur les arbres via masque de luminance ; occlusion approximative 2D, sans reconstruction géométrique ni ray tracing physique. Canvas 480/720px et masque 128/160px maximum, 9/14 faisceaux, sprite précalculé, aucune dépendance/texture supplémentaire. Le voile gris original et la lecture des contenus restent conservés. Aucun timer ni re-render React au scroll ; arrêt au repos/onglet masqué. Effet masqué/effacé en réduction des mouvements et absent sans JavaScript.
+
+TypeScript et build/export de production isolé validés : 11 pages, /noces 8,04 kB et 102 kB de premier chargement JS. Chrome headless sous /wedding/, DPR 2 : 320×568, 820×1180, 1440×900 et 844×390 ; scroll avant/arrière (rendu identique au retour), resize/orientation, absence de débordement et d’erreur JS, volets au clavier, changements à chaud de préférence et fallback sans JavaScript contrôlés. Réduction des mouvements dès le chargement : une seule URL de frame et aucun rayon. Zéro callback rAF/dessin au repos dans les fenêtres de contrôle. Aucune requête de texture.
+
+Mesure indicative à 390×844, CPU ×4, même progression sur les premiers 15 % de la séquence : coût CPU des callbacks rAF au p95 4.5 → 7.3 ms ; traitement solaire seul au p95 5.6 ms. Comparaison avec l’export historique noces-drawer-validation (même séquence et renderer avant rayons) ; textures/voile de cette ancienne capture peuvent différer. Mesure ponctuelle locale, pas une mesure de FPS ni une garantie sur téléphone physique/réseau lent ; tâches longues et dispersion sont conservées dans le rapport brut. Les coûts de décodage vidéo et composition GPU ne sont pas entièrement représentés par le temps des callbacks. [Captures et rapports](screenshots/README.md). Aucun appel/écriture Firebase, RSVP soumis ou déploiement.
+
+
+### Rayons accentués : réglage actuel
+
+Deux tiers des faisceaux varient jusqu’à ×4 en largeur lors des trouées solaires ; un tiers reste fin. Gain lumineux progressif jusqu’à ×3, alpha plafonné à 1 pour éviter les valeurs invalides et laisser saturer les cœurs lumineux. Variation réversible au scroll, même masque et résolutions, aucun sprite/dessin supplémentaire. TypeScript et export isolé validés ; contrôles visuels sur 320×568, 820×1180 et 1440×900, scroll, zéro dessin au repos, réduction des mouvements et absence d’erreurs/débordement. Les mesures CPU ci-dessus et les premières captures solaires concernent la première intensité, pas ce réglage accentué ; aucune nouvelle mesure de FPS sur appareil physique. Aucun appel/écriture Firebase ni déploiement.
+
+
+### Correction du rendu en développement
+
+La réexécution des effets au montage en Strict Mode conservait les dimensions du canvas vidéo mais recréait le moteur solaire avec sa taille interne de 1×1. Son resize était conditionné à un changement de dimensions vidéo : le second montage ne dessinait donc plus les rayons visibles, contrairement à l’export de production. L’initialisation du renderer solaire est désormais indépendante de cette condition ; un resize inchangé conserve le canvas et évite les dessins supplémentaires. Rendu contrôlé sur le serveur npm run dev à /noces/ : rayons visibles après reload et pendant le scroll, aucune erreur JS. TypeScript et export de production isolé validés. [Capture en développement](screenshots/noces-solar-rays/solar-dev-fixed.png). Aucun appel/écriture Firebase ni déploiement.
+
+
+### Dernière passe performances : design inchangé
+
+TypeScript, les trois tests du cache (LRU, remplacement/clear, parcours complet) et export isolé validés : 11 pages, /noces 8,29 kB et 102 kB de premier chargement JS. Simulation avec les tailles réelles des 597 frames : rétention compressée auparavant potentiellement 72,55 Mio, désormais ≤12/24 Mio. Ce budget concerne les blobs conservés, pas toute la mémoire du navigateur (bitmaps, canvas et requêtes en cours restent distincts). Le moteur solaire est conservé strictement à l’identique, vérifié par SHA-256 ; aucune couleur, largeur, luminosité, résolution, cadence, frame ou disposition modifiée.
+
+Chrome headless sous /wedding/ : 320×568, 820×1180, 1440×900 et 844×390/DPR 2 ; scroll avant/arrière, resize, clavier/volets, réduction des mouvements à chaud et dès le chargement (une URL de frame), no-JS, zéro dessin/callback au repos et absence d’erreurs/débordements contrôlés. Vérification complémentaire sur le serveur de développement avec Strict Mode.
+
+Essai ponctuel 390×844/CPU ×4 sur les premiers 15 % de la séquence : callbacks rAF au p95 7.5 → 7.5 ms ; traitement solaire 10.1 → 5.7 ms. Les variations de décodage/ordonnancement sont conservées dans le rapport ; pas de gain CPU/FPS fiable revendiqué. L’optimisation retenue est la rétention mémoire bornée. Un retour lointain peut nécessiter de nouvelles lectures/requêtes, selon le cache HTTP. Aucun essai sur téléphone physique/réseau lent ni déploiement ; aucune donnée Firebase lue/écrite. [Rapports](screenshots/README.md).

@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, type RefObject } from 'react';
 import { FRAME_SEQUENCE, frameUrl } from './frame-sequence';
-import { BACKGROUND_TEXTURE, BACKGROUND_TEXTURES } from './background-treatment';
+import { createSolarRays } from './solar-rays';
+import { FrameBlobCache } from './frame-blob-cache';
 
 type DecodedFrame = ImageBitmap | HTMLImageElement;
 const release = (frame: DecodedFrame) => {
@@ -24,6 +25,7 @@ async function decode(blob: Blob): Promise<DecodedFrame> {
 
 export default function SequenceBackdrop({ sectionRef }: { sectionRef: RefObject<HTMLElement> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const raysRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const section = sectionRef.current;
     const canvas = canvasRef.current;
@@ -33,9 +35,11 @@ export default function SequenceBackdrop({ sectionRef }: { sectionRef: RefObject
     const variant = window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'desktop';
     const settings = FRAME_SEQUENCE[variant];
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const rays = raysRef.current ? createSolarRays(raysRef.current, variant === 'mobile') : null;
     const bitmaps = new Map<number, DecodedFrame>();
-    // Keep small compressed blobs for reverse scrolling, rather than fetching again.
-    const blobs = new Map<number, Blob>();
+    // Keep recent compressed frames for reverse scrolling without accumulating
+    // the entire video. Older frames may still be available in the HTTP cache.
+    const blobs = new FrameBlobCache(settings.blobCacheBytes);
     const pending = new Map<number, AbortController>();
     const failed = new Set<number>();
     let disposed = false;
@@ -135,6 +139,8 @@ export default function SequenceBackdrop({ sectionRef }: { sectionRef: RefObject
       const h = 'naturalHeight' in frame ? frame.naturalHeight : frame.height;
       const scale = Math.max(width / w, height / h);
       ctx!.drawImage(frame, (width - w * scale) / 2, (height - h * scale) / 2, w * scale, h * scale);
+      if (motion.matches) rays?.clear();
+      else rays?.paint(frame, nearest / (FRAME_SEQUENCE.count - 1));
       drawn = nearest;
       resized = false;
       if (canvas!.style.opacity !== '1') canvas!.style.opacity = '1';
@@ -163,20 +169,26 @@ export default function SequenceBackdrop({ sectionRef }: { sectionRef: RefObject
       const nextHeight = Math.max(1, Math.round(rect.height * dpr));
       width = rect.width;
       height = rect.height;
+      // Strict Mode/Fast Refresh can recreate the renderer while retaining the
+      // DOM canvas sizes. Initialise its private mask/crop independently.
+      if (rays?.resize(width, height)) resized = true;
       if (canvas!.width !== nextWidth || canvas!.height !== nextHeight) {
         canvas!.width = nextWidth;
         canvas!.height = nextHeight;
         ctx!.setTransform(nextWidth / width, 0, 0, nextHeight / height, 0, 0);
         resized = true;
-        paint(); // Restore synchronously, avoiding a blank resize frame.
       }
+      paint(); // Restore synchronously, avoiding a blank resize frame.
       start = section!.getBoundingClientRect().top + window.scrollY;
       distance = Math.max(1, section!.offsetHeight - height);
       onScroll();
       schedule();
     }
     function motionChanged() {
+      resized = true;
       if (motion.matches) {
+        rays?.clear();
+        blobs.clear();
         target = eased = wanted = 0;
         pending.forEach((controller, index) => { if (index !== 0) controller.abort(); });
         bitmaps.forEach((frame, index) => { if (index !== 0) { release(frame); bitmaps.delete(index); } });
@@ -213,19 +225,12 @@ export default function SequenceBackdrop({ sectionRef }: { sectionRef: RefObject
     };
   }, [sectionRef]);
 
-  const texture = BACKGROUND_TEXTURES[BACKGROUND_TEXTURE];
   return <div className="noces-stage" aria-hidden="true">
     <picture className="noces-poster">
       <img src={frameUrl(0)} alt="" fetchPriority="high" />
     </picture>
     <canvas ref={canvasRef} className="noces-canvas" />
-    <img
-      className="noces-background-texture"
-      src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${texture.src}`}
-      alt=""
-      decoding="async"
-      style={{ mixBlendMode: texture.blend, opacity: texture.opacity }}
-    />
+    <canvas ref={raysRef} className="noces-solar-rays" />
     <div className="noces-hero-overlay" />
   </div>;
 }

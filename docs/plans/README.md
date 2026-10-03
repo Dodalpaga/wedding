@@ -11,7 +11,9 @@ Pour un changement complexe ou un refactoring majeur : créer un document dans `
 | [noces-hero-performance.md](completed/noces-hero-performance.md) | Historique : hero unique, défilement naturel des étapes et optimisation WebP/rendu. |
 | [noces-fade-scenes.md](completed/noces-fade-scenes.md) | État courant : Torii 597 frames, scènes fixes en fondu, cartes photo et cadeau final avec retour Accueil. |
 | [noces-cinematic-drawers.md](completed/noces-cinematic-drawers.md) | Hero élargi, carte inversée et volets natifs. Voile bleu et commande à plusieurs lignes remplacés. |
-| [noces-shadow-textures.md](completed/noces-shadow-textures.md) | Ombre gris foncé diagonale, deux textures configurables et panneau mobile numéro/ville/chevron. |
+| [noces-shadow-textures.md](completed/noces-shadow-textures.md) | Ombre gris foncé diagonale et panneau mobile ; textures remplacées par les rayons solaires. |
+| [noces-performance-final.md](completed/noces-performance-final.md) | Cache compressé LRU borné, design solaire inchangé et vérifications finales. |
+| [noces-solar-rays.md](completed/noces-solar-rays.md) | Rayons solaires au scroll, perspective, masque de luminance et performances bornées. |
 | [documentation-sync.md](completed/documentation-sync.md) | Audit et consolidation complète de la documentation. |
 | [admin-csv-layout.md](completed/admin-csv-layout.md) | CSV multiline, palette admin, pagination et cartes responsive. |
 

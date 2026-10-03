@@ -1,6 +1,6 @@
 # Captures d’écran
 
-Captures de référence et preuves visuelles des étapes de travail du 3 octobre 2026. Elles ne sont pas régénérées automatiquement ; une image ancienne ne prime pas sur le code et les décisions actuelles. Les nouvelles captures de l’admin utilisent des données fictives ; la capture originale admin.png fournie par les propriétaires contient des données d’invités.
+Captures de référence et preuves visuelles des étapes de travail des 3 et 4 octobre 2026. Elles ne sont pas régénérées automatiquement ; une image ancienne ne prime pas sur le code et les décisions actuelles. Les nouvelles captures de l’admin utilisent des données fictives ; la capture originale admin.png fournie par les propriétaires contient des données d’invités.
 
 ## État initial fourni par les propriétaires
 
@@ -90,3 +90,28 @@ Dégradé plus sombre à gauche, introduction élargie, carte à gauche et texte
 - Aperçus du CSS et de l’opacité actuels appliqués à l’export précédent, Chrome headless ; aucun débordement horizontal. TypeScript validé. Pas de nouveau build pour ce réglage visuel limité, ni nouveau contrôle fonctionnel complet des volets inchangés.
 
 Le dégradé sombre original a ensuite été rétabli avec les réglages de texture des propriétaires (screen à 100 %). Les captures ci-dessus ne représentent pas cette dernière combinaison.
+
+
+## Rayons solaires au scroll — 4 octobre 2026
+
+- [Téléphone 320×568](noces-solar-rays/solar-320-intro.png), [tablette 820×1180](noces-solar-rays/solar-820-intro.png), [PC 1440×900](noces-solar-rays/solar-1440-intro.png) et [écran court 844×390](noces-solar-rays/solar-844-intro.png) : rayons procéduraux, voile de lisibilité conservé.
+- [PC après un léger scroll](noces-solar-rays/solar-1440-advanced.png) : variation des faisceaux synchronisée à la vidéo ; la scène commence aussi son fondu normal. Une capture fixe ne montre pas le mouvement.
+- [Rapport UI et parcours](noces-solar-rays/solar-report.json) : avant/arrière, resize, clavier, réduction des mouvements, no-JS, zéro rendu au repos.
+- [Mesure CPU avant/après](noces-solar-rays/solar-performance.json) : Chrome headless 390×844, CPU ×4, scroll normalisé sur les premiers 15 % de la séquence ; coûts des callbacks et traitement solaire seul. Pas de garantie de FPS sur appareil physique.
+
+Aucune donnée Firebase lue/écrite et aucun déploiement. Les captures de textures précédentes restent historiques.
+
+
+### Intensité accentuée : réglage actuel
+
+Rayons ponctuellement jusqu’à ×4 en largeur et gain lumineux jusqu’à ×3 ; les captures et mesures de la première intensité ci-dessus restent historiques. [Téléphone](noces-solar-rays/solar-emphasis-320.png), [tablette](noces-solar-rays/solar-emphasis-820.png), [PC](noces-solar-rays/solar-emphasis-1440.png), [PC après scroll](noces-solar-rays/solar-emphasis-1440-scroll.png) et [contrôles](noces-solar-rays/solar-emphasis-report.json). Résolutions et nombre de dessins inchangés ; aucune nouvelle mesure comparative CPU/FPS pour ce réglage.
+
+
+### Correction de l’initialisation en mode dev
+
+[Serveur npm run dev après correction](noces-solar-rays/solar-dev-fixed.png) : rayons visibles au scroll sur /noces/ sans préfixe, après réexécution des effets React en Strict Mode. Le canvas solaire initialise désormais sa taille et son masque même lorsque le canvas vidéo conserve ses dimensions.
+
+
+## Passe performances finale, design inchangé
+
+[Budgets mémoire et identité du moteur solaire](noces-performance-final/memory.json), [rendu avant/après CPU ×4](noces-performance-final/runtime.json), [parcours et responsive](noces-performance-final/ui.json). Caches compressés 12/24 Mio, images/design identiques ; les captures accentuées et dev précédentes restent représentatives. Les mesures de callbacks ne prouvent pas un gain de FPS et ne couvrent pas toute la mémoire/GPU.
