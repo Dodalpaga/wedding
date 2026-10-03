@@ -309,7 +309,7 @@ export default function InfoSection() {
             ({
               id: doc.id,
               ...doc.data(),
-            } as any)
+            }) as any,
         );
 
         // Construire la liste des membres
@@ -326,7 +326,7 @@ export default function InfoSection() {
 
         // Compter les participants confirmés
         const confirmes = allMembres.filter(
-          (m) => m.statut === 'accepte'
+          (m) => m.statut === 'accepte',
         ).length;
         setTotalParticipants(confirmes);
         setIsLoadingParticipants(false);
@@ -634,8 +634,8 @@ export default function InfoSection() {
                           {totalParticipants === 0
                             ? 'Soyez le premier à confirmer !'
                             : totalParticipants === 1
-                            ? 'participant confirmé 🎉'
-                            : 'participants confirmés 🎉'}
+                              ? 'participant confirmé 🎉'
+                              : 'participants confirmés 🎉'}
                         </p>
                       </>
                     )}
@@ -719,7 +719,8 @@ export default function InfoSection() {
                 <p className="text-m text-[var(--dark)] text-center">
                   📅 <strong>Date limite :</strong> Pour des raisons
                   d'organisation, merci de bien vouloir remplir ce formulaire le
-                  plus tôt possible et avant le <strong>17 juillet 2026</strong>
+                  plus tôt possible et avant le{' '}
+                  <strong>31 Décembre 2026</strong>
                 </p>
               </div>
             </div>

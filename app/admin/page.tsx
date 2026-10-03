@@ -23,7 +23,6 @@ type SortField =
   | 'nom'
   | 'statut'
   | 'vendredi_soir'
-  | 'samedi_midi'
   | 'samedi_soir'
   | 'dimanche_brunch'
   | 'date';
@@ -42,7 +41,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterName, setFilterName] = useState('');
   const [codesInvitation, setCodesInvitation] = useState<Map<string, any>>(
-    new Map()
+    new Map(),
   );
 
   // États pour le tri
@@ -88,7 +87,7 @@ export default function AdminDashboard() {
       // Écouter les statuts en temps réel
       const q = query(
         collection(db, 'statuts'),
-        orderBy('date_modification', 'desc')
+        orderBy('date_modification', 'desc'),
       );
 
       const unsubscribe = onSnapshot(
@@ -103,13 +102,25 @@ export default function AdminDashboard() {
         },
         (error) => {
           console.error('Erreur écoute statuts:', error);
-        }
+        },
       );
 
       return unsubscribe;
     } catch (err) {
       console.error('Erreur chargement:', err);
     }
+  };
+
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(
+    new Set(),
+  );
+
+  const toggleComment = (key: string) => {
+    setExpandedComments((prev) => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
   };
 
   // Construire la liste complète des membres avec leurs réponses
@@ -122,10 +133,10 @@ export default function AdminDashboard() {
 
         allMembres.push({
           nom,
+          email: statut.email || '',
           codeInvitation: code,
           statut: statut.statut || 'en_attente',
           vendredi_soir: statut.vendredi_soir || false,
-          samedi_midi: statut.samedi_midi || false,
           samedi_soir: statut.samedi_soir || false,
           dimanche_brunch: statut.dimanche_brunch || false,
           commentaires: statut.commentaires || '',
@@ -156,7 +167,6 @@ export default function AdminDashboard() {
           bValue = b.statut;
           break;
         case 'vendredi_soir':
-        case 'samedi_midi':
         case 'samedi_soir':
         case 'dimanche_brunch':
           aValue = a[sortField] ? 1 : 0;
@@ -260,12 +270,11 @@ export default function AdminDashboard() {
   const totalAcceptes = allMembres.filter((m) => m.statut === 'accepte').length;
   const totalRefuses = allMembres.filter((m) => m.statut === 'refuse').length;
   const totalEnAttente = allMembres.filter(
-    (m) => m.statut === 'en_attente'
+    (m) => m.statut === 'en_attente',
   ).length;
 
   const presenceParEvenement = {
     vendredi_soir: allMembres.filter((m) => m.vendredi_soir).length,
-    samedi_midi: allMembres.filter((m) => m.samedi_midi).length,
     samedi_soir: allMembres.filter((m) => m.samedi_soir).length,
     dimanche_brunch: allMembres.filter((m) => m.dimanche_brunch).length,
   };
@@ -282,7 +291,7 @@ export default function AdminDashboard() {
       const matchName =
         !filterName || m.nom.toLowerCase().includes(filterName.toLowerCase());
       return matchStatus && matchSearch && matchName;
-    })
+    }),
   );
 
   // Export CSV
@@ -304,7 +313,6 @@ export default function AdminDashboard() {
       m.nom,
       m.statut,
       m.vendredi_soir ? 'Oui' : 'Non',
-      m.samedi_midi ? 'Oui' : 'Non',
       m.samedi_soir ? 'Oui' : 'Non',
       m.dimanche_brunch ? 'Oui' : 'Non',
       (m.commentaires || '').replace(/,/g, ';'),
@@ -313,14 +321,20 @@ export default function AdminDashboard() {
         : '',
     ]);
 
-    const csvContent =
-      'data:text/csv;charset=utf-8,' +
-      [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const csvString = [headers.join(','), ...rows.map((r) => r.join(','))].join(
+      '\n',
+    );
+
+    const blob = new Blob(['\uFEFF' + csvString], {
+      type: 'text/csv;charset=utf-8;',
+    });
+    const url = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
-    link.href = encodeURI(csvContent);
+    link.href = url;
     link.download = `rsvp_${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
+    URL.revokeObjectURL(url); // clean up
   };
 
   // Écran de connexion
@@ -399,7 +413,7 @@ export default function AdminDashboard() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Cartes statistiques */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+        <div className="grid grid-cols-4 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow">
             <p className="text-sm text-gray-600">Total invités</p>
             <p className="text-3xl font-bold">{totalInvites}</p>
@@ -418,18 +432,6 @@ export default function AdminDashboard() {
               {totalEnAttente}
             </p>
           </div>
-          <div className="bg-purple-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-purple-600">Brunch</p>
-            <p className="text-3xl font-bold text-purple-700">
-              {presenceParEvenement.dimanche_brunch}
-            </p>
-          </div>
-          <div className="bg-blue-50 p-4 rounded-lg shadow">
-            <p className="text-sm text-blue-600">Mariage</p>
-            <p className="text-3xl font-bold text-blue-700">
-              {presenceParEvenement.samedi_soir}
-            </p>
-          </div>
         </div>
 
         {/* Timeline des événements */}
@@ -445,12 +447,6 @@ export default function AdminDashboard() {
                 label: 'Vendredi soir',
                 Icon: NightlightRound,
                 color: 'from-indigo-500 to-purple-600',
-              },
-              {
-                key: 'samedi_midi',
-                label: 'Samedi midi',
-                Icon: LunchDining,
-                color: 'from-orange-400 to-red-500',
               },
               {
                 key: 'samedi_soir',
@@ -574,20 +570,16 @@ export default function AdminDashboard() {
                       Statut <SortIcon field="statut" />
                     </div>
                   </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200">
+                    <div className="flex items-center gap-2">Email</div>
+                  </th>
+
                   <th
                     onClick={() => handleSort('vendredi_soir')}
                     className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
                   >
                     <div className="flex items-center gap-2">
                       Ven. soir <SortIcon field="vendredi_soir" />
-                    </div>
-                  </th>
-                  <th
-                    onClick={() => handleSort('samedi_midi')}
-                    className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase cursor-pointer hover:bg-gray-200"
-                  >
-                    <div className="flex items-center gap-2">
-                      Sam. midi <SortIcon field="samedi_midi" />
                     </div>
                   </th>
                   <th
@@ -637,22 +629,22 @@ export default function AdminDashboard() {
                           m.statut === 'accepte'
                             ? 'bg-green-100 text-green-700'
                             : m.statut === 'refuse'
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-yellow-100 text-yellow-700'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-yellow-100 text-yellow-700'
                         }`}
                       >
                         {m.statut === 'accepte'
                           ? 'Confirmé'
                           : m.statut === 'refuse'
-                          ? 'Refusé'
-                          : 'En attente'}
+                            ? 'Refusé'
+                            : 'En attente'}
                       </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600 break-all">
+                      {m.email || '-'}
                     </td>
                     <td className="px-4 py-3 text-center">
                       {m.vendredi_soir ? 'Oui' : '-'}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      {m.samedi_midi ? 'Oui' : '-'}
                     </td>
                     <td className="px-4 py-3 text-center">
                       {m.samedi_soir ? 'Oui' : '-'}
@@ -660,8 +652,38 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 text-center">
                       {m.dimanche_brunch ? 'Oui' : '-'}
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
-                      {m.commentaires || '-'}
+                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs">
+                      {m.commentaires ? (
+                        <>
+                          <div
+                            className={
+                              expandedComments.has(
+                                `${m.codeInvitation}-${m.nom}`,
+                              )
+                                ? 'whitespace-pre-wrap'
+                                : 'line-clamp-2'
+                            }
+                          >
+                            {m.commentaires}
+                          </div>
+                          {m.commentaires.length > 80 && (
+                            <button
+                              onClick={() =>
+                                toggleComment(`${m.codeInvitation}-${m.nom}`)
+                              }
+                              className="text-[#137e41] text-xs mt-1 hover:underline"
+                            >
+                              {expandedComments.has(
+                                `${m.codeInvitation}-${m.nom}`,
+                              )
+                                ? 'Voir moins'
+                                : 'Voir plus'}
+                            </button>
+                          )}
+                        </>
+                      ) : (
+                        '-'
+                      )}
                     </td>
                     <td className="px-4 py-3 text-xs text-gray-500">
                       {m.dateModification?.toDate?.()
@@ -672,7 +694,7 @@ export default function AdminDashboard() {
                               month: '2-digit',
                               hour: '2-digit',
                               minute: '2-digit',
-                            }
+                            },
                           )
                         : '-'}
                     </td>
