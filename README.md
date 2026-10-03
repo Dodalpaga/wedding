@@ -59,7 +59,7 @@ npm run build
 
 `npm run build` génère directement l’export statique dans `out/`. Le script `npm run export` contient encore `next export`, obsolète avec Next.js 14 : utiliser `build`. `npm run start` appelle `next start` et ne sert pas cet export ; prévisualiser `out/` avec un serveur statique en respectant le préfixe `/wedding`.
 
-Aucune suite de tests automatisés ni configuration ESLint dédiée n’est présente. `npm run lint` existe mais peut demander une configuration interactive. Les vérifications visuelles et fonctionnelles réalisées sont documentées dans [PROJECT_STATE.md](docs/PROJECT_STATE.md).
+Une suite ciblée est disponible via `npm run test:csv` : retours à la ligne, guillemets, accents et alignement des colonnes. Aucune configuration ESLint dédiée n’est présente. `npm run lint` peut demander une configuration interactive. Les vérifications visuelles et fonctionnelles sont documentées dans [PROJECT_STATE.md](docs/PROJECT_STATE.md).
 
 ## Déploiement
 

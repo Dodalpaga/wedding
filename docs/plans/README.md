@@ -8,5 +8,6 @@ Pour un changement complexe ou un refactoring majeur : créer un document dans `
 | [desktop-tablet-layout.md](completed/desktop-tablet-layout.md) | Panneaux alignés et RSVP compact. Le hero mobile court est ensuite remplacé par le plein écran. |
 | [honeymoon-page.md](completed/honeymoon-page.md) | Carnet de voyage d’un mois, escales provisoires et placeholders locaux. |
 | [documentation-sync.md](completed/documentation-sync.md) | Audit et consolidation complète de la documentation. |
+| [admin-csv-layout.md](completed/admin-csv-layout.md) | CSV multiline, palette admin, pagination et cartes responsive. |
 
 Aucun plan actif restant à l’issue de cette synchronisation.

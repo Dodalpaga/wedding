@@ -44,3 +44,7 @@ La landing indique « bientôt disponible ». Les deux routes de prototype exist
 - L’ancienne page voyage évoquait trois semaines et des étapes datées : remplacée par un mois et des escales provisoires.
 
 Les plans terminés documentent les vérifications de chaque étape. Les anciennes captures ne représentent pas nécessairement les paramètres actuellement en vigueur.
+
+## Admin : lisibilité et CSV
+
+Conserver le séparateur CSV virgule existant et protéger tous les champs avec des guillemets plutôt que de modifier les commentaires. Corriger les colonnes et ajouter l’email. Harmoniser les couleurs du panneau avec le mariage, limiter la liste à des pages et proposer des cartes sur téléphone/tablette. L’export couvre tous les résultats filtrés. Les graphiques et présences affichés excluent les réponses refusées/en attente ; les données enregistrées ne sont pas réécrites.

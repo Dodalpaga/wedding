@@ -52,4 +52,10 @@ Les deux galeries n’accordent l’accès apparent que sur la présence d’un 
 
 Assets sous `public/`, police Wedding et palette CSS dans `app/globals.css`. Lucide sert la navigation/landing/voyage ; Material UI sert notamment RSVP et admin. Le layout désactive globalement la sélection de texte avec `select-none`.
 
-Les boutons ont des tailles adaptées au tactile, les disclosures sont natifs, et les nouveaux liens ont des focus visibles. Les styles de réduction des mouvements de la landing concernent CSS et signature ; l’aurore WebGL continue actuellement son animation. Les limites de chemins d’assets, du CSV et de l’accès Firebase sont recensées dans [PROJECT_STATE.md](PROJECT_STATE.md).
+Les boutons ont des tailles adaptées au tactile, les disclosures sont natifs, et les nouveaux liens ont des focus visibles. Les styles de réduction des mouvements de la landing concernent CSS et signature ; l’aurore WebGL continue actuellement son animation. Les limites de chemins d’assets et de l’accès Firebase sont recensées dans [PROJECT_STATE.md](PROJECT_STATE.md).
+
+## Administration refactorée
+
+La route admin gère la session Firebase et la jointure invitations/statuts. Une seule écoute est conservée, nettoyée lors des changements de session et du démontage. Les lectures en échec ont un message visible. La présentation est isolée dans `components/AdminDashboardView.tsx`, sans appels Firebase, pour permettre une vérification avec des données fictives sans contourner la connexion de production.
+
+La palette utilise le bleu/vert du mariage et des badges sobres. Les filtres, tri clavier, états vides et pagination 20/50/100 sont partagés ; les lignes deviennent des cartes sous 1024px. Le tableau a son propre défilement et ses en-têtes restent visibles. Les événements ne comptent que les réponses acceptées. L’export passe tous les résultats filtrés et triés à `lib/rsvp-csv.ts`, indépendamment de la pagination. Les neuf colonnes sont correctement échappées et incluent l’email, sans colonne samedi midi inexistante. Les tests ciblés sont dans `tests/rsvp-csv.test.cjs`.

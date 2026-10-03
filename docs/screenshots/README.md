@@ -1,6 +1,6 @@
 # Captures d’écran
 
-Captures de référence et preuves visuelles des étapes de travail du 3 octobre 2026. Elles ne sont pas régénérées automatiquement ; une image ancienne ne prime pas sur le code et les décisions actuelles. Aucune capture de données RSVP personnelles n’est conservée ici.
+Captures de référence et preuves visuelles des étapes de travail du 3 octobre 2026. Elles ne sont pas régénérées automatiquement ; une image ancienne ne prime pas sur le code et les décisions actuelles. Les nouvelles captures de l’admin utilisent des données fictives ; la capture originale admin.png fournie par les propriétaires contient des données d’invités.
 
 ## État initial fourni par les propriétaires
 
@@ -27,3 +27,7 @@ Ces captures précèdent la restauration finale de l’aurore et des dimensions 
 - [noces_desktop_refactored.jpg](noces_desktop_refactored.jpg) : début du parcours avec textes, illustrations provisoires, alternance des colonnes et avion.
 
 Les villes et descriptions restent des pistes modifiables ; les cartes illustrées sont des placeholders volontaires.
+
+## Administration
+
+admin.png est la capture initiale fournie par les propriétaires ; elle contient des informations d’invités. Les nouvelles captures [admin_desktop_refactored.jpg](admin_desktop_refactored.jpg) et [admin_mobile_refactored.jpg](admin_mobile_refactored.jpg) utilisent uniquement des invités fictifs.

@@ -26,6 +26,7 @@
 | Escales du Japon, textes, visuels | `tripSteps` dans `app/noces/page.tsx` |
 | Albums locaux / OneDrive | `app/gallerie/page.tsx`, `app/gallerie-cloud/page.tsx` |
 | Statistiques, filtres et CSV admin | `app/admin/page.tsx` |
+| Présentation responsive admin et sérialisation CSV | `components/AdminDashboardView.tsx`, `lib/rsvp-csv.ts` |
 | Styles, responsive, police | `app/globals.css`, `tailwind.config.ts`, `public/fonts/` |
 | Export et déploiement | `next.config.js`, `.github/workflows/deploy.yml` |
 

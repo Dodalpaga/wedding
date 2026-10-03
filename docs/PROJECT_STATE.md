@@ -34,7 +34,6 @@ Les contrôles UI ne valent pas validation de la persistance ou audit complet de
 
 | Point | Observation dans le code |
 | --- | --- |
-| Export CSV admin | Neuf en-têtes mais huit valeurs par ligne : un en-tête `Samedi midi` sans champ correspondant décale les colonnes suivantes. L’échappement CSV se limite à remplacer les virgules des commentaires ; les autres caractères/champs ne sont pas correctement protégés pour tous les cas. |
 | Modèle de membres | Le statut utilise le nom comme identifiant : collisions possibles entre homonymes, `/` non compatible avec cet identifiant. |
 | Sauvegarde RSVP | Deux écritures séquentielles, sans transaction. Les événements masqués gardent leurs valeurs locales lors de l’écriture. |
 | Accès Firebase/admin | Règles absentes du dépôt ; aucune définition de rôle admin dans le client. Leur configuration réelle n’a pas été auditée. Le compteur et RSVP lisent des collections entières. |
@@ -42,11 +41,19 @@ Les contrôles UI ne valent pas validation de la persistance ou audit complet de
 | Images hébergements | Chemins `/wedding/hebergements/...` codés en dur : erreurs 404 observées en développement sans basePath. Le préfixe correspond à la production, sans établir que toutes les images de production ont été vérifiées. |
 | Préchargement de police | Le layout utilise `/fonts/Wedding.otf` sans basePath ; vérifier le preload sous `/wedding`. La police des styles est aussi chargée via CSS. |
 | Réduction des mouvements | Signature/CSS landing et animations du voyage prises en compte ; canvas Aurora encore animé. |
-| Scripts npm | `export` utilise encore `next export` et `start` n’est pas adapté à l’export statique. Aucune suite automatisée/config ESLint dédiée. |
+| Scripts npm | `export` utilise encore `next export` et `start` n’est pas adapté à l’export statique. Suite ciblée CSV disponible ; aucune configuration ESLint dédiée. |
 | Outils de build | Avertissements Browserslist/Baseline obsolètes ; dépendances inchangées. `.next/trace` a été verrouillé lors de contrôles locaux, d’où les copies propres. |
 
 Ces observations ont été documentées, sans correction applicative supplémentaire dans la tâche de documentation.
 
 ## Suite possible
 
-Finaliser le programme, les escales et photos du Japon ; corriger le CSV et les chemins d’assets ; définir/valider les règles d’accès Firebase avant toute affirmation de confidentialité ; terminer ou retirer les prototypes de galeries ; vérifier les sauvegardes sur une base de test. Les demandes de design actuelles et l’accès au voyage depuis la landing sont implémentés.
+Finaliser le programme, les escales et photos du Japon ; corriger les chemins d’assets ; définir/valider les règles d’accès Firebase avant toute affirmation de confidentialité ; terminer ou retirer les prototypes de galeries ; vérifier les sauvegardes sur une base de test. Les demandes de design actuelles et l’accès au voyage depuis la landing sont implémentés.
+
+## Admin et CSV : correction
+
+Export CSV corrigé : neuf colonnes alignées, email inclus, colonne samedi midi supprimée. Guillemets doublés et champs cités préservent les virgules/retours à la ligne ; BOM UTF-8 et lignes CRLF. Export de tous les résultats filtrés/triés, sans limiter à la page affichée. Trois tests de non-régression passent.
+
+Panneau harmonisé bleu profond/vert, cartes statistiques, événements compacts, champs étiquetés, tri au clavier, pagination et cartes mobile/tablette. Les événements comptent seulement les confirmations, même si une ancienne réponse refusée garde ses cases cochées. Écoute Firebase unique avec nettoyage et erreurs visibles. Interface vérifiée avec 43 invités fictifs à 320, 390, 820, 1024 et 1440px : pas de débordement de page, filtres/réinitialisation, pages, état vide et lecture des commentaires vérifiés. Formulaire de connexion vérifié visuellement sans connexion à un compte réel. L’événement de téléchargement du navigateur de test n’a pas pu être capturé ; le contenu généré est validé par les tests CSV. Aucune réponse réelle ni donnée Firebase n’a été modifiée.
+
+TypeScript et compilation/export de production validés dans une copie propre (11 pages). La route temporaire de prévisualisation fictive a été retirée avant la construction et ne fait pas partie du site livré. Les tests CSV se lancent avec `npm run test:csv`.
