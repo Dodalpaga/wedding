@@ -58,3 +58,15 @@ Le workflow `.github/workflows/deploy.yml` se lance sur `main` ou manuellement. 
 Configurer GitHub Pages pour GitHub Actions et renseigner les neuf secrets ci-dessus. Aucune publication n’a été déclenchée dans le cadre des modifications de documentation. Le nom de dépôt `/wedding` est codé dans la configuration de production : tout changement de sous-chemin exige une mise à jour de cette configuration et un audit des chemins d’assets.
 
 Pour prévisualiser l’export, servir les fichiers statiques de façon que `out/` corresponde au chemin `/wedding/` du serveur. Un serveur Next `start` ou un hébergement de `out/` à la racine sans prise en compte de ce préfixe ne reproduit pas la production. Aucun workflow Vercel n’est configuré.
+
+## Assets du voyage : originaux et copies de diffusion
+
+La séquence active utilise les 597 WebP de `public/assets/torii-better-fps-frames/`, issus de `Torii_better_fps.mp4`, en 1280×720 natif, qualité 85, total 72,55 Mio. Elle conserve chaque frame sans crop ni resize ; un seul jeu sert mobile/tablette/PC. Aucun serveur d’optimisation d’images n’est nécessaire. Les 100 PNG et leurs anciennes variantes WebP sous `public/assets/frames/` restent historiques, intacts et inutilisés par le renderer actuel.
+
+Le motif, le nombre, le padding et les limites du renderer sont regroupés dans `FRAME_SEQUENCE` de `components/noces/frame-sequence.ts`. Les URLs des frames et des photos d’escales conservent `NEXT_PUBLIC_BASE_PATH`. Pour une photo d’escale, renseigner `image: '/images/nom-du-fichier.jpg'` dans `tripSteps`, puis placer le fichier sous `public/images/`.
+
+Pour régénérer les anciennes copies PNG → WebP, `scripts/prepare-noces-frames.cjs` utilise Sharp ; ce script est historique et ne prépare pas la séquence active. Le build normal ne requiert ni Sharp ni FFmpeg : les assets sont déjà générés.
+
+L’archive source est conservée localement dans `build/source-assets/frames.zip` (ignoré par Git), hors de `public/`. Les 100 PNG extraits ont été comparés par SHA-256 à l’archive et n’ont subi aucune modification.
+
+Pour extraire chaque frame d’un nouveau MP4, utiliser `scripts/extract-video-frames.ps1` : [guide vidéo/Windows](VIDEO_FRAMES.md). Une extraction crée une séquence séparée ; modifier ensuite `FRAME_SEQUENCE` pour l’activer. Les cinq photos d’escales sont dans `public/images/noces/` ; leurs sources sont consignées dans ce guide.

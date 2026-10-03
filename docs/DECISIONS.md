@@ -30,7 +30,7 @@ Ne pas afficher les numéros personnels de Solenne et Dorian. Landing et aide en
 
 ### Voyage de noces encore en préparation
 
-Présenter un roadtrip d’un mois au Japon. Conserver les cinq destinations envisagées comme exemples modifiables, sans plages de jours définitives. Chaque escale dispose d’un titre, texte provisoire et envies. Les visuels SVG locaux remplacent les images cassées et services externes de placeholder ; une image locale optionnelle peut ensuite être ajoutée. Préserver l’avion au défilement et l’alternance desktop ; respecter `useReducedMotion`. Le bouton Accueil appartient à la bannière. La participation reste une urne au mariage, sans paiement en ligne.
+Présenter un roadtrip d’un mois au Japon. Conserver les cinq destinations envisagées comme exemples modifiables, sans plages de jours définitives. Le voyage forme un hero unique : fond Torii de 597 WebP, introduction, présentation, cinq cartes photo et cadeau. Les scènes restent fixes et disparaissent par opacité avant l’apparition de la suivante. Navbar, menu, avion, curseur personnalisé, scrollbar visible et écran footer sont supprimés à la demande des propriétaires. Accueil reste dans l’introduction et le cadeau. Les textes sont conservés ; les photos locales illustrent les envies sans figer le programme. Pour les performances : canvas/cache bornés, décodage asynchrone et arrêt au repos. Réduction des mouvements et absence de JavaScript conservent tous les textes dans le flux avec un fond statique. La participation reste une urne au mariage, sans paiement en ligne.
 
 ### Galeries non annoncées comme prêtes
 
@@ -42,9 +42,17 @@ La landing indique « bientôt disponible ». Les deux routes de prototype exist
 - Le fond statique proposé au début a été remplacé par l’aurore d’origine.
 - Le logo et les noms initialement réduits ont retrouvé leurs proportions d’origine.
 - L’ancienne page voyage évoquait trois semaines et des étapes datées : remplacée par un mois et des escales provisoires.
+- Le hero statique et les placeholders SVG du voyage V1 sont remplacés par le hero séquencé et les dégradés de marque V2 ; les textes et escales V1 sont conservés.
+- La première V2 avait une navbar/menu, une timeline avec avion, un hero séparé des étapes et des PNG 4K décodés au scroll. Cette structure est remplacée par le hero partagé et les copies WebP pour corriger les saccades signalées.
+- Le premier hero partagé faisait défiler les cartes dans le flux avec 100 frames. Il est remplacé par huit scènes fixes en fondu et la vidéo Torii à 597 frames ; le cadeau termine le parcours sans écran footer supplémentaire.
+- Le voile de fond uniformément allégé rendait l’introduction trop peu lisible : remplacé par un dégradé sombre à gauche et clair à droite, avec fond plus sombre sur petits écrans. La carte passe à gauche sur grands écrans ; les descriptions des escales deviennent des volets fermés par défaut sur téléphone/écran court.
 
 Les plans terminés documentent les vérifications de chaque étape. Les anciennes captures ne représentent pas nécessairement les paramètres actuellement en vigueur.
 
 ## Admin : lisibilité et CSV
 
 Conserver le séparateur CSV virgule existant et protéger tous les champs avec des guillemets plutôt que de modifier les commentaires. Corriger les colonnes et ajouter l’email. Harmoniser les couleurs du panneau avec le mariage, limiter la liste à des pages et proposer des cartes sur téléphone/tablette. L’export couvre tous les résultats filtrés. Les graphiques et présences affichés excluent les réponses refusées/en attente ; les données enregistrées ne sont pas réécrites.
+
+## Ombre du voyage et compacité mobile
+
+Le dégradé bleu cinématique précédent est remplacé par une ombre gris foncé diagonale, plus sombre en bas à gauche et sur téléphone. Les textures restent originales : ombres en multiply (variante 2, active), fuite de lumière en screen (variante 1), neutralisées en CSS et masquées vers le haut à droite. Un seul fichier est chargé ; la texture ne fait pas partie du traitement par frame. Le panneau fermé n’affiche plus que numéro/ville/chevron ; tous les textes et envies restent accessibles dans le volet.

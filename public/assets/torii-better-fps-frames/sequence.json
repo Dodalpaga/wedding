@@ -1,0 +1,15 @@
+{
+  "source": "Torii_better_fps.mp4",
+  "sourceSha256": "D664B7107F03C3E9080ABF038F49D908950A2E733C57B77747F953CC662339F2",
+  "width": 1280,
+  "height": 720,
+  "averageFrameRate": "120/1",
+  "durationSeconds": "4.975000",
+  "frameCount": 597,
+  "pattern": "frame-{frame}.webp",
+  "padding": 6,
+  "startNumber": 1,
+  "lossless": false,
+  "quality": 85,
+  "totalBytes": 76075062.0
+}

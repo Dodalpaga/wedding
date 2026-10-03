@@ -31,3 +31,62 @@ Les villes et descriptions restent des pistes modifiables ; les cartes illustré
 ## Administration
 
 admin.png est la capture initiale fournie par les propriétaires ; elle contient des informations d’invités. Les nouvelles captures [admin_desktop_refactored.jpg](admin_desktop_refactored.jpg) et [admin_mobile_refactored.jpg](admin_mobile_refactored.jpg) utilisent uniquement des invités fictifs.
+
+## Première V2 (historique)
+
+Les captures V1 ci-dessus sont historiques : hero et placeholders sont remplacés en V2. Export de production testé sous /wedding/, sans accès Firebase, le 3 octobre 2026.
+
+- [Hero 320px](noces-v2/320-hero.png), [hero 390px](noces-v2/390-hero.png), [hero PC](noces-v2/1440-hero.png).
+- [Timeline tablette](noces-v2/820-timeline.png), [séquence au scroll](noces-v2/1440-sequence.png).
+- [Menu mobile](noces-v2/390-menu.png), [cadeau et footer](noces-v2/1440-gift.png).
+- [Réduction des mouvements](noces-v2/reduced-motion.png).
+
+Ces captures documentent le responsive et les visuels ; les mesures de performances sur appareil physique/réseau lent restent à réaliser.
+
+## Premier hero unique et performances (historique)
+
+Le hero séparé, la navbar/menu et la timeline/avion de la première V2 sont remplacés. Un fond séquencé unique accompagne les textes des cinq escales au premier plan, puis le cadeau et le footer. Captures de l’export de production sous `/wedding/`, sans lecture/écriture Firebase :
+
+- [Introduction 320px](noces-hero/320-intro.png), [390px](noces-hero/390-intro.png), [PC](noces-hero/1440-intro.png).
+- [Tokyo mobile](noces-hero/320-step-1.png), [Kyoto tablette](noces-hero/820-step-3.png), [Tokyo PC](noces-hero/1440-step-1.png), [dernière escale PC](noces-hero/1440-step-5.png).
+- [Cadeau mobile](noces-hero/390-gift.png), [réduction des mouvements](noces-hero/reduced.png).
+- [Rapport de performances](noces-hero/performance-report.json) : avant/après dans Chrome headless, 390×844/DPR 2, CPU ralenti ×4 ; scroll normalisé sur la séquence. Mesure ponctuelle, sans prétendre mesurer un téléphone physique ou un réseau lent.
+
+## Cartes photo et scènes fixes en fondu (état actuel)
+
+Séquence Torii 597 frames, cartes fixes qui disparaissent avant la suivante, cadeau en dernière scène avec retour Accueil ; suppression du footer et du curseur personnalisé. Export de production sous `/wedding/`, cinq tailles vérifiées :
+
+- [Tokyo 390px](noces-fades/390-tokyo.png), [bas de carte sur écran court 320px](noces-fades/320-card-bottom.png).
+- [Hakone PC](noces-fades/1440-hakone.png), [Ishigaki tablette](noces-fades/820-ishigaki.png).
+- [Cadeau et retour Accueil](noces-fades/390-gift.png), [réduction des mouvements](noces-fades/reduced.png).
+- [Rapport UI](noces-fades/ui-report.json), [mesure de performances](noces-fades/performance-report.json). Chrome headless ; mesure indicative avec CPU ×4, sans garantie sur téléphone physique/réseau mobile.
+
+## Carte du parcours et fond allégé (historique)
+
+Carte transparente fournie par les propriétaires, placée à droite sur tablette/PC et sous le texte sur téléphone. Voile bleu du décor réduit ; textes et parcours inchangés.
+
+- [Vue d’ensemble PC](noces-map/1440-overview.png), [mobile](noces-map/390-overview.png), [tablette](noces-map/820-overview.png).
+- [Introduction et fond allégé](noces-map/390-intro.png), [rapport responsive](noces-map/ui-report.json).
+
+Export sous `/wedding/`, cinq tailles, réduction des mouvements et fallback sans JavaScript vérifiés. Les captures précédentes conservent la trace des voiles de fond plus soutenus.
+
+## Hero cinématique et volets compacts (étape précédente)
+
+Dégradé plus sombre à gauche, introduction élargie, carte à gauche et texte à droite sur grands écrans. Escales réduites au numéro/ville et commande d’ouverture sur téléphone/écran court.
+
+- [Hero PC](noces-drawers/1440-intro.png), [hero téléphone](noces-drawers/390-intro.png), [carte et texte inversés](noces-drawers/1440-overview.png).
+- [Tokyo fermé](noces-drawers/390-closed.png), [Tokyo ouvert](noces-drawers/390-open.png), [ouvert sur écran court](noces-drawers/320-open.png).
+- [Rapport UI](noces-drawers/ui-report.json) : six tailles, cinq volets, clavier, tactile, resize, reduced motion, no-JS et arrêt du rendu au repos. Export sous `/wedding/`, aucun appel Firebase ni écriture.
+
+## Ombre diagonale et panneau mobile minimal (texture discrète précédente)
+
+- [Texture 2 : ombres, active](noces-shadows/texture2.png), [texture 1 : fuite de lumière](noces-shadows/texture1.png) : même frame et même dégradé gris, variantes testées séparément.
+- [Hero téléphone](noces-shadows/390-intro.png), [Tokyo fermé](noces-shadows/390-closed.png), [Tokyo ouvert](noces-shadows/390-open.png), [écran court](noces-shadows/320-open.png).
+- [Rapport UI](noces-shadows/ui-report.json) : six tailles, cinq volets, clavier/tactile, no-JS, reduced motion et arrêt au repos. Tests Chrome headless sous `/wedding/`, sans mesure de fluidité sur téléphone physique ni écriture Firebase.
+
+## Texture 2 accentuée (étape précédente)
+
+- [PC](noces-shadows/strong-1440.png), [tablette](noces-shadows/strong-820.png), [téléphone](noces-shadows/strong-390.png) : multiply 80 %, masque étendu, dégradé gris allégé sur PC, téléphone toujours sombre.
+- Aperçus du CSS et de l’opacité actuels appliqués à l’export précédent, Chrome headless ; aucun débordement horizontal. TypeScript validé. Pas de nouveau build pour ce réglage visuel limité, ni nouveau contrôle fonctionnel complet des volets inchangés.
+
+Le dégradé sombre original a ensuite été rétabli avec les réglages de texture des propriétaires (screen à 100 %). Les captures ci-dessus ne représentent pas cette dernière combinaison.

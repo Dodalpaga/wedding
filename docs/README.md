@@ -8,6 +8,7 @@
 | [AGENTS.md](../AGENTS.md) | Consignes de contribution et préférences des propriétaires. |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Routes, composants, données et rendu. |
 | [CONFIGURATION.md](CONFIGURATION.md) | Environnement, Firebase, commandes, export et déploiement. |
+| [VIDEO_FRAMES.md](VIDEO_FRAMES.md) | Extraction complète MP4 → WebP avec FFmpeg sous Windows. |
 | [DATA_MODEL.md](DATA_MODEL.md) | Collections, champs, catégories et écritures RSVP. |
 | [DECISIONS.md](DECISIONS.md) | Choix en vigueur et historique des choix remplacés. |
 | [PROJECT_STATE.md](PROJECT_STATE.md) | Fonctionnalités livrées, validations et limites connues. |
@@ -24,6 +25,9 @@
 | Réponse individuelle, événements, email et commentaires | `components/RSVPFormFirebase.tsx` |
 | Hébergements, prix indicatifs, capacités et coordonnées | `components/Hebergement.tsx` |
 | Escales du Japon, textes, visuels | `tripSteps` dans `app/noces/page.tsx` |
+| Hero séquencé, scènes fixes en fondu et cartes photo | `components/noces/frame-sequence.ts`, `components/noces/useJourneyScenes.ts`, `components/noces/`, `app/noces/noces.css`, `scripts/extract-video-frames.ps1` |
+| Ombre diagonale et choix de texture | `components/noces/background-treatment.ts`, `app/noces/noces.css` |
+| Volets des descriptions sur téléphone/écran court | `components/noces/StepDrawer.tsx`, `app/noces/noces.css` |
 | Albums locaux / OneDrive | `app/gallerie/page.tsx`, `app/gallerie-cloud/page.tsx` |
 | Statistiques, filtres et CSV admin | `app/admin/page.tsx` |
 | Présentation responsive admin et sérialisation CSV | `components/AdminDashboardView.tsx`, `lib/rsvp-csv.ts` |

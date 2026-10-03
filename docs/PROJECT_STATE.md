@@ -12,7 +12,7 @@
 | Confirmation | Invitation Firestore, catégories configurées, réponse par membre et édition des réponses existantes. |
 | RSVP | Layout compact sur tablette/PC, email facultatif, commentaires, événements selon catégorie et réponse. |
 | Hébergement | Neuf suggestions locales filtrables ; coordonnées publiques des prestataires. |
-| Voyage | Un mois au Japon, cinq escales envisagées, textes et visuels provisoires, avion animé, accès depuis la landing. |
+| Voyage | Hero Torii 597 WebP : huit scènes fixes en fondu, cinq cartes photo et cadeau avec retour Accueil. Sans navbar/menu/avion/footer/curseur personnalisé/scrollbar visible ; textes V1 conservés, rendu arrêté au repos. |
 | Admin | Connexion Firebase, statistiques, tri/recherche/filtres et export CSV ; limites ci-dessous. |
 | Galeries | Prototypes existants, non proposés comme disponibles depuis la landing. |
 
@@ -57,3 +57,74 @@ Export CSV corrigé : neuf colonnes alignées, email inclus, colonne samedi midi
 Panneau harmonisé bleu profond/vert, cartes statistiques, événements compacts, champs étiquetés, tri au clavier, pagination et cartes mobile/tablette. Les événements comptent seulement les confirmations, même si une ancienne réponse refusée garde ses cases cochées. Écoute Firebase unique avec nettoyage et erreurs visibles. Interface vérifiée avec 43 invités fictifs à 320, 390, 820, 1024 et 1440px : pas de débordement de page, filtres/réinitialisation, pages, état vide et lecture des commentaires vérifiés. Formulaire de connexion vérifié visuellement sans connexion à un compte réel. L’événement de téléchargement du navigateur de test n’a pas pu être capturé ; le contenu généré est validé par les tests CSV. Aucune réponse réelle ni donnée Firebase n’a été modifiée.
 
 TypeScript et compilation/export de production validés dans une copie propre (11 pages). La route temporaire de prévisualisation fictive a été retirée avant la construction et ne fait pas partie du site livré. Les tests CSV se lancent avec `npm run test:csv`.
+
+## Première V2 : validations historiques du 3 octobre 2026
+
+La navbar, le menu, la timeline/avion et le chargement des PNG décrits ici ont ensuite été remplacés par le hero unique optimisé (voir la dernière validation ci-dessous).
+
+- TypeScript validé ; compilation et export statique réussis (11 pages) dans une copie isolée, car `.next/trace` du checkout était verrouillé. La copie de validation exclut le ZIP source et n’est pas publiée.
+- Export testé sous `/wedding/` avec Chrome headless à 320×568, 390×844, 820×1180, 1440×900 et 844×390 : aucun débordement horizontal ni erreur JavaScript. Captures inspectées sur téléphone, tablette et PC.
+- Menu : ouverture, focus initial, boucle Tab/Shift+Tab, Échap, clic sur le fond, restauration du focus/body scroll et navigation vers le cadeau contrôlés. CTA tactile vers l’itinéraire et lien Accueil préfixé vérifiés.
+- Séquence : carte sur Kyoto à 55 %, dernière frame rendue comparée au pixel central de l’original 100, DPR plafonné à 2 et redimensionnement vérifiés. Les 100 PNG extraits sont identiques à l’archive par SHA-256 ; le type, les commentaires, les données et textes V1 ont été comparés automatiquement.
+- Curseur : état VOIR sur un visuel et contraction au clic vérifiés ; absent en tactile et en réduction des mouvements. Réduction des mouvements : une seule requête de frame, hero statique sans longue zone sticky ; changement de préférence à chaud contrôlé.
+- Aucun appel ni écriture Firebase effectué par ces vérifications de `/noces/`. Aucun déploiement effectué. Les captures et contrôles ne constituent pas une mesure des performances sur un téléphone physique ou un réseau mobile lent. Les originaux totalisent environ 655 Mo ; le chargement progressif limite les requêtes et la mémoire, sans modifier les images.
+
+## Premier hero unique du voyage : validation historique du 3 octobre 2026
+
+- Navbar/menu et timeline/avion supprimés. Introduction, cinq escales, cadeau et footer apparaissent au premier plan d’un fond sticky unique. Type, commentaires et textes V1 inchangés (comparaison automatique).
+- PNG originaux conservés ; copies WebP sans crop : 100 frames mobiles à 1280px (10,86 Mio) et 100 desktop à 1920px (16,46 Mio), qualité 78. Le navigateur n’a demandé aucun PNG pendant les contrôles.
+- TypeScript validé et compilation/export de production réussis dans une copie isolée : 11 pages. Route `/noces` : 5,83 kB et 100 kB de premier chargement JS, contre 50 kB et 144 kB dans la première V2.
+- Chrome headless sous `/wedding/` à 320×568, 390×844, 820×1180, 1440×900 et 844×390 (DPR 2) : aucun débordement ni erreur JavaScript. Fond toujours sticky devant chaque escale ; cartes dans le flux sans contenu masqué ; cibles de 44px, lien d’évitement/focus, ancres, retour Accueil, tactile et resize contrôlés.
+- Au repos : zéro callback rAF et zéro dessin du canvas pendant les fenêtres de mesure. Réduction des mouvements : une seule URL de frame, première image statique et aucun curseur ; changement de préférence à chaud vérifié.
+- Mesure indicative avant/après en Chrome headless, viewport mobile 390×844/DPR 2 et CPU ralenti ×4, progression de scroll normalisée sur la séquence : intervalle de rendu au 95e percentile 1282,4 → 16,8 ms ; callbacks rAF au repos 61 → 0/seconde ; 96,81 → 10,99 Mio de données de frames observées dans le scénario. Les dessins utiles passent de 6 à 99. [Rapport brut](screenshots/noces-hero/performance-report.json).
+- Aucun appel/écriture Firebase et aucun déploiement. La mesure est un essai ponctuel sur navigateur automatisé, pas un engagement de FPS sur un téléphone physique ou un réseau lent. Les captures actuelles sont dans [l’index](screenshots/README.md) ; celles de la première V2 restent historiques.
+
+La dernière frame rendue a aussi été comparée à la copie WebP 100. Les cas images bloquées et JavaScript désactivé conservent les textes, ancres et fond de secours/poster ; les interactions du curseur restent vérifiées.
+
+## Nouvelle vidéo Torii : extraction complète
+
+`public/assets/Torii_better_fps.mp4` : 1280×720, 120 fps, 4,975 s, 597 frames décodées. Extraction avec FFmpeg 9.0.2 portable dans `public/assets/torii-better-fps-frames/` : `frame-000001.webp` à `frame-000597.webp`, qualité 85, sans resize/crop/changement de cadence ; 72,55 Mio. Compte, numérotation, format/dimensions des 597 WebP et intégrité du MP4 vérifiés. Script reproductible : `scripts/extract-video-frames.ps1`, [guide Windows](VIDEO_FRAMES.md). Cette séquence a ensuite été activée dans le hero en fondu décrit ci-dessous. Aucune donnée Firebase ni publication.
+
+## Scènes fixes et cartes photo : état actuel
+
+- Huit scènes fixes avec fond Torii 597 frames ; disparition complète entre les scènes, sans translation des cartes. Scroll encouragé uniquement dans l’introduction, précédent/suivant et ancres fonctionnels. Suppression du footer et ajout du Next Link « Retour à l’accueil » dans le cadeau. Scrollbar masquée sur `/noces` uniquement et curseur natif conservé.
+- Cinq photos locales WebP (1600px, qualité 82, total 2,60 Mio), panneau sombre de marque et highlights conservés. Sources Unsplash et remplacement documentés dans [VIDEO_FRAMES.md](VIDEO_FRAMES.md). Le placeholder reste disponible si `image` est absent. Comparaison automatique des textes V1, type/commentaires et données des cinq étapes, en autorisant uniquement l’ajout des chemins d’images.
+- TypeScript et build/export validés : 11 pages, `/noces` 6,71 kB et 101 kB de premier chargement JS. Build dans une copie isolée, la racine ayant toujours le verrou `.next/trace`.
+- Chrome headless sous `/wedding/` : 320×568, 390×844, 820×1180, 1440×900 et 844×390/DPR 2. Cartes stationnaires, intervalle sans chevauchement des scènes, absence de débordement horizontal et d’erreur JavaScript ; clavier/focus, tactile, resize, ancres, photos décodées et dernière frame contrôlés. Les écrans 320px et paysage court utilisent un défilement intérieur pour conserver tous les textes.
+- Réduction des mouvements : une seule frame statique, contenu dans le flux, pas de scène `inert` ; changement de préférence à chaud contrôlé. Sans JavaScript : poster et toutes les étapes accessibles. Frames bloquées : cadeau toujours accessible. Les liens directs vers les escales sont réappliqués après l’ancrage natif/Next de début de visite.
+- Au repos après stabilisation : zéro callback rAF et zéro dessin. Mesure ponctuelle Chrome headless mobile/DPR 2/CPU ×4 : intervalle rAF P95 33,3 ms, plus grand intervalle 133,2 ms, trois tâches longues ; voir [rapport brut](screenshots/noces-fades/performance-report.json). La séquence native contient davantage de frames que la précédente ; le préchargement reste progressif. Pas de garantie de FPS sur appareil physique/réseau lent.
+- Aucun RSVP soumis, aucune donnée écrite ni publication. Captures et rapport UI dans [l’index](screenshots/README.md).
+
+## Carte d’ensemble et fond allégé
+
+Cette présentation intermédiaire est remplacée par le dégradé cinématique et les volets compacts décrits ci-dessous.
+
+La carte WebP fournie par les propriétaires est ajoutée à « Nos envies d’escales », à droite dès 768px et sous le texte sur téléphone. Copie binaire identique à la source (SHA-256 contrôlé), 1760×2404 avec transparence, 73 050 octets. Léger contraste/saturation et ombre en CSS ; le bord parasite inférieur est masqué sur 2px à l’affichage, sans modifier le fichier. Le voile de fond passe de 68→25 % à 40→10 % horizontalement, et de 55 à 28 % en bas ; une ombre sur les textes d’introduction conserve la lisibilité.
+
+TypeScript et build/export isolé validés (11 pages). Chrome headless sous `/wedding/` sur 320×568, 390×844, 820×1180, 1440×900 et 844×390/DPR 2 : image chargée, position responsive, aucune erreur JavaScript ni débordement horizontal ; passage vers Tokyo et focus contrôlés. Carte également accessible en réduction des mouvements et sans JavaScript. Les écrans courts conservent un défilement intérieur. Aucun appel Firebase, aucune donnée écrite ni publication. Captures dans [l’index](screenshots/README.md).
+
+## Hero cinématique et volets compacts : étape précédente
+
+- Dégradé bleu de marque sombre derrière l’introduction à gauche (94→8 % vers la droite), fond plus sombre sur téléphone/écran court. Introduction élargie à presque toute la largeur avec marge limitée ; carte à gauche et présentation à droite dès 768px, ordre mobile conservé.
+- Volets natifs `StepDrawer` fermés par défaut sous 768px ou sous 601px de hauteur. Numéro/ville et incitation restent visibles ; titre, description et highlights se révèlent au clic, au toucher ou via Entrée/Espace. Corps focusable et défilement intérieur pour lire sans avancer la séquence. Descriptions ouvertes sur grands écrans ; resize réappliquant le mode approprié. Tous les textes et assets conservés.
+- TypeScript et build/export isolé validés : 11 pages, `/noces` 7,04 kB et 101 kB de premier chargement JS. Comparaison du contenu V1 et liens documentaires validés.
+- Chrome headless sous `/wedding/`, DPR 2 : 320×568, 390×844, 820×1180, 1440×900, 2560×1440 et 844×390. Les cinq volets, défaut fermé/ouvert, ouverture/fermeture, focus, lecture au clavier, resize et navigation ont été contrôlés. Carte inversée, introduction proche du bord sur écrans larges, absence de débordement horizontal et de chevauchement des commandes après ouverture. Tactile, réduction des mouvements et fallback natif sans JavaScript validés ; aucune erreur JavaScript.
+- Aucun callback rAF ni dessin du canvas au repos après stabilisation. Ces contrôles automatisés ne remplacent pas des essais sur téléphone physique/réseau lent. Aucun appel Firebase, aucune donnée écrite ni publication ; captures et rapport dans [l’index](screenshots/README.md).
+
+## Ombre diagonale et panneau mobile minimal : itérations précédentes
+
+Le voile bleu précédent est remplacé par une ombre gris foncé à 45°, sombre jusqu’au premier tiers depuis le bas gauche, adoucie au deuxième tiers et transparente à la fin. Le téléphone garde un fond plus sombre. Deux textures originales sont configurables dans `background-treatment.ts` : ombres en multiply à 80 % (2, active) et fuite de lumière en screen à 10 % (1). Le masque et les niveaux de gris sont uniquement CSS ; une seule texture est chargée, sans ajout de travail à la boucle JavaScript de frames.
+
+Le panneau mobile fermé contient une seule commande numéro/ville/chevron, sans label redondant ni ligne d’ouverture supplémentaire. Les descriptions et highlights complets restent dans le volet. Padding et espacements sont resserrés ; cible native de 44px minimum, accès clavier/tactile et lecture intérieure conservés.
+
+TypeScript, contenu V1 et build/export isolé validés : 11 pages, `/noces` 7,2 kB/101 kB. Chrome headless sous `/wedding/`, DPR 2, six tailles (320×568 à 2560×1440, dont paysage 844×390) : cinq volets, navigation, clavier, tactile, resize, réduction des mouvements et no-JS ; aucun débordement ni chevauchement des commandes, aucune erreur JavaScript. Panneau Tokyo fermé sous 90px sur écrans compacts. Aucun callback rAF/dessin au repos. Les deux variantes ont été inspectées visuellement ; pas de mesure de fluidité sur téléphone physique. Aucun appel Firebase, aucune écriture de données ni publication.
+
+
+Essai de texture accentuée : opacité 22→80 %, masque conservant 90 % d’intensité au deuxième tiers, voile gris PC réduit à 65→20→0 % pour laisser ressortir les bandes. Téléphone toujours plus sombre (82→78→58→42 %). Changement de traitement visuel uniquement ; volets et moteur inchangés. Les captures précédentes montrent le réglage discret.
+
+TypeScript validé après ce réglage. Aperçus du CSS/config actuels sur l’export précédent à 390, 820 et 1440px sans débordement horizontal ; pas de nouveau build ni reprise des contrôles fonctionnels complets pour ce changement visuel limité. Captures accentuées dans [l’index](screenshots/README.md).
+
+
+## Dégradé rétabli : état actuel
+
+Dégradé gris diagonal original restauré : PC 88→88→42→0 %, téléphone/écran court 90→86→70→42 %. Les réglages des propriétaires dans `background-treatment.ts` sont conservés : texture 2 en screen à 100 %. Masque de texture étendu conservé ; volets et moteur inchangés. Les captures existantes précèdent cette combinaison.

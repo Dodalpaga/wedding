@@ -21,7 +21,7 @@ Le site de développement est disponible sur http://localhost:3000, sans préfix
 | `/` | Hero plein écran, aurore animée, date/lieu, accès RSVP, informations repliables, contact e-mail et lien vers le voyage. |
 | `/confirmation/?code=CODE` | Lecture de l’invitation Firestore, sélection d’un invité et réponse individuelle, selon les catégories configurées. |
 | `/hebergement/` | Neuf suggestions avec filtres par prix/capacité et coordonnées des établissements. Route directement accessible. |
-| `/noces/` | Présentation du roadtrip d’un mois au Japon : escales provisoires, descriptions, visuels temporaires et avion animé. |
+| `/noces/` | Hero unique, séquence Torii de 597 WebP : cartes photo fixes en fondu, cinq escales et cadeau avec retour Accueil ; sans navbar, avion, curseur personnalisé ni scrollbar visible. |
 | `/admin/` | Connexion Firebase, suivi des réponses, statistiques, recherche, tri et export CSV. |
 | `/gallerie/?code=CODE` | Prototype d’albums locaux avec visionneuse, zoom, miniatures et téléchargement. |
 | `/gallerie-cloud/?code=CODE` | Prototype d’albums OneDrive ; la plupart des liens restent à compléter. |
@@ -72,6 +72,14 @@ En production, `basePath`, `assetPrefix` et `NEXT_PUBLIC_BASE_PATH` valent `/wed
 - Date, logo, signature et aurore : `components/Hero.tsx`.
 - Lieu, programme, échéance RSVP, FAQ, contacts et lien du voyage : `components/InfoSection.tsx`.
 - Étapes japonaises, textes et futures photos : `tripSteps` dans `app/noces/page.tsx`.
+- Séquence du hero : `FRAME_SEQUENCE` dans `components/noces/frame-sequence.ts` ; 597 WebP dans `public/assets/torii-better-fps-frames/`.
+- Photos des cartes : `public/images/noces/`, chemins dans `tripSteps.image` ; sources dans [le guide des frames et photos](docs/VIDEO_FRAMES.md).
+- Carte d’ensemble du voyage : `public/images/noces/trip-overview.webp`, affichée dans `TripStages` ; présentation et filtres CSS dans `app/noces/noces.css`.
+- Volets des descriptions sur petits écrans : `components/noces/StepDrawer.tsx` (fermés sous 768px ou sous 601px de hauteur).
+- Ombre et textures du fond : `components/noces/background-treatment.ts` (choisir `1` ou `2`), masque/dégradé dans `app/noces/noces.css`.
+- Présentation du voyage : `components/noces/` et `app/noces/noces.css`.
+- Régénération des copies WebP : `scripts/prepare-noces-frames.cjs` (Sharp ; voir la configuration).
+- Extraction de toutes les frames d’un MP4 : `scripts/extract-video-frames.ps1` (FFmpeg ; [guide Windows](docs/VIDEO_FRAMES.md)).
 - Hébergements : tableau dans `components/Hebergement.tsx`.
 - Invitations : Firestore et listes de catégories d’environnement ; une modification de ces listes exige une reconstruction du site.
 
