@@ -5,6 +5,8 @@ export class FrameBlobCache {
 
   constructor(private readonly maxBytes: number) {}
 
+  has(index: number) { return this.entries.has(index); }
+
   get(index: number) {
     const blob = this.entries.get(index);
     if (blob) {
