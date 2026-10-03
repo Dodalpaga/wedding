@@ -270,7 +270,7 @@ export default function RSVPFormFirebase({
   }
 
   return (
-    <section className="py-5 bg-gradient-to-b from-[var(--accent)] via-white to-[var(--accent)]">
+    <section className="rsvp-page py-5 bg-gradient-to-b from-[var(--accent)] via-white to-[var(--accent)]">
       <div className="container mx-auto px-4">
         {/* Liste des membres du cercle */}
         {isLoading ? (
@@ -278,9 +278,9 @@ export default function RSVPFormFirebase({
             <p className="text-[var(--dark)]">Chargement...</p>
           </div>
         ) : (
-          <div className="max-w-3xl mx-auto mb-8">
+          <div className="max-w-5xl mx-auto mb-5">
             <div className="bg-white p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20">
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="rsvp-members-grid grid gap-3">
                 {membres.map((membre) => (
                   <button
                     key={membre.nom}
@@ -293,7 +293,7 @@ export default function RSVPFormFirebase({
                         });
                       }, 100);
                     }}
-                    className={`p-4 rounded-lg border-2 transition-all text-left hover:shadow-md cursor-pointer ${
+                    className={`p-3 rounded-lg border-2 transition-all text-left hover:shadow-md cursor-pointer ${
                       membre.statut === 'accepte'
                         ? 'bg-green-50 border-green-300 hover:border-green-400'
                         : membre.statut === 'refuse'
@@ -369,26 +369,28 @@ export default function RSVPFormFirebase({
         {membreSelectionne && (
           <div
             ref={formulaireRef}
-            className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20"
+            className="max-w-5xl mx-auto bg-white p-5 md:p-6 rounded-lg shadow-lg border-2 border-[var(--secondary)]/20"
           >
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-6xl font-wedding text-[var(--primary)]">
+            <div className="flex justify-between items-start gap-3 mb-5">
+              <h3 className="text-4xl md:text-5xl font-wedding text-[var(--primary)] break-words min-w-0">
                 Confirmation pour {membreSelectionne}
               </h3>
               <button
                 onClick={() => setMembreSelectionne('')}
-                className="text-gray-500 hover:text-gray-700"
+                aria-label="Fermer le formulaire"
+                className="min-h-11 min-w-11 text-gray-500 hover:text-gray-700"
               >
                 <Close />
               </button>
             </div>
 
+            <div className="rsvp-fields">
             {/* Statut de présence */}
-            <div className="mb-8">
-              <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+            <div className="rsvp-response">
+              <h3 className="rsvp-field-title">
                 Réponse
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() =>
                     setFormData({ ...formData, statut: 'accepte' })
@@ -401,7 +403,7 @@ export default function RSVPFormFirebase({
                 >
                   <div className="text-center">
                     <CheckCircle
-                      sx={{ fontSize: 40, color: 'rgb(22, 163, 74)', mb: 2 }}
+                      sx={{ fontSize: 28, color: 'rgb(22, 163, 74)', mb: 1 }}
                     />
                     <p className="font-semibold">J'accepte avec plaisir</p>
                   </div>
@@ -416,7 +418,7 @@ export default function RSVPFormFirebase({
                 >
                   <div className="text-center">
                     <Cancel
-                      sx={{ fontSize: 40, color: 'rgb(220, 38, 38)', mb: 2 }}
+                      sx={{ fontSize: 28, color: 'rgb(220, 38, 38)', mb: 1 }}
                     />
                     <p className="font-semibold">Je ne peux pas venir</p>
                   </div>
@@ -425,8 +427,8 @@ export default function RSVPFormFirebase({
             </div>
 
             <>
-              <div className="mb-8">
-                <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+              <div className="rsvp-information">
+                <h3 className="rsvp-field-title">
                   Informations
                 </h3>
 
@@ -435,38 +437,37 @@ export default function RSVPFormFirebase({
                   className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2"
                 >
                   <Email sx={{ fontSize: 18 }} />
-                  Quelle est ton adresse mail pour te donner toutes les news sur
-                  notre évènement ? (Optionnel)
+                  Adresse e-mail (optionnel)
                 </label>
 
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  required
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
-                  placeholder="jean.dupont@gmail.com"
+                  placeholder="vous@exemple.fr"
                   className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg 
               focus:border-[var(--secondary)] focus:outline-none 
               transition-colors"
                   autoComplete="email"
                 />
+                <p className="mt-2 text-xs text-gray-600">Pour recevoir les nouvelles du mariage.</p>
               </div>
 
               {/* Champs cachés pour vin d'honneur uniquement */}
               {!isVinHonneurOnly && formData.statut === 'accepte' && (
-                <div className="mb-8">
-                  <h3 className="text-5xl font-wedding text-[var(--primary)] mb-4">
+                <div className="rsvp-events">
+                  <h3 className="rsvp-field-title">
                     Événements
                   </h3>
                   <p className="text-sm text-gray-600 mb-4">
                     Sélectionnez les événements auxquels vous participerez *
                   </p>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {/* Vendredi soir */}
                     <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-blue-50">
                       <input
@@ -581,12 +582,13 @@ export default function RSVPFormFirebase({
               )}
 
               {/* Commentaires */}
-              <div className="mb-8">
-                <label className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
+              <div className="rsvp-comments">
+                <label htmlFor="commentaires" className="block text-sm font-medium text-[var(--dark)] mb-2 flex items-center gap-2">
                   <Comment sx={{ fontSize: 18 }} />
-                  Commentaires ou besoins particuliers (Optionnel)
+                  Commentaires ou besoins particuliers (optionnel)
                 </label>
                 <textarea
+                  id="commentaires"
                   value={formData.commentaires}
                   onChange={(e) =>
                     setFormData({
@@ -602,6 +604,7 @@ export default function RSVPFormFirebase({
                 />
               </div>
             </>
+            </div>
 
             {/* Bouton de soumission */}
             <div className="text-center">

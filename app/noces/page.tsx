@@ -1,220 +1,116 @@
 'use client';
 
 import { useRef } from 'react';
-import ReturnHomeButton from '@/components/HomeButton';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import Link from 'next/link';
+import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
+import { ArrowLeft, ArrowDown, Plane } from 'lucide-react';
 
-// --- Données du voyage (A personnaliser) ---
-const tripSteps = [
+type TripStep = { city: string; title: string; description: string; highlights: string[]; image?: string };
+
+// Pistes provisoires : modifier ici les villes, descriptions et envies.
+// Pour remplacer un visuel, ajouter image: '/images/nom-du-fichier.jpg'.
+const tripSteps: TripStep[] = [
   {
-    city: 'Tokyo',
-    title: "L'effervescence Moderne",
-    days: 'Jours 1-5',
-    description:
-      'Plongée immédiate dans la capitale. Entre les néons de Shinjuku, la traversée de Shibuya et la quiétude du temple Senso-ji. Nous goûterons nos premiers sushis authentiques !',
-    imgPlaceholder: 'tokyo.jpg', // Nom de fichier imaginaire pour l'exemple
+    city: 'Tokyo', title: 'Les premiers pas dans un autre monde',
+    description: 'Nous imaginons commencer notre aventure au rythme de Tokyo : nous perdre dans ses quartiers, passer des rues animées aux petits temples et découvrir nos premières adresses gourmandes. Quelques jours pour prendre nos marques et savourer le début du voyage à deux.',
+    highlights: ['Balades en ville', 'Petites adresses', 'Premières découvertes'],
   },
   {
-    city: 'Hakone & Mont Fuji',
-    title: 'Nature et Onsens',
-    days: 'Jours 6-8',
-    description:
-      'Une pause détente dans les montagnes. Au programme : bains thermaux traditionnels (Onsens), œufs noirs cuits dans le soufre et, si la météo le permet, la vue majestueuse sur le Mont Fuji.',
-    imgPlaceholder: 'fuji.jpg',
+    city: 'Hakone & Mont Fuji', title: 'Une parenthèse au grand air',
+    description: 'Après la ville, nous aimerions ralentir un peu. Une nuit dans un hébergement traditionnel, un bain chaud et des paysages de montagne : une étape pour profiter du calme et, avec un peu de chance, apercevoir le mont Fuji.',
+    highlights: ['Nature', 'Onsen', 'Nuit en ryokan'],
   },
   {
-    city: 'Kyoto',
-    title: "L'âme du Japon",
-    days: 'Jours 9-14',
-    description:
-      "Le cœur historique. Nous déambulerons dans les allées de bambous d'Arashiyama, visiterons le Pavillon d'Or et espérons croiser une Geisha dans le quartier de Gion.",
-    imgPlaceholder: 'kyoto.jpg',
+    city: 'Kyoto', title: 'Prendre le temps de flâner',
+    description: 'Kyoto fait partie de nos envies : des jardins, des temples et des ruelles à découvrir sans trop se presser. Nous nous voyons déjà alterner les visites et les pauses, avec du temps pour les détours et les découvertes imprévues.',
+    highlights: ['Jardins & temples', 'Ruelles', 'Promenades à deux'],
   },
   {
-    city: 'Nara & Osaka',
-    title: 'Cerfs sacrés et Gastronomie',
-    days: 'Jours 15-18',
-    description:
-      "Saluer les cerfs en liberté à Nara, puis direction Osaka, la cuisine du Japon, pour goûter aux fameux Takoyakis et Okonomiyakis dans l'ambiance survoltée de Dotonbori.",
-    imgPlaceholder: 'osaka.jpg',
+    city: 'Nara & Osaka', title: 'Des rencontres et des saveurs',
+    description: 'Nous envisageons une escapade à Nara, puis une halte à Osaka pour découvrir une autre ambiance. L’idée : se promener, goûter plein de choses et laisser une place aux bonnes surprises plutôt que de remplir chaque minute du programme.',
+    highlights: ['Escapades', 'Cuisine locale', 'Soirées en ville'],
   },
   {
-    city: 'Okinawa / Ishigaki',
-    title: 'Détente sous les tropiques',
-    days: 'Jours 19-24',
-    description:
-      'Pour finir en beauté, cap au sud ! Plages de sable blanc, eaux turquoises et plongée sous-marine pour se remettre de toutes ces émotions avant le retour.',
-    imgPlaceholder: 'okinawa.jpg',
+    city: 'Okinawa / Ishigaki', title: 'Finir les pieds dans l’eau',
+    description: 'Pour les derniers jours, nous rêvons d’une pause près de la mer. Quelques baignades, de longues conversations et le plaisir de ne rien prévoir : une façon de prolonger cette bulle à deux avant de rentrer avec nos souvenirs.',
+    highlights: ['Mer', 'Repos', 'Derniers souvenirs'],
   },
 ];
 
+function StepVisual({ step, index }: { step: TripStep; index: number }) {
+  return <div className="honeymoon-visual">
+    {step.image ? <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}${step.image}`} alt={step.city} className="h-full w-full object-cover" loading="lazy" /> : <>
+      <svg aria-hidden="true" viewBox="0 0 400 240" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice">
+        <circle cx={index % 2 === 0 ? 290 : 110} cy="74" r="40" fill="#e9b59f" opacity=".75" />
+        <path d="M0 185 85 110 145 165 225 65 330 180 400 135V240H0Z" fill="#003b4e" opacity=".12" />
+        <path d="m198 99 27-34 31 38-20-9-11 7-12-8Z" fill="#fff" opacity=".8" />
+        <path d="M0 210Q90 160 200 205T400 190V240H0Z" fill="#137e41" opacity=".15" />
+      </svg>
+      <div className="relative z-10 px-5 text-center">
+        <p className="mb-2 text-xs uppercase tracking-[.2em] text-[#003b4e]/60">Carnet de voyage · {String(index + 1).padStart(2, '0')}</p>
+        <p className="font-wedding text-3xl text-[#003b4e] sm:text-4xl">{step.city}</p>
+        <p className="mt-3 text-xs text-[#003b4e]/70">Nos photos viendront raconter la suite</p>
+      </div>
+    </>}
+  </div>;
+}
+
 export default function HoneymoonPage() {
   const containerRef = useRef(null);
-
-  // Hook pour récupérer la progression du scroll dans le container
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start end', 'end start'],
-  });
-
-  // On lisse l'animation de l'avion pour qu'elle soit moins saccadée
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
-  // Transforme la progression (0 à 1) en pourcentage pour la position CSS
+  const reducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start center', 'end center'] });
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
   const airplaneY = useTransform(smoothProgress, [0, 1], ['0%', '100%']);
 
-  return (
-    <div className="min-h-screen bg-[#fcfcfc] overflow-x-hidden">
-      {/* Hero Section du Voyage */}
-      <div className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-        {/* Fond dégradé aux couleurs du thème */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#003b4e] via-[#034861] to-[#137e41] opacity-90 z-0"></div>
+  return <main className="honeymoon-page min-h-screen bg-[#fcfcfc] text-[#003b4e]">
+    <header className="relative overflow-hidden bg-gradient-to-br from-[#003b4e] via-[#034861] to-[#137e41] text-white">
+      <nav aria-label="Navigation" className="honeymoon-container relative z-10 pt-5">
+        <Link href="/" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 px-4 py-2 text-sm hover:bg-white/10">
+          <ArrowLeft size={16} aria-hidden="true" /> Accueil
+        </Link>
+      </nav>
+      <motion.div initial={reducedMotion ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }} className="honeymoon-container relative z-10 py-10 text-center sm:py-14">
+        <p className="mb-3 text-xs uppercase tracking-[.2em] text-white/75">Notre voyage de noces</p>
+        <h1 className="font-wedding text-6xl sm:text-7xl lg:text-8xl">Un mois au Japon</h1>
+        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">Un roadtrip à deux, des villes qui fourmillent, des pauses au vert et du temps pour nous. Voici les premières pistes de notre aventure.</p>
+        <a href="#itineraire" className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 px-4 py-2 text-sm hover:bg-white/10">Découvrir nos envies <ArrowDown size={16} aria-hidden="true" /></a>
+      </motion.div>
+    </header>
 
-        {/* Motif décoratif (optionnel) */}
-        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/shattered-island.png')]"></div>
-
-        <div className="relative z-10 text-center px-4 pt-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-6xl md:text-8xl font-wedding text-white mb-4 drop-shadow-lg">
-              Noces au Japon
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 font-light max-w-2xl mx-auto">
-              3 semaines de rêve entre tradition et modernité. Suivez notre
-              itinéraire...
-            </p>
-          </motion.div>
+    <section id="itineraire" aria-labelledby="itinerary-title" className="honeymoon-container py-10 sm:py-14">
+      <div className="mb-8 max-w-2xl">
+        <p className="text-xs font-semibold uppercase tracking-[.15em] text-[#137e41]">Un itinéraire qui se dessine</p>
+        <h2 id="itinerary-title" className="mt-2 font-wedding text-4xl sm:text-5xl">Nos envies d’escales</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">Nous ajustons encore les villes, l’ordre des étapes et le temps passé sur place. Rien n’est figé : ces escales donnent un premier aperçu du voyage dont nous rêvons.</p>
+      </div>
+      <div ref={containerRef} className="relative">
+        <div aria-hidden="true" className="honeymoon-route">
+          <div className="h-full border-l-2 border-dashed border-[#003b4e]/20" />
+          <motion.div style={{ top: reducedMotion ? '0%' : airplaneY }} className="absolute -left-[15px] -mt-4 rounded-full bg-white p-1.5 text-[#137e41] shadow-sm"><Plane size={20} className="rotate-90" /></motion.div>
+        </div>
+        <div className="space-y-8 sm:space-y-12">
+          {tripSteps.map((step, index) => <motion.article key={step.city} initial={reducedMotion ? false : { opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .15 }} transition={{ duration: .6 }} className="honeymoon-step">
+            <div className={index % 2 === 0 ? 'md:col-start-1 md:row-start-1' : 'md:col-start-2 md:row-start-1'}>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[.12em] text-[#137e41]">Escale envisagée · {String(index + 1).padStart(2, '0')}</p>
+              <h3 className="font-wedding text-4xl sm:text-5xl">{step.city}</h3>
+              <p className="mt-2 font-semibold">{step.title}</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{step.description}</p>
+              <ul aria-label={`Nos envies à ${step.city}`} className="mt-4 flex flex-wrap gap-2">{step.highlights.map(highlight => <li key={highlight} className="rounded-full bg-[#137e41]/[.07] px-3 py-1 text-xs text-[#137e41]">{highlight}</li>)}</ul>
+            </div>
+            <span aria-hidden="true" className="absolute left-1/2 top-1/2 hidden h-3 w-3 -translate-x-1/2 rounded-full border-2 border-white bg-[#137e41] md:block" />
+            <div className={index % 2 === 0 ? 'md:col-start-2 md:row-start-1' : 'md:col-start-1 md:row-start-1'}><StepVisual step={step} index={index} /></div>
+          </motion.article>)}
         </div>
       </div>
-      <ReturnHomeButton />
+    </section>
 
-      {/* Section Timeline avec l'Avion */}
-      <div
-        ref={containerRef}
-        className="relative py-20 container mx-auto px-4 max-w-5xl"
-      >
-        {/* LA LIGNE ET L'AVION (Visible surtout sur Desktop/Tablette) */}
-        <div className="absolute left-4 md:left-1/2 top-20 bottom-20 w-1 md:-translate-x-1/2 z-0">
-          {/* Ligne pointillée statique */}
-          <div className="h-full w-full border-l-2 border-dashed border-[#003b4e]/30"></div>
-
-          {/* L'AVION QUI BOUGE */}
-          <motion.div
-            style={{ top: airplaneY }}
-            className="absolute -left-[13px] top-0 z-10 text-[#137e41]"
-          >
-            <div className="bg-white p-1 rounded-full shadow-md rotate-180">
-              {/* Icône Avion SVG */}
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                xmlns="http://www.w3.org/2000/svg"
-                className="transform"
-              >
-                <path d="M21 16V14L13 9V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V9L2 14V16L10 13.5V19L8 20.5V22L11.5 21L15 22V20.5L13 19V13.5L21 16Z" />
-              </svg>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* LES ÉTAPES */}
-        <div className="space-y-24 relative z-10">
-          {tripSteps.map((step, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-100px' }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className={`flex flex-col md:flex-row items-center gap-8 md:gap-16 ${
-                index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-              }`}
-            >
-              {/* Bloc Texte */}
-              <div
-                className={`flex-1 ${
-                  index % 2 === 0
-                    ? 'md:text-right pl-12 md:pl-0'
-                    : 'md:text-left pl-12 md:pl-0'
-                }`}
-              >
-                <span className="inline-block py-1 px-3 rounded-full bg-[#137e41]/10 text-[#137e41] text-sm font-bold mb-2">
-                  {step.days}
-                </span>
-                <h2 className="text-4xl md:text-5xl font-wedding text-[#003b4e] mb-4">
-                  {step.city}
-                </h2>
-                <h3 className="text-xl font-semibold text-[#003b4e]/80 mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed text-justify">
-                  {step.description}
-                </p>
-              </div>
-
-              {/* Point central sur la ligne (décoratif) */}
-              <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-[#003b4e] rounded-full border-4 border-white shadow-sm"></div>
-
-              {/* Bloc Image */}
-              <div className="flex-1 w-full pl-12 md:pl-0">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-xl group border-2 border-white">
-                  <div className="absolute inset-0 bg-[#003b4e]/10 group-hover:bg-transparent transition-all duration-500 z-10"></div>
-                  {/* Remplacement Image Next.js standard */}
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/${
-                      step.imgPlaceholder
-                    }`}
-                    alt={`Voyage à ${step.city}`}
-                    className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-700"
-                    // Fallback si l'image n'existe pas encore
-                    onError={(e) => {
-                      e.currentTarget.src = `https://placehold.co/600x400/003b4e/FFF?text=${step.city}`;
-                    }}
-                  />
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+    <section aria-labelledby="gift-title" className="bg-[#003b4e] py-10 text-white sm:py-14">
+      <div className="honeymoon-container max-w-2xl text-center">
+        <h2 id="gift-title" className="font-wedding text-4xl sm:text-5xl">Un petit bout de notre aventure</h2>
+        <p className="mt-5 text-sm leading-relaxed text-white/85 sm:text-base">Votre présence est notre plus beau cadeau. Si vous souhaitez participer à notre voyage de noces, une urne sera disponible le jour du mariage.</p>
+        <p className="mt-5 font-semibold">Merci du fond du cœur ❤️</p>
+        <p className="mt-2 text-sm text-white/75">Solenne &amp; Dorian</p>
       </div>
-
-      {/* Section Participation / Cadeau */}
-      <section className="py-4 bg-[#003b4e] text-white mt-20">
-        <div className="container mx-auto px-4 text-center max-w-2xl">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-5xl md:text-7xl font-wedding mb-8">
-              Participer à notre voyage
-            </h2>
-            <p className="text-lg mb-8 font-light">
-              Si vous souhaitez nous aider à réaliser ce voyage inoubliable, une
-              urne sera disponible le jour du mariage.
-              <br />
-              Votre présence est le plus beau des cadeaux, mais si vous
-              souhaitez contribuer à nos souvenirs, c'est par ici que ça se
-              passe !
-            </p>
-
-            {/* Exemple de bouton (optionnel) */}
-            <div className="inline-block border rounded-lg p-6 backdrop-blur-sm">
-              <p className="font-semibold">Merci du fond du cœur ❤️</p>
-              <p className="text-sm mt-2 italic">Solenne & Dorian</p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-    </div>
-  );
+    </section>
+  </main>;
 }

@@ -8,6 +8,7 @@ import ReturnHomeButton from '@/components/HomeButton';
 import RSVPFormFirebase from '@/components/RSVPFormFirebase';
 import Link from 'next/link';
 import Signature from '@/components/Signature';
+import { Mail } from 'lucide-react';
 import {
   getCodesAvecHebergement,
   getCodesVinHonneur,
@@ -114,11 +115,13 @@ function ConfirmationContent() {
             Retour à l'accueil
           </button>
           <div className="mt-6 pt-6 border-t border-red-200">
-            <p className="text-sm text-red-700">
-              <strong>Besoin d'aide ?</strong>
-              <br />
-              Contactez-nous au 06 89 71 01 93 ou 06 27 86 02 06
-            </p>
+            <p className="text-sm font-semibold text-red-700">Besoin d’aide ?</p>
+            <a
+              href="mailto:solenne.lamaud@gmail.com,dorian.voydie@gmail.com"
+              className="landing-button mt-3 border border-[var(--primary)]/20 bg-white text-[var(--primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
+            >
+              <Mail size={18} aria-hidden="true" /> Contacter Solenne &amp; Dorian
+            </a>
           </div>
         </div>
       </div>
@@ -128,33 +131,33 @@ function ConfirmationContent() {
   // Affichage du formulaire si tout est OK
   return (
     <div>
-      <h2 className="text-6xl md:text-8xl font-wedding text-center text-[var(--primary)] mb-4">
+      <h2 className="text-6xl md:text-7xl font-wedding text-center text-[var(--primary)] mb-4">
         Confirmer sa présence
       </h2>
-      <p className="max-w-6xl mx-auto px-6 text-[var(--dark)] whitespace-pre-line text-justify">
+      <p className="max-w-5xl mx-auto px-6 text-[var(--dark)] whitespace-pre-line text-left leading-relaxed">
         {inviteData.message}
       </p>
-      <div className="w-full max-w-6xl mx-auto px-4 mb-4 flex justify-end">
+      <div className="w-full max-w-5xl mx-auto px-4 mb-4 flex justify-end">
         <div className="w-full max-w-[200px]">
           <Signature theme="dark" />
         </div>
       </div>
 
       {/* Badges d'invitation */}
-      <div className="max-w-3xl mx-auto px-4 mb-8">
-        {isVinHonneurOnly && (
+      {isVinHonneurOnly && (
+        <div className="max-w-5xl mx-auto px-4 mb-5">
           <div className="bg-purple-50 border-2 border-purple-300 p-4 rounded-lg">
             <p className="text-center text-purple-800 flex items-center justify-center gap-2">
               <LocalBar />
               <strong>Invitation : Cérémonie & Vin d'Honneur</strong>
             </p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Lien vers les hébergements si applicable */}
       {afficherHebergement && (
-        <div className="max-w-3xl mx-auto mb-8 px-4">
+        <div className="max-w-5xl mx-auto mb-5 px-4">
           <Link
             href={`/hebergement`}
             className="block bg-gradient-to-r from-[var(--secondary)] to-[var(--primary)] text-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all text-center"
