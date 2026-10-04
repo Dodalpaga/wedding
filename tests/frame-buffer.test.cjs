@@ -76,6 +76,16 @@ test('reduced motion only downloads/decodes frame zero; hidden tabs pause new wo
   c.buffer.dispose(); await flush();
 });
 
+test('an eased jump fetches its destination early and keeps that transfer as the camera catches up', async () => {
+  const c = controlled();
+  c.buffer.seek(0, 1, 100, 10);
+  assert(c.network.has(10));
+  c.buffer.seek(4, 1, 100, 10);
+  assert(c.network.has(10));
+  assert.equal(c.started.filter(index => index === 10).length, 1);
+  c.buffer.dispose(); await flush();
+});
+
 test('decoded cache stays bounded and speculative prefetch does not loop after compressed eviction', async () => {
   const released = []; let fetches = 0;
   const buffer = new JourneyFrameBuffer({

@@ -34,13 +34,13 @@ test('replacement, oversized frames and clear do not consume stale capacity', ()
 });
 
 test('traversing all 597 frames respects the mobile and desktop byte budgets', () => {
-  for (const budget of [12, 24]) {
+  for (const budget of [32, 48, 96]) {
     const cache = new FrameBlobCache(budget * 1024 * 1024);
     for (let i = 0; i < 597; i++) cache.set(i, blob(128 * 1024));
     let retained = 0;
     for (let i = 0; i < 597; i++) retained += cache.get(i)?.size || 0;
-    assert.equal(retained, budget * 1024 * 1024);
+    assert.equal(retained, Math.min(budget * 1024 * 1024, 597 * 128 * 1024));
     assert.equal(cache.get(596).size, 128 * 1024);
-    assert.equal(cache.get(0), undefined);
+    assert.equal(Boolean(cache.get(0)), budget === 96);
   }
 });

@@ -114,4 +114,8 @@ Rayons ponctuellement jusqu’à ×4 en largeur et gain lumineux jusqu’à ×3 
 
 ## Passe performances finale, design inchangé
 
-[Budgets mémoire et identité du moteur solaire](noces-performance-final/memory.json), [rendu avant/après CPU ×4](noces-performance-final/runtime.json), [parcours et responsive](noces-performance-final/ui.json). Caches compressés 12/24 Mio, images/design identiques ; les captures accentuées et dev précédentes restent représentatives. Les mesures de callbacks ne prouvent pas un gain de FPS et ne couvrent pas toute la mémoire/GPU.
+[Budgets mémoire et identité du moteur solaire](noces-performance-final/memory.json), [rendu avant/après CPU ×4](noces-performance-final/runtime.json), [parcours et responsive](noces-performance-final/ui.json). Historique : caches compressés 12/24 Mio désormais remplacés par le buffer réseau ci-dessous. Les mesures de callbacks ne prouvent pas un gain de FPS et ne couvrent pas toute la mémoire/GPU.
+
+## Buffer réseau, design inchangé
+
+[Méthode, comparaison sous latence et contrôles](noces-network-buffer/README.md). Budgets compressés 48/96 Mio et adaptation mémoire/connexion. Préchargement et décodage indépendants ; captures accentuées et dev toujours représentatives du rendu.

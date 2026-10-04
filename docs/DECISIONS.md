@@ -66,6 +66,10 @@ Remplacer la texture statique par une illusion volumétrique 2D en perspective. 
 À la demande des propriétaires, les trouées solaires sont accentuées : certains faisceaux atteignent 3–4 fois leur largeur initiale et un gain lumineux jusqu’à ×3. Garder une variation progressive au scroll, des rayons fins entre les nappes larges, le masque des arbres et le voile de lisibilité. Résolutions, nombre de faisceaux et arrêt au repos inchangés.
 
 
-## Cache mémoire du voyage borné
+## Cache mémoire du voyage borné : étape remplacée par le buffer réseau ci-dessous
 
 Conserver les 597 frames, le cache décodé 16/24 et le moteur solaire inchangés. Limiter la rétention compressée à 12 Mio sur téléphone et 24 Mio ailleurs avec éviction LRU ; vider ce cache en réduction des mouvements. Préférer cette borne mémoire à une conservation de toute la vidéo (72,55 Mio), avec possibilité de recharger les frames anciennes au retour. Aucune simplification visuelle ni baisse de résolution pour cette passe.
+
+## Buffer réseau du voyage — 4 octobre 2026
+
+Les mesures locales précédentes ne couvraient pas la latence GitHub Pages. Séparer téléchargement et décodage, anticiper la direction/vitesse et la destination du scroll, conserver davantage d’images compressées avant leur usage. Préchargement complet compressé sur PC avec budget 96 Mio ; fenêtre mobile avec budget 48 Mio. Seulement 24/40 bitmaps préparés autour de la caméra ; budgets réduits à 32 Mio/16 bitmaps et aucun préchargement complet sur appareils signalant ≤4 Gio. Économie de données/2G : concurrence et anticipation réduites, aucun préchargement complet. Accepter davantage de données anticipées et de mémoire bornée pour réduire l’attente réseau, sans charger les 2,05 Gio de frames décodées. Aucun changement des assets, rayons, résolution, cadence ou design. Pause en onglet masqué, première frame seule en réduction des mouvements.

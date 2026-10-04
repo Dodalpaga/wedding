@@ -73,6 +73,7 @@ En production, `basePath`, `assetPrefix` et `NEXT_PUBLIC_BASE_PATH` valent `/wed
 - Lieu, programme, échéance RSVP, FAQ, contacts et lien du voyage : `components/InfoSection.tsx`.
 - Étapes japonaises, textes et futures photos : `tripSteps` dans `app/noces/page.tsx`.
 - Séquence du hero : `FRAME_SEQUENCE` dans `components/noces/frame-sequence.ts` ; 597 WebP dans `public/assets/torii-better-fps-frames/`.
+- Buffer réseau du hero : `components/noces/frame-buffer.ts` ; téléchargements anticipés indépendants des décodages, préchargement compressé sur PC et budgets mobiles adaptatifs, sans modifier le rendu.
 - Photos des cartes : `public/images/noces/`, chemins dans `tripSteps.image` ; sources dans [le guide des frames et photos](docs/VIDEO_FRAMES.md).
 - Carte d’ensemble du voyage : `public/images/noces/trip-overview.webp`, affichée dans `TripStages` ; présentation et filtres CSS dans `app/noces/noces.css`.
 - Volets des descriptions sur petits écrans : `components/noces/StepDrawer.tsx` (fermés sous 768px ou sous 601px de hauteur).
