@@ -2,6 +2,8 @@
 
 État de référence : **4 octobre 2026**, confronté au code du dépôt. Les documents décrivent l’implémentation actuelle ; les plans et captures conservent aussi l’historique des ajustements.
 
+Travail actif : [GSAP, images originales et cache borné sur Noces](plans/active/noces-gsap-native-quality.md). Le stash des essais précédents a été supprimé à la demande de l’utilisateur. [Pauses résiduelles : mesures](screenshots/noces-last-stutters/README.md).
+
 | Document | Usage |
 | --- | --- |
 | [README du projet](../README.md) | Démarrage, fonctionnalités et commandes usuelles. |

@@ -1,9 +1,14 @@
 # Plans d’exécution
 
+Plan actif : [Noces : GSAP et images originales](active/noces-gsap-native-quality.md).
+
 Pour un changement complexe ou un refactoring majeur : créer un document dans `active/`, décrire le but et les étapes, noter les validations puis déplacer le plan dans `completed/` à la fin. Les plans terminés sont un historique ; la référence actuelle est [ARCHITECTURE.md](../ARCHITECTURE.md) et [PROJECT_STATE.md](../PROJECT_STATE.md).
 
 | Plan terminé | Portée et actualité |
 | --- | --- |
+| [noces-reversal-freeze.md](completed/noces-reversal-freeze.md) | Correction du blocage à l’inversion ; tests avant/après et traversées rapides Chrome Windows PC. |
+| [noces-decoder-priority.md](completed/noces-decoder-priority.md) | Voie urgente, cache réduit ; gain de mémoire et de suivi, freezes encore présents. |
+| [noces-last-stutters.md](completed/noces-last-stutters.md) | Mise à jour GSAP directe et préparation des photos mobiles ; améliorations mesurées et pauses résiduelles documentées. |
 | [mobile-landing.md](completed/mobile-landing.md) | Premier refactoring : disclosures et accès rapide. Le hero court/fond statique ont depuis été remplacés. |
 | [desktop-tablet-layout.md](completed/desktop-tablet-layout.md) | Panneaux alignés et RSVP compact. Le hero mobile court est ensuite remplacé par le plein écran. |
 | [honeymoon-page.md](completed/honeymoon-page.md) | V1 historique : carnet d’un mois ; hero et placeholders remplacés en V2. |
@@ -18,4 +23,4 @@ Pour un changement complexe ou un refactoring majeur : créer un document dans `
 | [documentation-sync.md](completed/documentation-sync.md) | Audit et consolidation complète de la documentation. |
 | [admin-csv-layout.md](completed/admin-csv-layout.md) | CSV multiline, palette admin, pagination et cartes responsive. |
 
-Aucun plan actif restant à l’issue de cette synchronisation.
+Le plan GSAP reste ouvert pour l’objectif absolu de fluidité à toute vitesse.

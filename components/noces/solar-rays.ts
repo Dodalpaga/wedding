@@ -1,4 +1,8 @@
-type Frame = ImageBitmap | HTMLImageElement;
+type Frame = { width: number; height: number } | HTMLImageElement;
+
+// Source-space masks are generated offline. One atlas, no pixel readbacks,
+// transient mask canvases or per-frame pixel arithmetic in the browser.
+export const SOLAR_MASK = { width: 80, height: 45, columns: 20 } as const;
 
 // A small, soft light shaft, generated once rather than blurred each scroll frame.
 function beamSprite() {
@@ -29,17 +33,6 @@ export function createSolarRays(canvas: HTMLCanvasElement, mobile: boolean) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return null;
   const sprite = beamSprite();
-  // CPU readback stays here, never on the full-resolution sequence canvas.
-  const mask = document.createElement('canvas');
-  const maskCtx = mask.getContext('2d', { willReadFrequently: true });
-  if (!maskCtx) return null;
-  // Lookup the light transmission instead of repeating clamp/divide/smoothstep
-  // arithmetic for every pixel of every frame.
-  const transmission = new Uint8ClampedArray(256);
-  for (let value = 0; value < transmission.length; value++) {
-    const opening = Math.max(0, Math.min(1, (value / 255 - .09) / .48));
-    transmission[value] = Math.round(255 * opening * opening * (3 - 2 * opening));
-  }
   let width = 1;
   let height = 1;
   let cssWidth = 1;
@@ -52,28 +45,16 @@ export function createSolarRays(canvas: HTMLCanvasElement, mobile: boolean) {
     const scale = Math.min(1, (mobile ? 480 : 720) / Math.max(w, h));
     width = canvas.width = Math.max(1, Math.round(w * scale));
     height = canvas.height = Math.max(1, Math.round(h * scale));
-    const maskScale = (mobile ? 128 : 160) / Math.max(w, h);
-    mask.width = Math.max(1, Math.round(w * maskScale));
-    mask.height = Math.max(1, Math.round(h * maskScale));
     return true;
   }
 
-  function paint(frame: Frame, progress: number) {
+  function paint(frame: Frame, mask: ImageBitmap | HTMLImageElement, index: number, progress: number) {
     ctx!.clearRect(0, 0, width, height);
     const fw = 'naturalWidth' in frame ? frame.naturalWidth : frame.width;
     const fh = 'naturalHeight' in frame ? frame.naturalHeight : frame.height;
     const cover = Math.max(cssWidth / fw, cssHeight / fh);
     const xOffset = (cssWidth - fw * cover) / 2;
     const yOffset = (cssHeight - fh * cover) / 2;
-    // Exactly the same cover crop as the video, including narrow portrait screens.
-    maskCtx!.drawImage(frame, xOffset * mask.width / cssWidth, yOffset * mask.height / cssHeight,
-      fw * cover * mask.width / cssWidth, fh * cover * mask.height / cssHeight);
-    const pixels = maskCtx!.getImageData(0, 0, mask.width, mask.height);
-    for (let i = 0; i < pixels.data.length; i += 4) {
-      const luminance = (pixels.data[i] * 54 + pixels.data[i + 1] * 183 + pixels.data[i + 2] * 19) >> 8;
-      pixels.data[i + 3] = transmission[luminance];
-    }
-    maskCtx!.putImageData(pixels, 0, 0);
 
     // Project from the image's canopy/vanishing point, rather than screen corners.
     const projectX = (x: number) => (xOffset + x * fw * cover) * width / cssWidth;
@@ -110,7 +91,10 @@ export function createSolarRays(canvas: HTMLCanvasElement, mobile: boolean) {
     }
     // Approximate occlusion by dark trunks/leaves; no geometry or GPU ray tracing.
     ctx!.globalCompositeOperation = 'destination-in';
-    ctx!.drawImage(mask, 0, 0, width, height);
+    ctx!.drawImage(mask, index % SOLAR_MASK.columns * SOLAR_MASK.width,
+      Math.floor(index / SOLAR_MASK.columns) * SOLAR_MASK.height, SOLAR_MASK.width, SOLAR_MASK.height,
+      xOffset * width / cssWidth, yOffset * height / cssHeight,
+      fw * cover * width / cssWidth, fh * cover * height / cssHeight);
     ctx!.globalCompositeOperation = 'source-over';
   }
 

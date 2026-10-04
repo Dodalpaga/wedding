@@ -7,6 +7,15 @@ export class FrameBlobCache {
 
   has(index: number) { return this.entries.has(index); }
 
+  between(from: number, to: number, direction: number) {
+    let selected = -1;
+    this.entries.forEach((_, index) => {
+      if (direction >= 0 ? index > from && index <= to && index > selected
+        : index < from && index >= to && (selected < 0 || index < selected)) selected = index;
+    });
+    return selected < 0 ? undefined : { index: selected, blob: this.get(selected)! };
+  }
+
   get(index: number) {
     const blob = this.entries.get(index);
     if (blob) {

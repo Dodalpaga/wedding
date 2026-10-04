@@ -119,3 +119,19 @@ Rayons ponctuellement jusqu’à ×4 en largeur et gain lumineux jusqu’à ×3 
 ## Buffer réseau, design inchangé
 
 [Méthode, comparaison sous latence et contrôles](noces-network-buffer/README.md). Budgets compressés 48/96 Mio et adaptation mémoire/connexion. Préchargement et décodage indépendants ; captures accentuées et dev toujours représentatives du rendu.
+
+## GSAP et qualité native — 4 octobre 2026
+
+[Méthode, résultats et limites](noces-gsap-adaptive/README.md). Images natives et parcours vérifiés sur trois formats ; l’absence de lag à toute vitesse n’est pas démontrée. Les variantes GSAP antérieures et les essais de promotion CSS restent historiques.
+
+## Pauses résiduelles après GSAP
+
+[Comparaison avant/après et limites](noces-last-stutters/README.md). Préparation des photos sur mobile/tactile et mise à jour dans le callback ScrollTrigger ; les pauses résiduelles et le réseau froid restent documentés.
+
+## Décodage prioritaire et mémoire
+
+[Comparaison et limites](noces-decoder-priority/README.md). Cache de bitmaps réduit, voie urgente, images natives inchangées ; les tâches longues résiduelles restent présentes.
+
+## Inversions rapides sur Chrome Windows
+
+[Diagnostic du blocage et validation](noces-reversal-freeze/README.md). Recalage initial explicitement distingué des retours incorrects ; les pauses de composition restent documentées.

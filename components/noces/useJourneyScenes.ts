@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, type RefObject } from 'react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { sceneBlend } from './scene-blend';
 
 // The content stays in normal flow until JS enhancement is ready. Reduced motion
 // and no-JS visitors keep that readable layout instead of a long empty runway.
@@ -13,56 +15,66 @@ export default function useJourneyScenes(sectionRef: RefObject<HTMLElement>, sta
     const previous = root.querySelector<HTMLButtonElement>('[data-previous]')!;
     const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const preparePhotos = window.matchMedia('(max-width: 1023px), (pointer: coarse)').matches;
     let start = 0;
     let distance = 1;
     let raf = 0;
     let anchorRaf = 0;
     let active = -1;
-    let lastOpacity = -1;
+    const opacities = scenes.map(() => -1);
+    let trigger: ScrollTrigger | undefined;
+    let disposed = false;
+    let preparedImages = false;
     let pendingFocus: { index: number; element: HTMLElement } | null = null;
 
-    const fadeOpacity = (gap: number) => {
-      const t = Math.max(0, Math.min(1, (gap - .25) / .22));
-      return 1 - t * t * (3 - 2 * t);
-    };
     function render() {
       raf = 0;
       if (motion.matches || !root!.hasAttribute('data-enhanced')) return;
       const position = Math.max(0, Math.min(1, (window.scrollY - start) / distance)) * (scenes.length - 1);
       const index = Math.round(position);
-      const opacity = fadeOpacity(Math.abs(position - index));
+      const { from, to, weight } = sceneBlend(position, scenes.length);
       if (index !== active) {
         const focusWasInside = active >= 0 && scenes[active].contains(document.activeElement);
         if (active >= 0) {
-          scenes[active].style.opacity = '0';
-          scenes[active].style.visibility = 'hidden';
+          scenes[active].style.pointerEvents = 'none';
           scenes[active].inert = true;
           scenes[active].setAttribute('aria-hidden', 'true');
         }
         active = index;
-        lastOpacity = -1;
-        scenes[index].style.visibility = 'visible';
         scenes[index].removeAttribute('aria-hidden');
         scenes[index].inert = false;
+        scenes[index].style.pointerEvents = 'auto';
         previous.disabled = index === 0;
         next.disabled = index === scenes.length - 1;
         if (statusRef.current) statusRef.current.textContent = scenes[index].dataset.label || '';
         if (focusWasInside && !pendingFocus) scenes[index].focus({ preventScroll: true });
       }
-      if (opacity !== lastOpacity) {
-        scenes[index].style.opacity = String(opacity);
-        scenes[index].style.pointerEvents = opacity > .1 ? 'auto' : 'none';
-        scenes[index].inert = opacity <= .1;
-        if (opacity <= .01) scenes[index].setAttribute('aria-hidden', 'true');
-        else scenes[index].removeAttribute('aria-hidden');
-        lastOpacity = opacity;
-      }
-      if (pendingFocus && pendingFocus.index === index && opacity > .75) {
+      scenes.forEach((scene, i) => {
+        const opacity = from === to && i === from ? 1 : i === from ? 1 - weight : i === to ? weight : 0;
+        if (opacity === opacities[i]) return;
+        scene.style.opacity = String(opacity);
+        scene.style.visibility = opacity > 0 ? 'visible' : 'hidden';
+        opacities[i] = opacity;
+      });
+      if (pendingFocus && pendingFocus.index === index && opacities[index] > .75) {
         pendingFocus.element.focus({ preventScroll: true });
         pendingFocus = null;
       }
     }
     function schedule() { if (!raf && !motion.matches) raf = requestAnimationFrame(render); }
+    async function prepareImages() {
+      if (preparedImages || motion.matches || !preparePhotos) return;
+      preparedImages = true;
+      // Invisible scenes don't trigger native lazy loading soon enough. Decode
+      // their original photos before the first fade, one at a time to avoid
+      // competing with the sequence's decoder pool.
+      const images = Array.from(root!.querySelectorAll<HTMLImageElement>('[data-scene] img'));
+      for (const image of images) {
+        if (disposed) return;
+        image.loading = 'eager';
+        try { await image.decode(); } catch { /* The original img keeps its fallback. */ }
+      }
+    }
     function measure() {
       if (motion.matches) return;
       start = root!.getBoundingClientRect().top + window.scrollY;
@@ -116,10 +128,12 @@ export default function useJourneyScenes(sectionRef: RefObject<HTMLElement>, sta
     function backwards() { goTo(active - 1); }
     function forwards() { goTo(active + 1); }
     function configure() {
+      trigger?.kill(); trigger = undefined;
       cancelAnimationFrame(raf);
       raf = 0;
       pendingFocus = null;
       active = -1;
+      opacities.fill(-1);
       scenes.forEach(scene => {
         scene.style.removeProperty('opacity');
         scene.style.removeProperty('visibility');
@@ -143,11 +157,15 @@ export default function useJourneyScenes(sectionRef: RefObject<HTMLElement>, sta
       cancelAnimationFrame(raf);
       raf = 0;
       render();
+      trigger = ScrollTrigger.create({ trigger: root, start: 'top top',
+        end: () => `+=${distance}`, onUpdate: () => {
+          cancelAnimationFrame(raf); raf = 0; render();
+        } });
+      void prepareImages();
     }
     const observer = new ResizeObserver(measure);
     observer.observe(root);
     observer.observe(foreground);
-    window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', measure);
     window.addEventListener('hashchange', onHashChange);
     window.addEventListener('load', restoreInitialHash, { once: true });
@@ -158,10 +176,11 @@ export default function useJourneyScenes(sectionRef: RefObject<HTMLElement>, sta
     configure();
     restoreInitialHash();
     return () => {
+      disposed = true;
       cancelAnimationFrame(raf);
       cancelAnimationFrame(anchorRaf);
       observer.disconnect();
-      window.removeEventListener('scroll', schedule);
+      trigger?.kill();
       window.removeEventListener('resize', measure);
       window.removeEventListener('hashchange', onHashChange);
       window.removeEventListener('load', restoreInitialHash);

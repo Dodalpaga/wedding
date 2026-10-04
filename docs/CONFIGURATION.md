@@ -2,6 +2,8 @@
 
 ## Installation locale
 
+GSAP 3.14.2 et ScrollTrigger sont intégrés à la route Noces. `node scripts/prepare-noces-solar-mask.cjs` prépare hors ligne son atlas lumineux avec Sharp (option `--sharp-module` pour un runtime externe). Les WebP photographiques originaux ne sont pas modifiés. `scripts/check-noces-gsap.cjs` compare des exports locaux avec Playwright ; options `--before`, `--after`, `--report`, `--playwright-module`, `--chrome-path`, `--only-after`, `--only-network`, `--cpu-rate` (4 par défaut), `--viewport` (largeur filtrée), `--fast-steps` (60 par défaut), `--trace-width` (320 par défaut) et `--warm-both` (attente des blobs des deux versions).
+
 Node.js 20 est utilisé par GitHub Actions. Le lockfile npm est présent.
 
 ```sh
@@ -63,7 +65,7 @@ Pour prévisualiser l’export, servir les fichiers statiques de façon que `out
 
 La séquence active utilise les 597 WebP de `public/assets/torii-better-fps-frames/`, issus de `Torii_better_fps.mp4`, en 1280×720 natif, qualité 85, total 72,55 Mio. Elle conserve chaque frame sans crop ni resize ; un seul jeu sert mobile/tablette/PC. Aucun serveur d’optimisation d’images n’est nécessaire. Les 100 PNG et leurs anciennes variantes WebP sous `public/assets/frames/` restent historiques, intacts et inutilisés par le renderer actuel.
 
-Le téléchargement et le décodage sont indépendants (`frame-buffer.ts`) : anticipation directionnelle, priorité à la position/destination du scroll, préchargement complet compressé sur PC. Cache LRU 48/96 Mio et 24/40 bitmaps (téléphone/PC), abaissés à 32 Mio/16 bitmaps sur appareils signalant ≤4 Gio ; pas de préchargement complet dans ce cas ou en économie de données/2G. Les anciens fichiers peuvent être rechargés au retour. Vérification ciblée : `node --test tests/frame-blob-cache.test.cjs tests/frame-buffer.test.cjs`. Voir [ARCHITECTURE.md](ARCHITECTURE.md) pour les limites de concurrence et d’anticipation.
+Le téléchargement et le décodage sont indépendants : quatre transferts préchargent les images sélectionnées selon la longueur du parcours, avec priorité à la position actuelle. Les blobs restent disponibles ; quatre décodages préparent une fenêtre de 16/24 bitmaps (téléphone/PC), sans nouvelle compression. Vérification ciblée : `node --test tests/noces-gsap.test.cjs tests/frame-blob-cache.test.cjs tests/frame-buffer.test.cjs` (22 tests). Voir [ARCHITECTURE.md](ARCHITECTURE.md) et les [mesures](screenshots/noces-gsap-adaptive/README.md) pour les limites.
 
 Le motif, le nombre, le padding et les limites du renderer sont regroupés dans `FRAME_SEQUENCE` de `components/noces/frame-sequence.ts`. Les URLs des frames et des photos d’escales conservent `NEXT_PUBLIC_BASE_PATH`. Pour une photo d’escale, renseigner `image: '/images/nom-du-fichier.jpg'` dans `tripSteps`, puis placer le fichier sous `public/images/`.
 

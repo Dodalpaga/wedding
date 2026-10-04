@@ -1,184 +1,176 @@
 'use client';
 
 import { useEffect, useRef, type RefObject } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { FRAME_SEQUENCE, frameUrl } from './frame-sequence';
 import { createSolarRays } from './solar-rays';
 import { JourneyFrameBuffer } from './frame-buffer';
 
-type DecodedFrame = ImageBitmap | HTMLImageElement;
-const release = (frame: DecodedFrame) => {
-  if ('close' in frame) frame.close();
-  else frame.src = '';
-};
+gsap.registerPlugin(ScrollTrigger);
 
-async function decode(blob: Blob): Promise<DecodedFrame> {
-  if (typeof createImageBitmap === 'function') {
-    try { return await createImageBitmap(blob); } catch { /* Image.decode fallback. */ }
+// Keep original pixels and endpoints; sample according to the scroll runway.
+export const sequenceIndices = (count: number) => Array.from({ length: count }, (_, i) =>
+  Math.round(i * (FRAME_SEQUENCE.count - 1) / (count - 1)));
+
+export function preloadOrder(count: number) {
+  const order = [0, count - 1], queue = [[0, count - 1]];
+  while (queue.length) {
+    const [from, to] = queue.shift()!;
+    if (to - from < 2) continue;
+    const middle = Math.floor((from + to) / 2);
+    order.push(middle); queue.push([from, middle], [middle, to]);
   }
-  const url = URL.createObjectURL(blob);
-  const img = new Image();
-  img.decoding = 'async';
-  img.src = url;
-  try { await img.decode(); return img; }
-  finally { URL.revokeObjectURL(url); }
+  return order;
 }
 
 export default function SequenceBackdrop({ sectionRef }: { sectionRef: RefObject<HTMLElement> }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const raysRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null), raysRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const section = sectionRef.current;
-    const canvas = canvasRef.current;
+    const section = sectionRef.current, canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d', { alpha: false });
     if (!section || !canvas || !ctx) return;
-    // Select once: avoid reloading a whole variant on mobile toolbar/orientation changes.
-    const variant = window.matchMedia('(max-width: 767px)').matches ? 'mobile' : 'desktop';
-    const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string }; deviceMemory?: number });
-    const economical = connection.connection?.saveData === true || /(^|-)2g$/.test(connection.connection?.effectiveType || '');
-    const lowMemory = (connection.deviceMemory ?? 8) <= 4;
-    const settings = {
-      ...FRAME_SEQUENCE[variant],
-      ...(lowMemory ? { cacheSize: 16, decodeAhead: 11, blobCacheBytes: 32 * 1024 * 1024, preloadAll: false } : {}),
-      ...(economical ? {
-        fetchConcurrency: 2, downloadAhead: 16, downloadMaxAhead: 32, downloadBehind: 8, preloadAll: false,
-      } : {}),
-    };
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const rays = raysRef.current ? createSolarRays(raysRef.current, variant === 'mobile') : null;
-    let disposed = false;
-    let raf = 0;
-    let target = 0;
-    let eased = 0;
-    let wanted = 0;
-    let drawn = -1;
-    let resized = true;
-    let start = 0;
-    let distance = 1;
-    let width = 1;
-    let height = 1;
-    let lastPaint = -Infinity;
-    let direction = 1;
-    let speed = 0;
-    let lastScroll = performance.now();
-    const buffer = new JourneyFrameBuffer<DecodedFrame>({
-      settings,
-      frameCount: FRAME_SEQUENCE.count,
-      reducedMotion: motion.matches,
-      decode,
-      release,
-      onReady: schedule,
-      fetchFrame: async (index, signal) => {
-        const response = await fetch(frameUrl(index), { signal });
-        if (!response.ok) throw new Error('Frame unavailable');
-        return response.blob();
-      },
+    const mobile = matchMedia('(max-width: 1023px), (pointer: coarse)').matches;
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    const sceneCount = section.querySelectorAll('[data-scene]').length;
+    const runway = Math.max(1, sceneCount - 1) * 1.2 * canvas.getBoundingClientRect().height;
+    const indices = sequenceIndices(Math.min(FRAME_SEQUENCE.count, Math.max(2, Math.ceil(runway / 16) + 1)));
+    const requests = indices.map(() => {
+      let resolve!: (blob: Blob) => void, reject!: (error: unknown) => void;
+      const promise = new Promise<Blob>((yes, no) => { resolve = yes; reject = no; });
+      void promise.catch(() => {});
+      return { promise, resolve, reject };
     });
+    const downloads = new AbortController();
+    const queue = preloadOrder(indices.length);
+    const rays = raysRef.current ? createSolarRays(raysRef.current, mobile) : null;
+    let mask: ImageBitmap | HTMLImageElement | null = null;
+    let maskStarted = false;
+    const maskRequest = new AbortController();
+    let disposed = false, raf = 0, inFlight = 0;
+    let width = 1, height = 1, drawn = -1, resized = true;
+    let tween: gsap.core.Tween | undefined;
+    const playhead = { frame: 0 };
+    let wanted = 0, direction = 1, lastSeek = performance.now(), loadedCount = 0;
+    const buffer = new JourneyFrameBuffer<ImageBitmap | HTMLImageElement>({
+      settings: { ...FRAME_SEQUENCE[mobile ? 'mobile' : 'desktop'], decodeConcurrency: 4,
+        cacheSize: mobile ? 16 : 24, decodeAhead: mobile ? 9 : 15 }, frameCount: indices.length,
+      reducedMotion: motion.matches, fetchFrame: index => requests[index].promise,
+      decode: async blob => {
+        if (typeof createImageBitmap === 'function') return createImageBitmap(blob);
+        const image = new Image(), url = URL.createObjectURL(blob); image.src = url;
+        try { await image.decode(); return image; } finally { URL.revokeObjectURL(url); }
+      },
+      release: image => { if ('close' in image) image.close(); else image.src = ''; }, onReady: schedule,
+    });
+    function seek() {
+      const next = motion.matches ? 0 : Math.round(playhead.frame), now = performance.now();
+      if (next !== wanted) {
+        const nextDirection = next > wanted ? 1 : -1;
+        if (nextDirection !== direction) drawn = -1;
+        direction = nextDirection;
+        const queued = queue.indexOf(next);
+        if (queued >= 0) { queue.splice(queued, 1); queue.unshift(next); pump(); }
+        buffer.seek(next, direction, Math.min(1200, Math.abs(next - wanted) * 1000 / Math.max(8, now - lastSeek)));
+        wanted = next; lastSeek = now;
+      }
+      // ScrollTrigger already runs on the display tick. A second rAF would
+      // present the previous scroll position for another frame.
+      cancelAnimationFrame(raf); raf = 0; paint();
+    }
 
     function schedule() {
-      if (!disposed && !document.hidden && !raf) raf = requestAnimationFrame(tick);
+      if (!disposed && !document.hidden && !raf) raf = requestAnimationFrame(paint);
     }
     function paint() {
-      const loaded = buffer.nearest(wanted);
-      if (!loaded || (loaded.index === drawn && !resized)) return;
-      const { index: nearest, frame } = loaded;
-      const w = 'naturalWidth' in frame ? frame.naturalWidth : frame.width;
-      const h = 'naturalHeight' in frame ? frame.naturalHeight : frame.height;
-      const scale = Math.max(width / w, height / h);
-      ctx!.drawImage(frame, (width - w * scale) / 2, (height - h * scale) / 2, w * scale, h * scale);
-      if (motion.matches) rays?.clear();
-      else rays?.paint(frame, nearest / (FRAME_SEQUENCE.count - 1));
-      drawn = nearest;
-      resized = false;
-      if (canvas!.style.opacity !== '1') canvas!.style.opacity = '1';
-    }
-    function tick(now: number) {
       raf = 0;
       if (disposed || document.hidden) return;
-      // At most 60 canvas updates/second; idle pages have no running rAF loop.
-      if (now - lastPaint < 1000 / 60) { schedule(); return; }
-      lastPaint = now;
-      eased = motion.matches ? 0 : eased + (target - eased) * .18;
-      if (Math.abs(target - eased) < .015 && !motion.matches) eased = target;
-      const next = Math.round(eased);
-      if (next !== wanted) { wanted = next; buffer.seek(wanted, direction, speed, target); }
-      paint();
-      if (!motion.matches && eased !== target) schedule();
+      const available = buffer.presentation(wanted, direction);
+      if (!available) return;
+      const { index: nearest, frame: image } = available;
+      if (!resized && (nearest === drawn || drawn >= 0 && (nearest - drawn) * direction < 0)) return;
+      const iw = 'naturalWidth' in image ? image.naturalWidth : image.width;
+      const ih = 'naturalHeight' in image ? image.naturalHeight : image.height;
+      const scale = Math.max(width / iw, height / ih);
+      ctx!.drawImage(image, (width - iw * scale) / 2, (height - ih * scale) / 2, iw * scale, ih * scale);
+      const sourceIndex = indices[nearest];
+      if (!motion.matches && mask) rays?.paint(image, mask, sourceIndex, sourceIndex / (FRAME_SEQUENCE.count - 1));
+      else rays?.clear();
+      drawn = nearest; resized = false;
+      buffer.markPresented(nearest);
+      canvas!.dataset.sourceFrame = String(sourceIndex);
+      canvas!.dataset.sourceWidth = String(iw);
+      canvas!.style.opacity = '1';
     }
-    function onScroll() {
-      const next = motion.matches ? 0 : Math.max(0, Math.min(1, (window.scrollY - start) / distance)) * (FRAME_SEQUENCE.count - 1);
-      if (next !== target) {
-        const now = performance.now();
-        direction = next > target ? 1 : -1;
-        speed = Math.min(240, Math.abs(next - target) * 1000 / Math.max(16, now - lastScroll));
-        lastScroll = now;
-        target = next;
-        schedule();
+    function pump() {
+      if (disposed || document.hidden) return;
+      while (inFlight < 4 && queue.length) {
+        const index = queue.shift()!;
+        if (motion.matches && index !== 0) { queue.unshift(index); break; }
+        inFlight++;
+        void fetch(frameUrl(indices[index]), { signal: downloads.signal })
+          .then(response => { if (!response.ok) throw new Error('Frame unavailable'); return response.blob(); })
+          .then(blob => {
+            requests[index].resolve(blob); loadedCount++;
+            if (loadedCount === indices.length) canvas!.dataset.sequenceLoaded = 'true';
+          }).catch(requests[index].reject).finally(() => { inFlight--; pump(); });
       }
+    }
+    function configure() {
+      tween?.scrollTrigger?.kill(); tween?.kill(); tween = undefined;
+      buffer.setReducedMotion(motion.matches);
+      if (!motion.matches) {
+        loadMask();
+        tween = gsap.to(playhead, { frame: indices.length - 1, ease: 'none', onUpdate: seek,
+          scrollTrigger: { trigger: section, start: 'top top',
+            end: () => `+=${Math.max(1, section!.offsetHeight - height)}`,
+            scrub: true, invalidateOnRefresh: true } });
+      } else { playhead.frame = 0; wanted = 0; rays?.clear(); }
+      resized = true; pump(); buffer.seek(wanted, direction); schedule();
     }
     function measure() {
-      const rect = canvas!.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2, settings.maxDimension / Math.max(rect.width, rect.height));
-      const nextWidth = Math.max(1, Math.round(rect.width * dpr));
-      const nextHeight = Math.max(1, Math.round(rect.height * dpr));
-      width = rect.width;
-      height = rect.height;
-      // Strict Mode/Fast Refresh can recreate the renderer while retaining the
-      // DOM canvas sizes. Initialise its private mask/crop independently.
+      const rect = canvas!.getBoundingClientRect(); width = rect.width; height = rect.height;
+      const dpr = Math.min(devicePixelRatio || 1, 2, 1280 / Math.max(width, height));
+      const w = Math.max(1, Math.round(width * dpr)), h = Math.max(1, Math.round(height * dpr));
+      if (canvas!.width !== w || canvas!.height !== h) {
+        canvas!.width = w; canvas!.height = h; resized = true;
+      }
+      ctx!.setTransform(w / width, 0, 0, h / height, 0, 0);
       if (rays?.resize(width, height)) resized = true;
-      if (canvas!.width !== nextWidth || canvas!.height !== nextHeight) {
-        canvas!.width = nextWidth;
-        canvas!.height = nextHeight;
-        ctx!.setTransform(nextWidth / width, 0, 0, nextHeight / height, 0, 0);
-        resized = true;
-      }
-      paint(); // Restore synchronously, avoiding a blank resize frame.
-      start = section!.getBoundingClientRect().top + window.scrollY;
-      distance = Math.max(1, section!.offsetHeight - height);
-      onScroll();
-      schedule();
+      paint(); ScrollTrigger.refresh();
     }
-    function motionChanged() {
-      resized = true;
-      if (motion.matches) {
-        rays?.clear();
-        target = eased = wanted = 0;
-      }
-      buffer.setReducedMotion(motion.matches);
-      onScroll();
-      buffer.seek(wanted, direction, speed, target);
-      schedule();
-    }
-    function visibilityChanged() {
+    function visibility() {
       buffer.setVisible(!document.hidden);
       if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
-      else { onScroll(); buffer.seek(wanted, direction, speed, target); schedule(); }
+      else { pump(); ScrollTrigger.refresh(); schedule(); }
     }
-    const observer = new ResizeObserver(measure);
-    observer.observe(canvas);
-    observer.observe(section);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', measure);
-    motion.addEventListener('change', motionChanged);
-    document.addEventListener('visibilitychange', visibilityChanged);
-    measure();
-    buffer.setVisible(!document.hidden);
-    buffer.seek(wanted, direction, speed, target);
+    function loadMask() {
+      if (motion.matches || maskStarted || disposed) return;
+      maskStarted = true;
+      void fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/assets/noces-solar-mask.webp`, { signal: maskRequest.signal })
+        .then(response => { if (!response.ok) throw new Error('Mask unavailable'); return response.blob(); })
+        .then(async blob => {
+          if (typeof createImageBitmap === 'function') return createImageBitmap(blob);
+          const image = new Image(), url = URL.createObjectURL(blob); image.src = url;
+          try { await image.decode(); return image; } finally { URL.revokeObjectURL(url); }
+        }).then(image => {
+          if (disposed) { if ('close' in image) image.close(); else image.src = ''; return; }
+          mask = image; resized = true; schedule();
+        }).catch(() => {});
+    }
+    measure(); configure();
+    const observer = new ResizeObserver(measure); observer.observe(canvas); observer.observe(section);
+    motion.addEventListener('change', configure); document.addEventListener('visibilitychange', visibility);
     return () => {
-      disposed = true;
-      cancelAnimationFrame(raf);
-      observer.disconnect();
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', measure);
-      motion.removeEventListener('change', motionChanged);
-      document.removeEventListener('visibilitychange', visibilityChanged);
-      buffer.dispose();
+      disposed = true; cancelAnimationFrame(raf); observer.disconnect();
+      tween?.scrollTrigger?.kill(); tween?.kill();
+      motion.removeEventListener('change', configure); document.removeEventListener('visibilitychange', visibility);
+      maskRequest.abort(); downloads.abort(); buffer.dispose();
+      if (mask) { if ('close' in mask) mask.close(); else mask.src = ''; }
     };
   }, [sectionRef]);
-
   return <div className="noces-stage" aria-hidden="true">
-    <picture className="noces-poster">
-      <img src={frameUrl(0)} alt="" fetchPriority="high" />
-    </picture>
+    <img className="noces-poster" src={frameUrl(0)} alt="" fetchPriority="high" style={{ objectFit: 'cover' }} />
     <canvas ref={canvasRef} className="noces-canvas" />
     <canvas ref={raysRef} className="noces-solar-rays" />
     <div className="noces-hero-overlay" />

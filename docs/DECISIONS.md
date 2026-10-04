@@ -4,6 +4,10 @@ Référence actuelle : 4 octobre 2026. Ce fichier distingue les choix en vigueur
 
 ## Choix en vigueur
 
+### Fluidité Noces et qualité des images
+
+GSAP/ScrollTrigger remplace l'easing et le plafond de cadence maison. Les originaux 1280×720 sont affichés sans réencodage ; la densité temporelle est adaptée au parcours, environ 16 pixels de scroll par position et au maximum 597 positions. Les pixels restent décodés dans une fenêtre bornée et les données compressées sont préparées sur tout le parcours. Les spritesheets photographiques basse définition sont écartées. Seul le masque lumineux est préparé hors ligne. Les callbacks ScrollTrigger mettent à jour directement le décor et les scènes ; les autres notifications asynchrones restent regroupées par raf. Les photos des scènes sont préparées séquentiellement sur les profils mobiles/tactiles pour déplacer leur décodage avant les fondus. Sur PC, le chargement natif est conservé après comparaison mitigée de la préparation anticipée. La fenêtre conserve désormais 16/24 bitmaps et une voie de décodage urgente ; les mesures montrent un gain de mémoire et de suivi des images, sans disparition des tâches longues. Une inversion réinitialise la borne monotone de présentation pour corriger le blocage d’une image en retard malgré un bitmap prêt ; le premier recalage peut être visible. Ce choix est en validation dans [le plan GSAP](plans/active/noces-gsap-native-quality.md).
+
 ### Site statique et données client
 
 Conserver Next.js App Router avec export statique GitHub Pages sous `/wedding`. Les invitations et statuts restent dans Firestore, avec Authentication pour la connexion admin. Les règles effectives Firebase ne sont pas versionnées ; ne pas déduire la sécurité du seul affichage client.
