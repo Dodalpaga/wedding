@@ -9,11 +9,7 @@ import RSVPFormFirebase from '@/components/RSVPFormFirebase';
 import Link from 'next/link';
 import Signature from '@/components/Signature';
 import { Mail } from 'lucide-react';
-import {
-  getCodesAvecHebergement,
-  getCodesVinHonneur,
-  getCodesRSVP,
-} from '@/config/codes';
+import { getCodesRSVP } from '@/config/codes';
 import LocalBar from '@mui/icons-material/LocalBar';
 import Home from '@mui/icons-material/Home';
 
@@ -64,15 +60,11 @@ function ConfirmationContent() {
     fetchInviteData();
   }, [codeFromUrl]);
 
-  // Récupération des codes depuis les variables d'environnement
-  const codesAvecHebergement = getCodesAvecHebergement();
-  const codesVinHonneur = getCodesVinHonneur();
+  // Seul l’affichage du formulaire RSVP dépend encore d’une liste de codes.
   const codesRSVP = getCodesRSVP();
 
-  const afficherHebergement =
-    inviteData && codesAvecHebergement.includes(inviteData.code);
-  const isVinHonneurOnly =
-    inviteData && codesVinHonneur.includes(inviteData.code);
+  const afficherHebergement = inviteData?.couchage_sur_place === false;
+  const isVinHonneurOnly = inviteData?.participation_repas === false;
 
   // Affichage pendant le chargement
   if (loading) {

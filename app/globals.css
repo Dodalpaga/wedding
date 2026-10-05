@@ -167,20 +167,22 @@ body {
 .admin-status-pending { color: #805b1b; background: #fbf3df; }
 .admin-status-declined { color: #875346; background: #f7eeea; }
 .admin-table-scroll { overflow-x: auto; max-height: 680px; }
-.admin-table { width: 100%; min-width: 1200px; table-layout: fixed; font-size: .875rem; text-align: left; }
+.admin-table { width: 100%; min-width: 1500px; table-layout: fixed; font-size: .875rem; text-align: left; }
 .admin-table thead { position: sticky; top: 0; z-index: 1; background: #f1f5f3; }
 .admin-table :is(th, td) { padding: .75rem; vertical-align: top; }
 .admin-table thead th { font-size: .75rem; font-weight: 600; color: #52665e; }
 .admin-table tbody tr { border-top: 1px solid #e7ede9; }
 .admin-table tbody tr:nth-child(even) { background: #fbfcfb; }
 .admin-table tbody tr:hover { background: #f1f7f3; }
-.admin-table :is(th, td):nth-child(1) { width: 7%; }
-.admin-table :is(th, td):nth-child(2) { width: 14%; overflow-wrap: anywhere; }
-.admin-table :is(th, td):nth-child(3) { width: 10%; }
-.admin-table :is(th, td):nth-child(4) { width: 16%; overflow-wrap: anywhere; }
-.admin-table :is(th, td):nth-child(5), .admin-table :is(th, td):nth-child(6), .admin-table :is(th, td):nth-child(7) { width: 7%; }
-.admin-table :is(th, td):nth-child(8) { width: 22%; overflow-wrap: anywhere; }
-.admin-table :is(th, td):nth-child(9) { width: 10%; }
+.admin-table :is(th, td):nth-child(1) { width: 6%; }
+.admin-table :is(th, td):nth-child(2) { width: 12%; overflow-wrap: anywhere; }
+.admin-table :is(th, td):nth-child(3) { width: 9%; }
+.admin-table :is(th, td):nth-child(4) { width: 14%; overflow-wrap: anywhere; }
+.admin-table :is(th, td):nth-child(5), .admin-table :is(th, td):nth-child(6), .admin-table :is(th, td):nth-child(7) { width: 6%; }
+.admin-table :is(th, td):nth-child(8) { width: 7%; }
+.admin-table :is(th, td):nth-child(9) { width: 9%; }
+.admin-table :is(th, td):nth-child(10) { width: 18%; overflow-wrap: anywhere; }
+.admin-table :is(th, td):nth-child(11) { width: 7%; }
 .admin-comment summary { min-height: 32px; }
 .admin-login { display: grid; place-items: center; padding: 1rem; background: radial-gradient(ellipse at top left, #dcece3, transparent 65%), #f4f7f6; }
 

@@ -24,10 +24,10 @@ Créer `.env.local` avant de lancer le site. Aucun template d’environnement n�
 | `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | `FIREBASE_MESSAGING_SENDER_ID` |
 | `NEXT_PUBLIC_FIREBASE_APP_ID` | `FIREBASE_APP_ID` |
 | `NEXT_PUBLIC_CODES_RSVP` | `NEXT_PUBLIC_CODES_RSVP` |
-| `NEXT_PUBLIC_CODES_AVEC_HEBERGEMENT` | `NEXT_PUBLIC_CODES_AVEC_HEBERGEMENT` |
-| `NEXT_PUBLIC_CODES_VIN_HONNEUR` | `NEXT_PUBLIC_CODES_VIN_HONNEUR` |
 
-Les six valeurs Firebase proviennent de la configuration de l’application Web dans Firebase. Les listes de codes sont séparées par des virgules. `config/codes.ts` supprime les espaces autour de chaque code et les entrées vides, mais ne convertit pas la casse : utiliser des codes en majuscules pour correspondre à la confirmation.
+Les six valeurs Firebase proviennent de la configuration de l’application Web dans Firebase. La liste RSVP est séparée par des virgules. `config/codes.ts` supprime les espaces autour de chaque code et les entrées vides, mais ne convertit pas la casse : utiliser des codes en majuscules pour correspondre à la confirmation.
+
+Les anciennes variables `NEXT_PUBLIC_CODES_AVEC_HEBERGEMENT` et `NEXT_PUBLIC_CODES_VIN_HONNEUR` sont remplacées par les flags Firestore `couchage_sur_place` et `participation_repas`. Elles ne sont plus lues par le site et ne sont plus injectées par GitHub Actions. Leurs entrées ont été retirées du `.env.local` de ce poste ; les anciens secrets GitHub peuvent être supprimés depuis les paramètres du dépôt. Modifier les flags en base agit à la prochaine lecture de l’invitation, sans nouvelle construction.
 
 `NEXT_PUBLIC_BASE_PATH` est injecté par `next.config.js` : vide en développement, `/wedding` en production. Ne pas le traiter comme une variable de secret à renseigner manuellement.
 
@@ -35,9 +35,56 @@ Les variables `NEXT_PUBLIC_*` sont intégrées au bundle client lors de la const
 
 ## Firebase
 
-Activer Firestore et Authentication Email/Password. Créer les comptes autorisés dans Firebase, sans identifiants ou mots de passe d’exemple partagés. Créer les invitations suivant [DATA_MODEL.md](DATA_MODEL.md), puis renseigner les listes de catégories.
+Activer Firestore et Authentication Email/Password. Créer les comptes autorisés dans Firebase, sans identifiants ou mots de passe d’exemple partagés. Créer les invitations avec leurs deux flags suivant [DATA_MODEL.md](DATA_MODEL.md), puis renseigner la liste RSVP.
 
 Le dépôt ne fournit ni règles Firestore, ni configuration CLI Firebase, ni émulateur, ni règles/claims de rôle admin. Il ne permet donc pas de confirmer la politique réelle d’accès en production. L’admin filtre sa présentation sur une session Firebase ; RSVP, compteur et galeries ne doivent pas être pris pour des mécanismes de confidentialité serveur.
+
+## Initialiser les champs repas et couchage
+
+`migration/update-invitation-flags.mjs` fonctionne avec Node.js 20, sans dépendance supplémentaire. Il utilise l’API REST Firestore et une connexion Google Cloud autorisée au projet (IAM), distincte de la connexion Firebase Authentication du site. Installer [Google Cloud CLI](https://docs.cloud.google.com/sdk/docs/install-sdk), puis exécuter `gcloud auth login`. Les paramètres publics Firebase ne fournissent pas de droits d’administration.
+
+La migration a été appliquée avec succès par le propriétaire dans Cloud Shell le 5 octobre 2026. [Le dossier migration](../migration/README.md) regroupe les outils pour une éventuelle mise à jour ultérieure.
+
+Le script lit uniquement `NEXT_PUBLIC_FIREBASE_PROJECT_ID` dans `.env.local` à la racine du projet, sans afficher sa valeur. La base ciblée est `(default)`. Les règles privées sont dans `migration/firebase-invitation-flags.local.json`, ignoré par Git. Exemple fictif de structure :
+
+```json
+{
+  "sans_repas": ["ABCDEF"],
+  "sans_couchage": ["ABCDEF", "GHIJKL"]
+}
+```
+
+**Tous les autres codes de six caractères reçoivent `true` pour les deux champs.** Les groupes sans repas reçoivent aussi `couchage_sur_place: false`. Vérifier que ces règles correspondent à toute la base avant l’application.
+
+Depuis la racine du projet :
+
+```sh
+# Vérifie les fichiers locaux sans connexion ni appel Firebase
+node migration/update-invitation-flags.mjs --validate-only
+# Lit les invitations et affiche les changements, sans écrire
+node migration/update-invitation-flags.mjs
+# Applique les changements après une nouvelle lecture
+node migration/update-invitation-flags.mjs --apply
+```
+
+Les lectures sont paginées et limitées aux membres et aux deux nouveaux champs. L’aperçu affiche codes, effectifs et booléens, sans noms ni emails : ne pas publier cette sortie. Les codes d’exclusion inconnus, les doublons et les invitations mal formées bloquent l’écriture. Les documents hors codes de six caractères sont ignorés ; une invitation à code valide sans membres bloque le traitement.
+
+Un seul commit atomique modifie uniquement les deux champs, avec un masque et une précondition sur l’horodatage de chaque invitation modifiée. Il ne crée pas d’invitations et conserve `statuts`, les messages et les autres champs. Les valeurs identiques sont ignorées. Au-delà de 500 modifications, le script s’arrête. Si une invitation change entre lecture et commit, le commit échoue : relire l’aperçu avant de réessayer. En cas de coupure pendant l’écriture, son résultat peut être indéterminé : relancer l’aperçu pour le vérifier.
+
+Tests hors réseau : `node --test migration/invitation-flags.test.mjs`. Le client utilise désormais les flags Firestore pour le vin d’honneur et les suggestions de logement ; le workflow n’injecte plus les deux anciennes listes.
+
+Le dashboard admin utilise désormais ces deux champs pour les colonnes et les ratios confirmés/invités. Tests de ces calculs : `node --test tests/admin-stats.test.cjs`.
+
+Dans **Google Cloud Shell**, importer seulement le script et le JSON privé dans le même dossier, puis lancer depuis ce dossier :
+
+```sh
+# Vérifier que le projet actif correspond au projet Firebase voulu
+gcloud config get-value project
+node update-invitation-flags.mjs --cloud-shell
+node update-invitation-flags.mjs --cloud-shell --apply
+```
+
+`--cloud-shell` lit le projet gcloud actif et le JSON dans le dossier courant. Aucun `.env.local` n’est nécessaire et aucune valeur du projet n’est imprimée par le script. Le shell demande éventuellement une autorisation Google lors du premier accès. Le projet Firebase doit être sélectionné avant de lancer le script ; ne pas appliquer sur un autre projet.
 
 ## Commandes existantes
 
@@ -57,7 +104,7 @@ Ne pas partager le même `.next` entre build et serveur actif. Des vérification
 
 Le workflow `.github/workflows/deploy.yml` se lance sur `main` ou manuellement. Il utilise Node 20, `npm ci --legacy-peer-deps` lorsque npm est détecté, construit avec Next, téléverse `out/` et déploie avec les actions GitHub Pages. Le workflow supporte aussi la détection d’un lockfile Yarn ; le dépôt actuel utilise npm.
 
-Configurer GitHub Pages pour GitHub Actions et renseigner les neuf secrets ci-dessus. Aucune publication n’a été déclenchée dans le cadre des modifications de documentation. Le nom de dépôt `/wedding` est codé dans la configuration de production : tout changement de sous-chemin exige une mise à jour de cette configuration et un audit des chemins d’assets.
+Configurer GitHub Pages pour GitHub Actions et renseigner les sept secrets ci-dessus. Aucune publication n’a été déclenchée dans le cadre des modifications de documentation. Le nom de dépôt `/wedding` est codé dans la configuration de production : tout changement de sous-chemin exige une mise à jour de cette configuration et un audit des chemins d’assets.
 
 Pour prévisualiser l’export, servir les fichiers statiques de façon que `out/` corresponde au chemin `/wedding/` du serveur. Un serveur Next `start` ou un hébergement de `out/` à la racine sans prise en compte de ce préfixe ne reproduit pas la production. Aucun workflow Vercel n’est configuré.
 

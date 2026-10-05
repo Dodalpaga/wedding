@@ -71,8 +71,6 @@ jobs:
 
           # Codes d'invitation
           NEXT_PUBLIC_CODES_RSVP: ${{ secrets.NEXT_PUBLIC_CODES_RSVP }}
-          NEXT_PUBLIC_CODES_AVEC_HEBERGEMENT: ${{ secrets.NEXT_PUBLIC_CODES_AVEC_HEBERGEMENT }}
-          NEXT_PUBLIC_CODES_VIN_HONNEUR: ${{ secrets.NEXT_PUBLIC_CODES_VIN_HONNEUR }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

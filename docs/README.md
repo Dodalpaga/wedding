@@ -33,7 +33,9 @@ Travail actif : [GSAP, images originales et cache borné sur Noces](plans/active
 | Volets des descriptions sur téléphone/écran court | `components/noces/StepDrawer.tsx`, `app/noces/noces.css` |
 | Albums locaux / OneDrive | `app/gallerie/page.tsx`, `app/gallerie-cloud/page.tsx` |
 | Statistiques, filtres et CSV admin | `app/admin/page.tsx` |
+| Initialisation Firestore des champs repas/couchage par groupe | `migration/update-invitation-flags.mjs`, [procédure](CONFIGURATION.md#initialiser-les-champs-repas-et-couchage) |
 | Présentation responsive admin et sérialisation CSV | `components/AdminDashboardView.tsx`, `lib/rsvp-csv.ts` |
+| Ratios admin confirmés/invités au repas et au couchage | `lib/admin-stats.ts`, `tests/admin-stats.test.cjs` |
 | Styles, responsive, police | `app/globals.css`, `tailwind.config.ts`, `public/fonts/` |
 | Export et déploiement | `next.config.js`, `.github/workflows/deploy.yml` |
 

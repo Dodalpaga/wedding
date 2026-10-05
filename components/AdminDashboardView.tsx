@@ -4,8 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowDownUp, Download, LogOut, Search, Moon, Heart, Coffee, ChevronLeft, ChevronRight } from 'lucide-react';
 import { buildRsvpCsv, type AdminGuest } from '@/lib/rsvp-csv';
+import { getInvitationAttendance } from '@/lib/admin-stats';
 
-type SortField = 'codeInvitation' | 'nom' | 'statut' | 'vendredi_soir' | 'samedi_soir' | 'dimanche_brunch' | 'dateModification';
+type SortField = 'codeInvitation' | 'nom' | 'statut' | 'vendredi_soir' | 'samedi_soir' | 'dimanche_brunch' | 'dateModification' | 'participation_repas' | 'couchage_sur_place';
+const invitationFlags = [
+  { key: 'participation_repas', label: 'Repas' },
+  { key: 'couchage_sur_place', label: 'Couchage sur place' },
+] as const;
 const events = [
   { key: 'vendredi_soir', label: 'Vendredi soir', short: 'Vendredi', Icon: Moon },
   { key: 'samedi_soir', label: 'Samedi · Mariage', short: 'Samedi', Icon: Heart },
@@ -20,6 +25,12 @@ const statuses = {
 function Status({ status }: { status: AdminGuest['statut'] }) {
   const value = statuses[status];
   return <span className={`admin-status ${value.className}`}>{value.label}</span>;
+}
+
+function InvitationFlag({ value }: { value: boolean | undefined }) {
+  return <span className={value === true ? 'font-semibold text-[var(--secondary)]' : 'text-slate-500'}>
+    {value === true ? 'Oui' : value === false ? 'Non' : 'Non renseigné'}
+  </span>;
 }
 
 function Comment({ text }: { text: string }) {
@@ -42,6 +53,7 @@ export default function AdminDashboardView({ guests, onLogout, loading = false, 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
   const confirmed = guests.filter(guest => guest.statut === 'accepte');
+  const attendance = getInvitationAttendance(guests);
   const filtered = guests.filter(guest =>
     guest.codeInvitation.toLowerCase().includes(code.trim().toLowerCase()) &&
     guest.nom.toLowerCase().includes(name.trim().toLowerCase()) &&
@@ -91,18 +103,22 @@ export default function AdminDashboardView({ guests, onLogout, loading = false, 
     </header>
     <div className="admin-container space-y-6 py-6 sm:py-8">
       {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</p>}
-      <section aria-label="Vue d’ensemble" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <section aria-label="Vue d’ensemble" className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         {[
           { label: 'Invités', count: guests.length, detail: 'Toutes les invitations', className: '' },
           { label: 'Confirmés', count: confirmed.length, detail: 'Nous rejoignent', className: 'admin-status-confirmed' },
           { label: 'En attente', count: guests.filter(g => g.statut === 'en_attente').length, detail: 'Réponse à venir', className: 'admin-status-pending' },
           { label: 'Refusés', count: guests.filter(g => g.statut === 'refuse').length, detail: 'Ne seront pas présents', className: 'admin-status-declined' },
-        ].map(metric => <div key={metric.label} className="admin-panel p-4 sm:p-5">
+          { label: 'Repas', count: `${attendance.repas.confirmed} / ${attendance.repas.invited}`, detail: 'Confirmés / invités au repas', className: 'admin-status-confirmed', unknown: attendance.repas.unknown },
+          { label: 'Couchage sur place', count: `${attendance.couchage.confirmed} / ${attendance.couchage.invited}`, detail: 'Confirmés / invités à dormir', className: 'admin-status-confirmed', unknown: attendance.couchage.unknown },
+        ].map(metric => <div key={metric.label} className="admin-panel min-w-0 p-4 sm:p-5">
           <p className={`inline-flex rounded-full px-2 py-1 text-xs font-semibold ${metric.className || 'bg-slate-100 text-slate-600'}`}>{metric.label}</p>
-          <p className="mt-3 text-3xl font-semibold tabular-nums sm:text-4xl">{loading ? '—' : metric.count}</p>
+          <p className="mt-3 text-2xl font-semibold tabular-nums sm:text-4xl">{loading ? '—' : metric.count}</p>
           <p className="mt-2 text-xs text-slate-500">{metric.detail}</p>
+          {!loading && !!metric.unknown && <p className="mt-2 text-xs text-amber-800">{metric.unknown} invité{metric.unknown > 1 ? 's' : ''} avec ce choix non renseigné, hors total.</p>}
         </div>)}
       </section>
+      <p className="text-xs text-slate-500">Les compteurs repas et couchage comptent les réponses confirmées parmi les invités concernés, sur toutes les pages et indépendamment des filtres.</p>
 
       <section aria-labelledby="events-title" className="admin-panel p-4 sm:p-5">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
@@ -132,29 +148,32 @@ export default function AdminDashboardView({ guests, onLogout, loading = false, 
             <label className="admin-label">Réponse<select value={status} onChange={e => { setStatus(e.target.value); setPage(1); }} className="admin-input mt-1"><option value="tous">Toutes les réponses</option><option value="accepte">Confirmés</option><option value="en_attente">En attente</option><option value="refuse">Refusés</option></select></label>
             <button onClick={() => { setCode(''); setName(''); setStatus('tous'); setPage(1); }} className="admin-button self-end border border-[var(--primary)]/15 hover:bg-slate-50">Réinitialiser</button>
           </div>
-          <p className="mt-3 text-xs text-slate-500">L’export contient tous les résultats filtrés, sur toutes les pages.</p>
+          <p className="mt-3 text-xs text-slate-500">Repas et couchage indiquent l’invitation du groupe, quelle que soit la réponse individuelle. L’export contient tous les résultats filtrés, sur toutes les pages.</p>
           <label className="admin-label mt-4 block lg:hidden">Trier par<select value={`${sort}:${descending ? 'desc' : 'asc'}`} onChange={e => { const [field, direction] = e.target.value.split(':'); setSort(field as SortField); setDescending(direction === 'desc'); setPage(1); }} className="admin-input mt-1">
-            {[...sortHeaders, { field: 'dateModification' as const, label: 'Date' }, ...events.map(e => ({ field: e.key, label: e.label }))].flatMap(item => ['asc', 'desc'].map(direction => <option key={`${item.field}:${direction}`} value={`${item.field}:${direction}`}>{item.label} · {direction === 'asc' ? 'croissant' : 'décroissant'}</option>))}
+            {[...sortHeaders, { field: 'dateModification' as const, label: 'Date' }, ...events.map(e => ({ field: e.key, label: e.label })), ...invitationFlags.map(f => ({ field: f.key, label: f.label }))].flatMap(item => ['asc', 'desc'].map(direction => <option key={`${item.field}:${direction}`} value={`${item.field}:${direction}`}>{item.label} · {direction === 'asc' ? 'croissant' : 'décroissant'}</option>))}
           </select></label>
         </div>
 
         {!loading && !filtered.length && <div className="p-10 text-center"><p className="font-semibold">Aucun invité à afficher</p><p className="mt-2 text-sm text-slate-500">{guests.length ? 'Essayez un autre filtre ou réinitialisez la recherche.' : 'Les invitations apparaîtront ici une fois chargées.'}</p></div>}
         {!!visible.length && <>
           <div className="admin-table-scroll hidden lg:block" tabIndex={0} role="region" aria-label="Tableau des invités, défilement horizontal si nécessaire">
-            <table className="admin-table"><caption className="sr-only">Réponses individuelles et présences au week-end</caption><thead><tr>
+            <table className="admin-table"><caption className="sr-only">Réponses individuelles, présences au week-end et invitation au repas et au couchage</caption><thead><tr>
               {sortHeaders.map(h => <th key={h.field} scope="col" aria-sort={ariaSort(h.field)}>{sortButton(h.field, h.label)}</th>)}
               <th scope="col">Email</th>
               {events.map(e => <th key={e.key} scope="col" aria-sort={ariaSort(e.key)}>{sortButton(e.key, e.short)}</th>)}
+              {invitationFlags.map(f => <th key={f.key} scope="col" aria-sort={ariaSort(f.key)}>{sortButton(f.key, f.label)}</th>)}
               <th scope="col">Commentaires</th><th scope="col" aria-sort={ariaSort('dateModification')}>{sortButton('dateModification', 'Mise à jour')}</th>
             </tr></thead><tbody>{visible.map(g => <tr key={`${g.codeInvitation}-${g.nom}`}>
               <td className="font-mono text-xs text-slate-500">{g.codeInvitation}</td><th scope="row" className="font-semibold">{g.nom}</th><td><Status status={g.statut} /></td><td className="break-words text-slate-600">{g.email || '—'}</td>
               {events.map(e => <td key={e.key} className="text-center"><span className={g[e.key] && g.statut === 'accepte' ? 'font-semibold text-[var(--secondary)]' : 'text-slate-400'}>{g[e.key] && g.statut === 'accepte' ? 'Oui' : '—'}</span></td>)}
+              {invitationFlags.map(f => <td key={f.key}><InvitationFlag value={g[f.key]} /></td>)}
               <td className="text-slate-600"><Comment text={g.commentaires} /></td><td className="text-xs text-slate-500">{g.dateModification?.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) || '—'}</td>
             </tr>)}</tbody></table>
           </div>
           <div className="grid gap-3 bg-[#f8faf9] p-3 sm:grid-cols-2 lg:hidden">{visible.map(g => <article key={`${g.codeInvitation}-${g.nom}`} className="admin-panel min-w-0 p-4">
             <div className="flex flex-wrap items-start justify-between gap-2"><div className="min-w-0"><p className="font-semibold break-words">{g.nom}</p><p className="mt-1 font-mono text-xs text-slate-500">{g.codeInvitation}</p></div><Status status={g.statut} /></div>
             <p className="mt-3 break-all text-sm text-slate-600">{g.email || 'Pas d’e-mail renseigné'}</p>
+            <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{invitationFlags.map(f => <div key={f.key}><dt className="text-slate-500">{f.label}</dt><dd className="mt-1"><InvitationFlag value={g[f.key]} /></dd></div>)}</dl>
             <dl className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs">{events.map(e => <div key={e.key}><dt className="text-slate-500">{e.short}</dt><dd className="mt-1 font-semibold">{g[e.key] && g.statut === 'accepte' ? 'Oui' : '—'}</dd></div>)}</dl>
             {!!g.commentaires && <div className="mt-4 border-t border-[var(--primary)]/10 pt-3 text-sm"><Comment text={g.commentaires} /></div>}
             <p className="mt-3 text-xs text-slate-400">{g.dateModification ? `Mis à jour le ${g.dateModification.toLocaleDateString('fr-FR')}` : 'Aucune réponse enregistrée'}</p>

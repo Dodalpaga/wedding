@@ -1,5 +1,5 @@
 // config/codes.ts
-// Configuration centralisée des codes d'invitation
+// Liste publique des codes affichant le formulaire RSVP.
 
 /**
  * Helper pour parser les listes de codes depuis les variables d'environnement
@@ -17,18 +17,4 @@ const parseCodeList = (envVar: string | undefined): string[] => {
  */
 export const getCodesRSVP = (): string[] => {
   return parseCodeList(process.env.NEXT_PUBLIC_CODES_RSVP);
-};
-
-/**
- * Récupère tous les codes avec suggestions d'hébergement
- */
-export const getCodesAvecHebergement = (): string[] => {
-  return parseCodeList(process.env.NEXT_PUBLIC_CODES_AVEC_HEBERGEMENT);
-};
-
-/**
- * Récupère les codes invités uniquement au vin d'honneur
- */
-export const getCodesVinHonneur = (): string[] => {
-  return parseCodeList(process.env.NEXT_PUBLIC_CODES_VIN_HONNEUR);
 };

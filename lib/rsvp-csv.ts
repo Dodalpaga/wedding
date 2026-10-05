@@ -3,6 +3,8 @@ export interface AdminGuest {
   nom: string;
   email: string;
   statut: 'accepte' | 'refuse' | 'en_attente';
+  participation_repas?: boolean;
+  couchage_sur_place?: boolean;
   vendredi_soir: boolean;
   samedi_soir: boolean;
   dimanche_brunch: boolean;

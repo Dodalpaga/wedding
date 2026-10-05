@@ -32,7 +32,7 @@ Le formulaire de code supprime les espaces en début/fin et encode la valeur dan
 
 ## Invitation et RSVP
 
-La page de confirmation vérifie l’existence de `codes_invitation/{CODE}`. Les trois listes publiques dans `config/codes.ts` déterminent l’affichage du formulaire, des suggestions de logement et du badge vin d’honneur. Le message vient de Firestore. Elles ne constituent pas un contrôle d’autorisation serveur.
+La page de confirmation vérifie l’existence de `codes_invitation/{CODE}`. Le message et les flags viennent de Firestore : `participation_repas === false` affiche le badge vin d’honneur et masque les choix d’événements du formulaire ; `couchage_sur_place === false` affiche les suggestions de logement extérieur, y compris pour les invités au vin d’honneur. Un champ absent/invalide n’active aucun de ces deux affichages conditionnels ; aucune liste d’environnement ne sert de fallback. Seule la liste publique `NEXT_PUBLIC_CODES_RSVP` dans `config/codes.ts` détermine l’affichage du formulaire. Ces conditions d’interface ne constituent pas un contrôle d’autorisation serveur.
 
 Le formulaire charge les membres de l’invitation et écoute la collection `statuts` avec `onSnapshot`. Une carte sélectionne une personne ; son email optionnel, statut, commentaires et événements sont modifiables. La réponse acceptée d’un invité de week-end exige au moins un événement. Le vin d’honneur masque ces choix. La sauvegarde écrit le document individuel puis horodate l’utilisation de l’invitation : voir [DATA_MODEL.md](DATA_MODEL.md).
 
@@ -59,6 +59,8 @@ Les boutons ont des tailles adaptées au tactile, les disclosures sont natifs, e
 La route admin gère la session Firebase et la jointure invitations/statuts. Une seule écoute est conservée, nettoyée lors des changements de session et du démontage. Les lectures en échec ont un message visible. La présentation est isolée dans `components/AdminDashboardView.tsx`, sans appels Firebase, pour permettre une vérification avec des données fictives sans contourner la connexion de production.
 
 La palette utilise le bleu/vert du mariage et des badges sobres. Les filtres, tri clavier, états vides et pagination 20/50/100 sont partagés ; les lignes deviennent des cartes sous 1024px. Le tableau a son propre défilement et ses en-têtes restent visibles. Les événements ne comptent que les réponses acceptées. L’export passe tous les résultats filtrés et triés à `lib/rsvp-csv.ts`, indépendamment de la pagination. Les neuf colonnes sont correctement échappées et incluent l’email, sans colonne samedi midi inexistante. Les tests ciblés sont dans `tests/rsvp-csv.test.cjs`.
+
+Les flags `participation_repas` et `couchage_sur_place` sont lus sur les invitations et reportés sur chaque membre dans la jointure admin. Le tableau et les cartes mobiles affichent Oui, Non ou Non renseigné, avec tri des deux colonnes. Les six cartes d’ensemble incluent les ratios repas et couchage : membres acceptés parmi les membres avec flag true, sur l’ensemble des invitations, sans appliquer les filtres/pagination ni les choix d’événements. `lib/admin-stats.ts` calcule ces ratios et signale les données non renseignées ; `tests/admin-stats.test.cjs` couvre les effectifs par personne, les changements de statut et les valeurs manquantes. Le CSV conserve neuf colonnes.
 
 ## Voyage : hero partagé et cartes en fondu
 

@@ -26,7 +26,7 @@ Le site de développement est disponible sur http://localhost:3000, sans préfix
 | `/confirmation/?code=CODE` | Lecture de l’invitation Firestore, sélection d’un invité et réponse individuelle, selon les catégories configurées. |
 | `/hebergement/` | Neuf suggestions avec filtres par prix/capacité et coordonnées des établissements. Route directement accessible. |
 | `/noces/` | Hero unique, séquence Torii de 597 WebP et rayons solaires synchronisés au scroll : cartes photo fixes en fondu, cinq escales et cadeau avec retour Accueil ; sans navbar, avion, curseur personnalisé ni scrollbar visible. |
-| `/admin/` | Connexion Firebase, suivi des réponses, statistiques, recherche, tri et export CSV. |
+| `/admin/` | Connexion Firebase, suivi des réponses, flags repas/couchage, ratios confirmés/invités pour les deux, recherche, tri et export CSV. |
 | `/gallerie/?code=CODE` | Prototype d’albums locaux avec visionneuse, zoom, miniatures et téléchargement. |
 | `/gallerie-cloud/?code=CODE` | Prototype d’albums OneDrive ; la plupart des liens restent à compléter. |
 
@@ -39,7 +39,7 @@ Next.js 14.2.5 (App Router), React 18, TypeScript, Tailwind CSS 3, Firebase Fire
 ```text
 app/                    Routes, layout, styles globaux
 components/             Hero, informations, RSVP, hébergements, animations
-config/codes.ts         Catégories d’invitation depuis l’environnement
+config/codes.ts         Liste des codes affichant le formulaire RSVP
 lib/firebase.ts         Initialisation du SDK client Firebase
 public/                 Images, SVG, police Wedding et autres assets
 .github/workflows/      Déploiement GitHub Pages
@@ -48,9 +48,11 @@ docs/                   Architecture, configuration, données, état, décisions
 
 ## Configuration et données
 
-Créer `.env.local` avec les six variables Firebase et les trois listes de codes décrites dans [CONFIGURATION.md](docs/CONFIGURATION.md). Ne pas versionner ce fichier ni publier de vrais codes ou de données personnelles dans la documentation.
+Créer `.env.local` avec les six variables Firebase et la liste `NEXT_PUBLIC_CODES_RSVP` décrites dans [CONFIGURATION.md](docs/CONFIGURATION.md). Les flags Firestore déterminent le vin d’honneur uniquement et l’affichage des suggestions de logement. Ne pas versionner ce fichier ni publier de vrais codes ou de données personnelles dans la documentation.
 
 Les collections utilisées sont **`codes_invitation`** et **`statuts`**. Le document d’invitation a pour identifiant son code ; ses `membres` sont les noms des personnes à inviter. Chaque réponse est écrite dans `statuts/{nom_membre}`. Voir [DATA_MODEL.md](docs/DATA_MODEL.md) pour les champs et contraintes.
+
+Les booléens de groupe `participation_repas` et `couchage_sur_place` ont été initialisés dans Cloud Shell, avec succès confirmé par le propriétaire le 5 octobre 2026. Ils sont utilisés par le dashboard admin et la confirmation. Les outils sont regroupés dans [migration/](migration/README.md). Les règles réelles restent dans un fichier local ignoré par Git. Seule la liste RSVP reste dans l’environnement.
 
 L’admin utilise Firebase Authentication Email/Password. Le dépôt ne contient ni règles Firestore ni définition de rôles admin. Les variables `NEXT_PUBLIC_*` et les contrôles d’interface sont publics côté navigateur : ils ne remplacent pas les règles d’accès Firebase. Les galeries vérifient uniquement la présence d’un paramètre `code`, sans validation Firestore.
 
@@ -86,7 +88,7 @@ En production, `basePath`, `assetPrefix` et `NEXT_PUBLIC_BASE_PATH` valent `/wed
 - Régénération des copies WebP : `scripts/prepare-noces-frames.cjs` (Sharp ; voir la configuration).
 - Extraction de toutes les frames d’un MP4 : `scripts/extract-video-frames.ps1` (FFmpeg ; [guide Windows](docs/VIDEO_FRAMES.md)).
 - Hébergements : tableau dans `components/Hebergement.tsx`.
-- Invitations : Firestore et listes de catégories d’environnement ; une modification de ces listes exige une reconstruction du site.
+- Invitations : message, membres et flags repas/couchage dans Firestore, pris en compte à la prochaine ouverture de l’invitation sans reconstruire le site. La liste RSVP reste dans l’environnement et exige une reconstruction si elle change.
 
 Préserver les proportions du logo, de la signature et de `domaine.svg`, ainsi que les paramètres d’aurore demandés par les propriétaires. Ne pas afficher leurs numéros personnels. Voir [AGENTS.md](AGENTS.md) pour les consignes de contribution et [l’index documentaire](docs/README.md) pour les détails.
 

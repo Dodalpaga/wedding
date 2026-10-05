@@ -47,6 +47,8 @@ export default function AdminDashboard() {
             const response = responses.get(nom);
             return {
               nom, codeInvitation: group.id, email: response?.email || '',
+              participation_repas: typeof group.data().participation_repas === 'boolean' ? group.data().participation_repas : undefined,
+              couchage_sur_place: typeof group.data().couchage_sur_place === 'boolean' ? group.data().couchage_sur_place : undefined,
               statut: response?.statut === 'accepte' || response?.statut === 'refuse' ? response.statut : 'en_attente',
               vendredi_soir: Boolean(response?.vendredi_soir), samedi_soir: Boolean(response?.samedi_soir),
               dimanche_brunch: Boolean(response?.dimanche_brunch), commentaires: response?.commentaires || '',
