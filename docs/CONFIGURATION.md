@@ -92,7 +92,7 @@ node update-invitation-flags.mjs --cloud-shell --apply
 | --- | --- |
 | `npm run dev` | Serveur de développement Next.js. |
 | `npx tsc --noEmit` | Vérification TypeScript. |
-| `npm run test:csv` | Tests de non-régression du CSV : champs complexes et colonnes. |
+| `npm run test:csv` | Tests CSV : onze colonnes du tableau, repas/couchage, présences confirmées, champs complexes et ordre des résultats. |
 | `npm run build` | Compilation, validation et export statique dans `out/`. |
 | `npm run lint` | `next lint` ; aucune configuration ESLint dédiée dans le dépôt, une initialisation interactive peut être demandée. |
 | `npm run start` | `next start` ; non adapté à l’export statique actuel. |

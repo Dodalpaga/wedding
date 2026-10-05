@@ -67,7 +67,7 @@ npm run build
 
 Une suite ciblée est disponible via `npm run test:csv` : retours à la ligne, guillemets, accents et alignement des colonnes. Aucune configuration ESLint dédiée n’est présente. `npm run lint` peut demander une configuration interactive. Les vérifications visuelles et fonctionnelles sont documentées dans [PROJECT_STATE.md](docs/PROJECT_STATE.md).
 
-L’export CSV remplace les retours à la ligne des champs par des espaces pour garder une ligne par invité. Les commentaires enregistrés et leur affichage restent inchangés.
+L’export CSV suit les onze colonnes du tableau admin, avec les réponses en français, les présences des invités confirmés et les invitations au repas/couchage (Oui, Non ou Non renseigné). Il respecte les filtres et le tri sur toutes les pages. Les retours à la ligne des champs deviennent des espaces pour garder une ligne par invité ; les commentaires enregistrés et leur affichage restent inchangés.
 
 ## Déploiement
 
