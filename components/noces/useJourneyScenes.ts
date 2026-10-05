@@ -12,6 +12,7 @@ export default function useJourneyScenes(sectionRef: RefObject<HTMLElement>, sta
     if (!root) return;
     const scenes = Array.from(root.querySelectorAll<HTMLElement>('[data-scene]'));
     const foreground = root.querySelector<HTMLElement>('.noces-foreground')!;
+    const backdrop = root.querySelector<HTMLElement>('.noces-stage')!;
     const previous = root.querySelector<HTMLButtonElement>('[data-previous]')!;
     const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -78,7 +79,9 @@ export default function useJourneyScenes(sectionRef: RefObject<HTMLElement>, sta
     function measure() {
       if (motion.matches) return;
       start = root!.getBoundingClientRect().top + window.scrollY;
-      distance = Math.max(1, root!.offsetHeight - foreground.clientHeight);
+      // The journey reserves the full lvh backdrop, even while dvh is stale
+      // during a touch gesture. Use that same stable range for scene targets.
+      distance = Math.max(1, root!.offsetHeight - backdrop.clientHeight);
       schedule();
     }
     function goTo(index: number, focus = scenes[index], behavior: ScrollBehavior = 'smooth') {

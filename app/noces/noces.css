@@ -14,12 +14,14 @@ html:has(.noces-v2)::-webkit-scrollbar, body:has(.noces-v2)::-webkit-scrollbar, 
 .noces-pill:hover, .noces-back:hover { background: var(--primary); border-color: rgb(255 255 255 / 65%); }
 .noces-skip { position: fixed; z-index: 40; top: -100px; left: 1rem; padding: 1rem; border-radius: 999px; color: var(--primary); background: white; }
 .noces-skip:focus { top: 1rem; }
-/* Fill the visible viewport as mobile browser bars collapse. Keep the scroll
-   runway/content sizing in svh so browser chrome doesn't move scene targets. */
-.noces-journey { --noces-viewport: 100vh; position: relative; isolation: isolate; background: #132b26; }
+/* Browser chrome can defer dvh updates until a touch gesture ends. Paint the
+   backdrop at the largest viewport size throughout; keep controls in dvh and
+   the scroll runway/content sizing in svh. */
+.noces-journey { --noces-viewport: 100vh; --noces-backdrop-height: 100vh; position: relative; isolation: isolate; background: #132b26; }
 @supports (height: 100svh) { .noces-journey { --noces-viewport: 100svh; } }
 @supports (height: 100dvh) { .noces-journey { --noces-viewport: 100dvh; } }
-.noces-stage { position: sticky; top: 0; height: var(--noces-viewport); margin-bottom: calc(-1 * var(--noces-viewport)); overflow: hidden; isolation: isolate; z-index: 0; pointer-events: none; }
+@supports (height: 100lvh) { .noces-journey { --noces-backdrop-height: 100lvh; } }
+.noces-stage { position: sticky; top: 0; height: var(--noces-backdrop-height); margin-bottom: calc(-1 * var(--noces-backdrop-height)); overflow: hidden; isolation: isolate; z-index: 0; pointer-events: none; }
 .noces-poster, .noces-canvas, .noces-hero-overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
 .noces-poster img { width: 100%; height: 100%; object-fit: cover; }
 .noces-canvas { opacity: 0; }
@@ -91,7 +93,7 @@ html:has(.noces-v2)::-webkit-scrollbar, body:has(.noces-v2)::-webkit-scrollbar, 
 .noces-gift-home { margin-top: 2rem; }
 .noces-scene-controls { display: none; }
 /* Enhancement only: browser scroll drives a fixed scene, never its position. */
-.noces-journey[data-enhanced] { height: calc((var(--scene-count) - 1) * 120svh + var(--noces-viewport)); }
+.noces-journey[data-enhanced] { height: calc((var(--scene-count) - 1) * 120svh + var(--noces-backdrop-height)); }
 [data-enhanced] .noces-foreground { position: sticky; top: 0; height: var(--noces-viewport); }
 [data-enhanced] .noces-scene { position: absolute; inset: 0; min-height: 0; overflow-y: auto; display: block; padding-block: 1.5rem 5rem; }
 [data-enhanced] .noces-scene-layout { min-height: calc(100svh - 6.5rem); }
