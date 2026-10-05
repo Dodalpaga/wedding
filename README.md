@@ -4,6 +4,8 @@ Site en français pour le mariage du **17 juillet 2027**, au Domaine d’en Naud
 
 Noces utilise désormais GSAP/ScrollTrigger avec les images originales 1280×720, un préchargement progressif et un cache de bitmaps borné. [Implémentation et validation en cours](docs/plans/active/noces-gsap-native-quality.md). [Amélioration des pauses](docs/screenshots/noces-last-stutters/README.md) et [dernières mesures du décodage](docs/screenshots/noces-decoder-priority/README.md).
 
+Le fond Noces suit la hauteur visible du navigateur mobile (`100dvh`) pour couvrir l’écran lorsque sa barre se replie ; le parcours de scroll reste dimensionné en `svh`.
+
 ## Démarrer
 
 Utiliser Node.js 20 (version du workflow de déploiement) et npm.

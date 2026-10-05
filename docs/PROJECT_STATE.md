@@ -1,6 +1,8 @@
 # État du projet
 
-État du code au **4 octobre 2026**. Ce document consolide les notes de refactoring ; les états intermédiaires sont conservés dans les plans/captures et ne sont pas la référence courante.
+État du code au **5 octobre 2026**. Ce document consolide les notes de refactoring ; les états intermédiaires sont conservés dans les plans/captures et ne sont pas la référence courante.
+
+Correction mobile Noces du 5 octobre : décor et premier plan sticky partagent une hauteur `100dvh` (fallback `100svh`/`100vh`), ainsi que la marge négative et la réserve finale du parcours. La barre verte exposée lorsque la barre du navigateur disparaît est corrigée ; le parcours et le contenu restent dimensionnés en `svh`. TypeScript et build/export validés (11 pages). Chrome headless sur l’export `/wedding/`, 320×568, 820×1180 et 1440×900 : agrandissement/rétablissement du viewport de 90px, couverture du fond/canvas/premier plan, navigation suivante et dernière scène, réduction des mouvements et accès Tab contrôlés, sans débordement horizontal ni erreur JS. Capture téléphone inspectée. Vérification par resize automatisé, pas de test de la barre Chrome sur téléphone physique. Script, captures et mesures locaux sous `build/check-noces-viewport.cjs`, `build/noces-viewport-*.png` et `build/noces-viewport-results.json` (ignorés par Git). Requêtes externes bloquées pendant les contrôles ; aucune lecture/écriture Firebase ni publication.
 
 ## Fonctionnalités actuelles
 
