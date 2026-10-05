@@ -67,6 +67,8 @@ npm run build
 
 Une suite ciblée est disponible via `npm run test:csv` : retours à la ligne, guillemets, accents et alignement des colonnes. Aucune configuration ESLint dédiée n’est présente. `npm run lint` peut demander une configuration interactive. Les vérifications visuelles et fonctionnelles sont documentées dans [PROJECT_STATE.md](docs/PROJECT_STATE.md).
 
+L’export CSV remplace les retours à la ligne des champs par des espaces pour garder une ligne par invité. Les commentaires enregistrés et leur affichage restent inchangés.
+
 ## Déploiement
 
 Le workflow [.github/workflows/deploy.yml](.github/workflows/deploy.yml) déploie sur GitHub Pages après un push sur `main` ou un déclenchement manuel. Il installe les dépendances, construit le site et publie `out/`. Les noms exacts des secrets sont dans [CONFIGURATION.md](docs/CONFIGURATION.md).

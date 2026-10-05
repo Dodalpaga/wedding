@@ -12,10 +12,10 @@ export interface AdminGuest {
   dateModification?: Date;
 }
 
-/** Quote every field so commas, quotes and embedded newlines stay in one cell. */
+/** Keep one physical line per guest; flatten field line breaks only in the export. */
 export function serializeCsv(rows: readonly (readonly string[])[]): string {
   return '\uFEFF' + rows.map(row => row.map(value =>
-    `"${value.replace(/"/g, '""')}"`,
+    `"${value.replace(/[\r\n]+/g, ' ').replace(/"/g, '""')}"`,
   ).join(',')).join('\r\n');
 }
 

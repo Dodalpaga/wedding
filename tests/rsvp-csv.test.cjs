@@ -30,7 +30,7 @@ function parseCsv(csv) {
   return records;
 }
 
-test('multiline, quotes, commas, accents and empty fields survive a CSV round trip', () => {
+test('line breaks become spaces while quotes, commas, accents and empty fields stay intact', () => {
   const rows = [
     ['Nom', 'Commentaires', 'Email'],
     ['Invité, Exemple', 'Végétarien\nSans noix, merci !\r\nIl a dit "oui"; à bientôt ❤️', ''],
@@ -38,7 +38,13 @@ test('multiline, quotes, commas, accents and empty fields survive a CSV round tr
   ];
   const csv = serializeCsv(rows);
   assert.ok(csv.startsWith('\uFEFF'));
-  assert.deepEqual(parseCsv(csv), rows);
+  assert.deepEqual(parseCsv(csv), [
+    ['Nom', 'Commentaires', 'Email'],
+    ['Invité, Exemple', 'Végétarien Sans noix, merci ! Il a dit "oui"; à bientôt ❤️', ''],
+    ['Deuxième', ' Retour isolé Deux lignes vides', 'exemple@example.invalid'],
+  ]);
+  assert.equal(csv.split('\r\n').length, rows.length);
+  assert.equal(/[\r\n]/.test(csv.replace(/\r\n/g, '')), false);
 });
 
 const guest = {
@@ -55,7 +61,7 @@ test('RSVP header and rows have nine aligned columns, including email and three 
   assert.deepEqual(Object.fromEntries(rows[0].map((name, i) => [name, rows[1][i]])), {
     Code: 'ABCDEF', Nom: guest.nom, Statut: 'accepte', Email: guest.email,
     'Vendredi soir': 'Oui', 'Samedi soir': 'Oui', 'Dimanche brunch': 'Non',
-    Commentaires: guest.commentaires, 'Date modification': '',
+    Commentaires: 'Allergie : "noix", gluten Merci !', 'Date modification': '',
   });
 });
 
@@ -64,4 +70,25 @@ test('export contains exactly the supplied filtered results, including more than
   assert.equal(parseCsv(buildRsvpCsv(guests)).length, 44);
   assert.equal(parseCsv(buildRsvpCsv(guests.slice(0, 3))).length, 4);
   assert.equal(parseCsv(buildRsvpCsv([])).length, 1);
+});
+
+test('CR, LF, CRLF and blank lines in comments never create extra guest rows or alter source data', () => {
+  const comments = [
+    'Première ligne\rDeuxième ligne',
+    'Première ligne\nDeuxième ligne',
+    'Première ligne\r\nDeuxième ligne',
+    'Première ligne\r\n\r\nDeuxième ligne',
+    'Première ligne\n\rDeuxième ligne',
+  ];
+  const guests = comments.map((commentaires, i) => ({ ...guest, nom: `Exemple ${i}`, commentaires }));
+  const csv = buildRsvpCsv(guests);
+  const physicalLines = csv.split('\r\n');
+  assert.equal(physicalLines.length, guests.length + 1);
+  for (const line of physicalLines) {
+    assert.equal(/[\r\n]/.test(line), false);
+    assert.equal(parseCsv(line)[0].length, 9);
+  }
+  const records = parseCsv(csv);
+  assert.deepEqual(records.slice(1).map(row => row[7]), Array(guests.length).fill('Première ligne Deuxième ligne'));
+  assert.deepEqual(guests.map(person => person.commentaires), comments);
 });

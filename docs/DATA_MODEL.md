@@ -53,7 +53,7 @@ Le nom exact du membre est l’identifiant du document. Le RSVP le retrouve par 
 | `dimanche_brunch` | Booléen. |
 | `date_modification` | `serverTimestamp()` lors de la sauvegarde. |
 
-Le schéma n’a pas de champ `samedi_midi`. Le CSV utilise neuf colonnes alignées : code, nom, statut, email, vendredi soir, samedi soir, dimanche brunch, commentaires et date. Tous les champs sont entourés de guillemets, les guillemets internes doublés et les retours à la ligne conservés dans les cellules. Il utilise un BOM UTF-8 et des séparateurs de lignes CRLF. Les événements exportés sont les valeurs enregistrées ; le panneau et ses totaux ne comptent des présences que pour les invités confirmés.
+Le schéma n’a pas de champ `samedi_midi`. Le CSV utilise neuf colonnes alignées : code, nom, statut, email, vendredi soir, samedi soir, dimanche brunch, commentaires et date. Tous les champs sont entourés de guillemets et les guillemets internes doublés. Les séquences de retours à la ligne CR/LF dans les champs, notamment les commentaires, sont remplacées par un espace **dans l’export uniquement** pour garantir une ligne physique par invité. Les textes dans Firestore et dans le dashboard restent inchangés. Le CSV utilise un BOM UTF-8 et des séparateurs de lignes CRLF. Les événements exportés sont les valeurs enregistrées ; le panneau et ses totaux ne comptent des présences que pour les invités confirmés.
 
 Les noms doivent rester uniques entre les invitations : deux personnes portant exactement le même nom partagent sinon le même document de statut. Les noms utilisés comme identifiants Firestore ne doivent pas comporter de `/`. Ce sont des contraintes du modèle actuel, pas des validations ajoutées par cette documentation.
 

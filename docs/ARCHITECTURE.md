@@ -60,6 +60,8 @@ La route admin gère la session Firebase et la jointure invitations/statuts. Une
 
 La palette utilise le bleu/vert du mariage et des badges sobres. Les filtres, tri clavier, états vides et pagination 20/50/100 sont partagés ; les lignes deviennent des cartes sous 1024px. Le tableau a son propre défilement et ses en-têtes restent visibles. Les événements ne comptent que les réponses acceptées. L’export passe tous les résultats filtrés et triés à `lib/rsvp-csv.ts`, indépendamment de la pagination. Les neuf colonnes sont correctement échappées et incluent l’email, sans colonne samedi midi inexistante. Les tests ciblés sont dans `tests/rsvp-csv.test.cjs`.
 
+Depuis le 5 octobre 2026, l’export remplace les séquences de CR/LF dans chaque champ par un espace, pour conserver une ligne physique par invité. La présentation des commentaires et les données Firestore ne sont pas modifiées. Les guillemets, virgules, accents et le BOM restent gérés comme auparavant.
+
 Les flags `participation_repas` et `couchage_sur_place` sont lus sur les invitations et reportés sur chaque membre dans la jointure admin. Le tableau et les cartes mobiles affichent Oui, Non ou Non renseigné, avec tri des deux colonnes. Les six cartes d’ensemble incluent les ratios repas et couchage : membres acceptés parmi les membres avec flag true, sur l’ensemble des invitations, sans appliquer les filtres/pagination ni les choix d’événements. `lib/admin-stats.ts` calcule ces ratios et signale les données non renseignées ; `tests/admin-stats.test.cjs` couvre les effectifs par personne, les changements de statut et les valeurs manquantes. Le CSV conserve neuf colonnes.
 
 ## Voyage : hero partagé et cartes en fondu

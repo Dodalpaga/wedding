@@ -59,7 +59,7 @@ Les plans terminés documentent les vérifications de chaque étape. Les ancienn
 
 ## Admin : lisibilité et CSV
 
-Conserver le séparateur CSV virgule existant et protéger tous les champs avec des guillemets plutôt que de modifier les commentaires. Corriger les colonnes et ajouter l’email. Harmoniser les couleurs du panneau avec le mariage, limiter la liste à des pages et proposer des cartes sur téléphone/tablette. L’export couvre tous les résultats filtrés. Les graphiques et présences affichés excluent les réponses refusées/en attente ; les données enregistrées ne sont pas réécrites.
+Conserver le séparateur CSV virgule existant et protéger tous les champs avec des guillemets. Depuis le 5 octobre 2026, remplacer les séquences de CR/LF des champs par un espace dans l’export uniquement : une ligne physique par invité, sans modifier les commentaires enregistrés. La décision précédente de conserver les retours à la ligne dans les cellules CSV citées est remplacée après le signalement de lignes supplémentaires. Corriger les colonnes et ajouter l’email. Harmoniser les couleurs du panneau avec le mariage, limiter la liste à des pages et proposer des cartes sur téléphone/tablette. L’export couvre tous les résultats filtrés. Les graphiques et présences affichés excluent les réponses refusées/en attente ; les données enregistrées ne sont pas réécrites.
 
 ## Ombre du voyage et compacité mobile
 

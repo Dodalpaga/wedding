@@ -6,6 +6,12 @@ Correction mobile Noces du 5 octobre : décor et premier plan sticky partagent u
 
 ## Fonctionnalités actuelles
 
+### CSV : une ligne physique par invité (5 octobre 2026)
+
+Après le signalement de lignes supplémentaires dans les commentaires, l’export remplace les séquences de CR/LF par un espace dans tous les champs. L’ancien comportement conservait ces sauts de ligne dans des cellules entourées de guillemets ; il est remplacé pour garantir une ligne physique par invité même avec des lecteurs qui découpent le fichier par ligne. La base, les réponses et l’affichage des commentaires restent inchangés. Neuf colonnes, échappement des guillemets et BOM UTF-8 conservés.
+
+Quatre tests CSV passent : CR, LF, CRLF, lignes vides, caractères spéciaux, alignement et absence de modification des données source. TypeScript et build/export isolé validés (11 pages). Téléchargement depuis le bouton du vrai composant admin avec 43 invités fictifs et pagination de 20 : 44 lignes physiques avec l’en-tête, neuf champs par ligne, aucun CR/LF dans les cellules. Requêtes externes bloquées ; aucune lecture/écriture Firebase et aucune publication. Le CSV signalé n’existait plus au chemin fourni pendant cette vérification : les lignes précises n’ont pas pu être inspectées. Le contrôle du téléchargement utilise une fixture dans `build/`, ignorée par Git. Un export déjà téléchargé ne change pas ; télécharger un nouveau CSV après mise en ligne du correctif.
+
 ### Migration repas et couchage appliquée (5 octobre 2026)
 
 Migration appliquée dans Cloud Shell avec succès confirmé par le propriétaire. Le dossier [migration/](../migration/README.md) regroupe le script autonome `migration/update-invitation-flags.mjs`, les tests et la configuration réelle dans un JSON local ignoré par Git. Aperçu par défaut, application explicite avec `--apply`, pagination, validation des exclusions, écriture atomique limitée aux deux champs et préconditions d’horodatage. Les champs décrivent toute l’invitation ; les groupes sans repas sont également sans couchage. Les autres codes valides ont les deux valeurs à `true`.
