@@ -99,19 +99,19 @@ function GalleryContent() {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center bg-[#fcfcfc] px-4">
+      <div className="min-h-screen flex flex-col justify-center items-center bg-[var(--accent)] px-4">
         <ReturnHomeButton />
         <div className="w-full max-w-lg p-8 bg-white rounded-xl shadow-2xl border border-gray-100 text-center">
-          <h1 className="text-6xl md:text-8xl font-wedding text-[#003b4e] mb-6">
+          <h1 className="text-6xl md:text-8xl font-wedding text-[var(--primary)] mb-6">
             Accès Refusé
           </h1>
-          <p className="text-[#003b4e]/70 mb-8">
+          <p className="text-[var(--primary)]/70 mb-8">
             Veuillez utiliser le formulaire sur la page d'accueil pour accéder à
             la galerie avec votre code d'invitation.
           </p>
           <Link
             href="/#confirmation"
-            className="inline-block bg-[#003b4e] text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-[#137e41] transition-all"
+            className="inline-block bg-[var(--primary)] text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-[var(--secondary)] transition-all"
           >
             Retour à l'accueil
           </Link>
@@ -127,10 +127,10 @@ function GalleryContent() {
       {!selectedCategory && (
         <div className="pt-24 pb-20 container mx-auto px-4">
           <div className="text-center mb-16">
-            <h1 className="text-6xl md:text-8xl font-wedding text-[#003b4e] mb-6">
+            <h1 className="text-6xl md:text-8xl font-wedding text-[var(--primary)] mb-6">
               Nos Albums
             </h1>
-            <p className="text-[#003b4e]/70 max-w-2xl mx-auto font-light text-lg">
+            <p className="text-[var(--primary)]/70 max-w-2xl mx-auto font-light text-lg">
               Choisissez un moment du week-end pour découvrir les photos.
             </p>
           </div>
@@ -150,7 +150,7 @@ function GalleryContent() {
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#003b4e]/90 via-[#003b4e]/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary)]/90 via-[var(--primary)]/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
 
                 <div className="absolute bottom-0 left-0 right-0 p-8 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                   <h3 className="text-3xl font-wedding text-white mb-2 drop-shadow-md">
@@ -159,7 +159,7 @@ function GalleryContent() {
                   <p className="text-white/80 text-sm font-light tracking-wide uppercase">
                     {cat.photos.length} Photos
                   </p>
-                  <div className="h-0.5 w-0 group-hover:w-16 bg-[#137e41] mt-4 transition-all duration-500 ease-out" />
+                  <div className="h-0.5 w-0 group-hover:w-16 bg-[var(--secondary)] mt-4 transition-all duration-500 ease-out" />
                 </div>
               </div>
             ))}
@@ -172,7 +172,7 @@ function GalleryContent() {
           <div className="container mx-auto px-4 mb-12 flex flex-col items-center relative">
             <button
               onClick={() => setSelectedCategory(null)}
-              className="mb-8 group flex items-center gap-2 text-[#003b4e] hover:text-[#137e41] transition-colors px-4 py-2 rounded-full border border-[#003b4e]/10 hover:border-[#137e41]/30 bg-white"
+              className="mb-8 group flex items-center gap-2 text-[var(--primary)] hover:text-[var(--secondary)] transition-colors px-4 py-2 rounded-full border border-[var(--primary)]/10 hover:border-[var(--secondary)]/30 bg-white"
             >
               <svg
                 className="w-5 h-5 transition-transform group-hover:-translate-x-1"
@@ -190,7 +190,7 @@ function GalleryContent() {
               <span className="font-medium">Retour aux albums</span>
             </button>
 
-            <h2 className="text-5xl md:text-7xl font-wedding text-[#003b4e] text-center">
+            <h2 className="text-5xl md:text-7xl font-wedding text-[var(--primary)] text-center">
               {selectedCategory.title}
             </h2>
           </div>
@@ -203,7 +203,7 @@ function GalleryContent() {
                   className="break-inside-avoid relative group cursor-zoom-in overflow-hidden rounded-lg shadow-sm hover:shadow-xl transition-all duration-300"
                   onClick={() => setLightboxIndex(i)}
                 >
-                  <div className="absolute inset-0 bg-[#003b4e]/0 group-hover:bg-[#003b4e]/20 transition-colors duration-300 z-10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-[var(--primary)]/0 group-hover:bg-[var(--primary)]/20 transition-colors duration-300 z-10 pointer-events-none" />
 
                   <Image
                     src={getImgSrc(photoSrc)}
@@ -232,7 +232,7 @@ function GalleryContent() {
           plugins={[Zoom, Download, Thumbnails]}
           styles={{
             container: { backgroundColor: 'rgba(0, 59, 78, 0.98)' },
-            icon: { color: '#fff' },
+            icon: { color: '#fff8df' },
           }}
           labels={{
             Next: 'Suivant',
@@ -253,9 +253,9 @@ export default function GalleryPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#fcfcfc]">
+        <div className="min-h-screen flex items-center justify-center bg-[var(--accent)]">
           <div className="text-center">
-            <div className="text-6xl font-wedding text-[#003b4e] mb-4">
+            <div className="text-6xl font-wedding text-[var(--primary)] mb-4">
               Chargement...
             </div>
           </div>

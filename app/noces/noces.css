@@ -1,18 +1,18 @@
 /* Static foreground scenes, opacity-only transitions, existing wedding brand. */
 html:has(.noces-v2) { scroll-behavior: smooth; scrollbar-width: none; }
 html:has(.noces-v2)::-webkit-scrollbar, body:has(.noces-v2)::-webkit-scrollbar, .noces-v2 *::-webkit-scrollbar { display: none; width: 0; height: 0; }
-.noces-v2 { background: var(--primary); color: white; user-select: text; overflow-x: clip; }
+.noces-v2 { background: var(--primary); color: var(--paper); user-select: text; overflow-x: clip; }
 .noces-v2 * { scrollbar-width: none; }
 .noces-v2 .honeymoon-container { width: min(100% - 3rem, 1184px); }
 .noces-v2 :is(a, button):focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
-.noces-scene:focus-visible { outline: 2px solid rgb(255 255 255 / 55%); outline-offset: -4px; }
+.noces-scene:focus-visible { outline: 2px solid rgb(255 248 223 / 55%); outline-offset: -4px; }
 .noces-v2 :is(#itineraire, #escales, #cadeau) { scroll-margin-top: 1.5rem; }
 .noces-label { font-size: .65rem; font-weight: 600; letter-spacing: .18em; line-height: 1.6; text-transform: uppercase; }
-.noces-pill, .noces-back { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-height: 44px; width: fit-content; padding: .75rem 1.25rem; border: 1px solid rgb(255 255 255 / 30%); border-radius: 999px; color: white; background: rgb(0 59 78 / 65%); transition: background .2s, border-color .2s; }
+.noces-pill, .noces-back { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-height: 44px; width: fit-content; padding: .75rem 1.25rem; border: 1px solid rgb(255 248 223 / 30%); border-radius: 999px; color: var(--paper); background: rgb(23 78 54 / 65%); transition: background .2s, border-color .2s; }
 .noces-pill { font-size: .65rem; letter-spacing: .1em; }
 .noces-back { font-size: .8rem; }
-.noces-pill:hover, .noces-back:hover { background: var(--primary); border-color: rgb(255 255 255 / 65%); }
-.noces-skip { position: fixed; z-index: 40; top: -100px; left: 1rem; padding: 1rem; border-radius: 999px; color: var(--primary); background: white; }
+.noces-pill:hover, .noces-back:hover { background: var(--primary); border-color: rgb(255 248 223 / 65%); }
+.noces-skip { position: fixed; z-index: 40; top: -100px; left: 1rem; padding: 1rem; border-radius: 999px; color: var(--primary); background: var(--paper); }
 .noces-skip:focus { top: 1rem; }
 /* Browser chrome can defer dvh updates until a touch gesture ends. Paint the
    backdrop at the largest viewport size throughout; keep controls in dvh and
@@ -31,8 +31,8 @@ html:has(.noces-v2)::-webkit-scrollbar, body:has(.noces-v2)::-webkit-scrollbar, 
 .noces-foreground { position: relative; z-index: 1; }
 .noces-scene { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; padding-block: 2rem; }
 .noces-scene-layout { position: relative; display: grid; align-items: center; align-content: center; gap: 1.5rem; }
-.noces-trip-map { margin: 0; display: grid; place-items: center; min-width: 0; padding: .75rem; background: radial-gradient(ellipse, rgb(0 59 78 / 28%), transparent 70%); }
-.noces-trip-map img { display: block; width: auto; height: auto; max-width: 100%; max-height: min(650px, calc(100svh - 9rem)); object-fit: contain; clip-path: inset(0 0 2px); filter: contrast(1.05) saturate(.9) drop-shadow(0 10px 20px rgb(0 59 78 / 35%)); }
+.noces-trip-map { margin: 0; display: grid; place-items: center; min-width: 0; padding: .75rem; background: radial-gradient(ellipse, rgb(23 78 54 / 28%), transparent 70%); }
+.noces-trip-map img { display: block; width: auto; height: auto; max-width: 100%; max-height: min(650px, calc(100svh - 9rem)); object-fit: contain; clip-path: inset(0 0 2px); filter: contrast(1.05) saturate(.9) drop-shadow(0 10px 20px rgb(23 78 54 / 35%)); }
 @media (min-width: 768px) {
   .noces-itinerary-overview .noces-scene-layout { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(1.5rem, 4vw, 4rem); }
   .noces-itinerary-overview .noces-trip-map { grid-column: 1; grid-row: 1; }
@@ -45,33 +45,33 @@ html:has(.noces-v2)::-webkit-scrollbar, body:has(.noces-v2)::-webkit-scrollbar, 
 .noces-introduction { min-height: calc(100svh - 4rem); display: grid; grid-template-rows: auto 1fr auto; }
 .noces-v2 .noces-introduction { width: calc(100% - clamp(3rem, 8vw, 8rem)); margin-inline: auto; }
 .noces-intro-copy { align-self: center; padding-block: 2rem; }
-.noces-intro-copy :is(h1, p) { text-shadow: 0 2px 12px rgb(0 59 78 / 65%); }
+.noces-intro-copy :is(h1, p) { text-shadow: 0 2px 12px rgb(23 78 54 / 65%); }
 .noces-intro-copy h1 { max-width: 850px; font-size: clamp(4rem, 9vw, 9rem); font-weight: normal; line-height: 1.15; margin-top: 1rem; }
 .noces-intro { max-width: 500px; margin-top: 1.5rem; font-size: clamp(.95rem, 1.3vw, 1.125rem); line-height: 1.85; }
 .noces-hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
 .noces-scroll-hint { min-height: 44px; width: fit-content; display: inline-flex; align-items: center; gap: 1rem; }
 .noces-scroll-hint span { font-size: 1.25rem; }
-.noces-story-panel { width: 100%; max-width: 660px; padding: clamp(1.25rem, 3vw, 3rem); border: 1px solid rgb(255 255 255 / 22%); border-radius: 1.5rem; background: rgb(0 59 78 / 85%); box-shadow: 0 16px 40px rgb(0 59 78 / 15%); }
+.noces-story-panel { width: 100%; max-width: 660px; padding: clamp(1.25rem, 3vw, 3rem); border: 1px solid rgb(255 248 223 / 22%); border-radius: 1.5rem; background: rgb(23 78 54 / 85%); box-shadow: 0 16px 40px rgb(23 78 54 / 15%); }
 .noces-story-panel :is(h2, h3) { font-size: clamp(3rem, 5vw, 4.5rem); font-weight: normal; line-height: 1.2; margin-block: .5rem 1rem; overflow-wrap: anywhere; }
 .noces-story-panel > p:not(.noces-label) { line-height: 1.8; font-size: 1rem; }
 .noces-step-title { font-weight: 600; margin-block: .5rem 1rem; }
 .noces-step-total { margin-left: .25rem; opacity: .75; }
 .noces-highlights { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.25rem; }
-.noces-highlight { border-radius: 999px; border: 1px solid rgb(255 255 255 / 25%); padding: .5rem .85rem; font-size: .7rem; color: white; background: rgb(19 126 65 / 25%); }
-.noces-destination-card { position: relative; isolation: isolate; width: min(100%, 1040px); min-height: min(720px, calc(100svh - 7rem)); display: flex; align-items: flex-end; padding: clamp(1rem, 3vw, 2rem); padding-top: 12rem; overflow: hidden; border-radius: 1.5rem; border: 1px solid rgb(255 255 255 / 25%); background: linear-gradient(135deg, var(--primary), var(--secondary)); box-shadow: 0 20px 60px rgb(0 59 78 / 30%); }
+.noces-highlight { border-radius: 999px; border: 1px solid rgb(255 248 223 / 25%); padding: .5rem .85rem; font-size: .7rem; color: var(--paper); background: rgb(19 126 65 / 25%); }
+.noces-destination-card { position: relative; isolation: isolate; width: min(100%, 1040px); min-height: min(720px, calc(100svh - 7rem)); display: flex; align-items: flex-end; padding: clamp(1rem, 3vw, 2rem); padding-top: 12rem; overflow: hidden; border-radius: 1.5rem; border: 1px solid rgb(255 248 223 / 25%); background: linear-gradient(135deg, var(--primary), var(--secondary)); box-shadow: 0 20px 60px rgb(23 78 54 / 30%); }
 .noces-trip-stage .noces-scene-layout { justify-items: center; }
 .noces-step-visual { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; overflow: hidden; background: linear-gradient(135deg, var(--primary), var(--secondary)); }
-.noces-destination-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(0 59 78 / 5%) 10%, rgb(0 59 78 / 25%) 55%, rgb(0 59 78 / 70%)); pointer-events: none; }
-.noces-destination-card .noces-story-panel { max-width: 100%; padding: clamp(1.25rem, 2.5vw, 2rem); background: rgb(0 59 78 / 94%); border-radius: 1.25rem; }
+.noces-destination-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgb(23 78 54 / 5%) 10%, rgb(23 78 54 / 25%) 55%, rgb(23 78 54 / 70%)); pointer-events: none; }
+.noces-destination-card .noces-story-panel { max-width: 100%; padding: clamp(1.25rem, 2.5vw, 2rem); background: rgb(23 78 54 / 94%); border-radius: 1.25rem; }
 .noces-destination-card .noces-story-panel h3 { font-size: clamp(3rem, 5vw, 4rem); margin-top: .25rem; margin-bottom: .5rem; }
 .noces-destination-card .noces-step-title { margin-block: .25rem .75rem; }
 .noces-destination-card .noces-highlights { margin-top: 1rem; }
 .noces-step-content > p { font-size: 1rem; line-height: 1.8; }
-.noces-step-content:focus-visible { outline: 2px solid white; outline-offset: 3px; border-radius: .25rem; }
+.noces-step-content:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; border-radius: .25rem; }
 .noces-step-drawer summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 44px; cursor: pointer; list-style: none; font-size: .65rem; font-weight: 600; letter-spacing: .12em; }
 .noces-step-drawer summary::-webkit-details-marker { display: none; }
-.noces-step-drawer summary:focus-visible { outline: 2px solid white; outline-offset: 4px; border-radius: .25rem; }
-.noces-step-drawer summary:hover { color: rgb(255 255 255 / 80%); }
+.noces-step-drawer summary:focus-visible { outline: 2px solid var(--paper); outline-offset: 4px; border-radius: .25rem; }
+.noces-step-drawer summary:hover { color: rgb(255 248 223 / 80%); }
 .noces-drawer-number { opacity: .7; }
 .noces-drawer-city { flex: 1; font-size: 2rem; font-weight: normal; line-height: 1.15; letter-spacing: 0; }
 .noces-step-heading { display: none; }
@@ -88,7 +88,7 @@ html:has(.noces-v2)::-webkit-scrollbar, body:has(.noces-v2)::-webkit-scrollbar, 
 .noces-placeholder > p:last-child { font-size: .75rem; }
 .noces-anchor { position: absolute; top: 0; left: 0; }
 .noces-gift .noces-scene-layout { justify-items: center; text-align: center; }
-.noces-gift .noces-story-panel { background: rgb(0 59 78 / 95%); }
+.noces-gift .noces-story-panel { background: rgb(23 78 54 / 95%); }
 .noces-gift .noces-step-title { margin-top: 1.5rem; }
 .noces-gift-home { margin-top: 2rem; }
 .noces-scene-controls { display: none; }
@@ -100,7 +100,7 @@ html:has(.noces-v2)::-webkit-scrollbar, body:has(.noces-v2)::-webkit-scrollbar, 
 [data-enhanced] .noces-introduction { min-height: calc(100svh - 6.5rem); }
 [data-enhanced] .noces-scene-controls { position: absolute; bottom: 1rem; right: 1.5rem; left: 1.5rem; display: flex; align-items: center; justify-content: flex-end; gap: .5rem; pointer-events: none; }
 .noces-scene-status { margin-right: .75rem; max-width: min(60vw, 400px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.noces-scene-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgb(255 255 255 / 35%); border-radius: 999px; background: var(--primary); pointer-events: auto; }
+.noces-scene-controls button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgb(255 248 223 / 35%); border-radius: 999px; background: var(--primary); pointer-events: auto; }
 .noces-scene-controls button:hover:not(:disabled) { background: var(--secondary); }
 .noces-scene-controls button:disabled { opacity: .35; }
 @media (max-width: 639px) {
@@ -131,7 +131,7 @@ html:has(.noces-v2)::-webkit-scrollbar, body:has(.noces-v2)::-webkit-scrollbar, 
   .noces-destination-card { padding-top: 1rem; min-height: calc(100svh - 7rem); }
   .noces-destination-card .noces-story-panel { padding: .65rem .85rem; }
   .noces-step-drawer summary { gap: .65rem; }
-  .noces-step-content { max-height: min(38svh, max(4rem, calc(100svh - 15rem)), 360px); overflow-y: auto; overscroll-behavior-y: contain; padding: .65rem .2rem .2rem 0; border-top: 1px solid rgb(255 255 255 / 18%); }
+  .noces-step-content { max-height: min(38svh, max(4rem, calc(100svh - 15rem)), 360px); overflow-y: auto; overscroll-behavior-y: contain; padding: .65rem .2rem .2rem 0; border-top: 1px solid rgb(255 248 223 / 18%); }
   .noces-step-content > p { font-size: .9rem; line-height: 1.6; }
   .noces-destination-card .noces-step-title { margin-block: 0 .5rem; }
   .noces-destination-card .noces-highlights { margin-top: .75rem; gap: .35rem; }

@@ -130,7 +130,7 @@ export default function AdminDashboardView({ guests, onLogout, loading = false, 
             const count = confirmed.filter(g => g[key]).length;
             return <div key={key}>
               <div className="flex items-center justify-between gap-2 text-sm"><span className="flex items-center gap-2"><Icon size={17} className="text-[var(--secondary)]" aria-hidden="true" />{label}</span><strong className="tabular-nums">{loading ? '—' : count}</strong></div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#edf2ef]"><div className="h-full rounded-full bg-[var(--secondary)]" style={{ width: `${guests.length ? count / guests.length * 100 : 0}%` }} /></div>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--accent)]"><div className="h-full rounded-full bg-[var(--secondary)]" style={{ width: `${guests.length ? count / guests.length * 100 : 0}%` }} /></div>
             </div>;
           })}
         </div>
@@ -170,7 +170,7 @@ export default function AdminDashboardView({ guests, onLogout, loading = false, 
               <td className="text-slate-600"><Comment text={g.commentaires} /></td><td className="text-xs text-slate-500">{g.dateModification?.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) || '—'}</td>
             </tr>)}</tbody></table>
           </div>
-          <div className="grid gap-3 bg-[#f8faf9] p-3 sm:grid-cols-2 lg:hidden">{visible.map(g => <article key={`${g.codeInvitation}-${g.nom}`} className="admin-panel min-w-0 p-4">
+          <div className="grid gap-3 bg-[var(--accent)] p-3 sm:grid-cols-2 lg:hidden">{visible.map(g => <article key={`${g.codeInvitation}-${g.nom}`} className="admin-panel min-w-0 p-4">
             <div className="flex flex-wrap items-start justify-between gap-2"><div className="min-w-0"><p className="font-semibold break-words">{g.nom}</p><p className="mt-1 font-mono text-xs text-slate-500">{g.codeInvitation}</p></div><Status status={g.statut} /></div>
             <p className="mt-3 break-all text-sm text-slate-600">{g.email || 'Pas d’e-mail renseigné'}</p>
             <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">{invitationFlags.map(f => <div key={f.key}><dt className="text-slate-500">{f.label}</dt><dd className="mt-1"><InvitationFlag value={g[f.key]} /></dd></div>)}</dl>

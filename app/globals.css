@@ -11,10 +11,15 @@
 }
 
 :root {
-  --primary: #003b4e; /* Bleu profond aurore */
+  --primary: #174e36; /* Vert profond */
   --secondary: #137e41; /* Vert émeraude aurore */
-  --accent: #e9edef; /* Blanc glacé */
-  --dark: #034861; /* Bleu nuit */
+  --paper: #fff8df; /* Papier des cartes et champs */
+  --accent: #eeeadd; /* Beige des fonds */
+  --dark: #103b2c; /* Vert forêt */
+}
+
+@layer base {
+  input:not([type='checkbox']):not([type='radio']), select, textarea { background-color: #fff; }
 }
 
 body {
@@ -33,7 +38,7 @@ body {
 
 ::-webkit-scrollbar-track {
   background: var(--accent);
-  box-shadow: inset 0 0 6px rgba(0, 59, 78, 0.1);
+  box-shadow: inset 0 0 6px rgba(23, 78, 54, 0.1);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -151,29 +156,29 @@ body {
 .landing-hero > .landing-container { align-self: center; }
 
 /* Administration: quiet palette, readable data, touch-friendly controls. */
-.admin-page { min-height: 100vh; background: #f4f7f6; color: var(--primary); user-select: text; }
+.admin-page { min-height: 100vh; background: var(--accent); color: var(--primary); user-select: text; }
 .admin-container { width: min(100% - 2rem, 1600px); margin-inline: auto; }
-.admin-header { background: var(--primary); color: white; }
-.admin-panel { background: white; border: 1px solid #dde6e2; border-radius: 1rem; }
+.admin-header { background: var(--primary); color: var(--paper); }
+.admin-panel { background: #fff; border: 1px solid #dde6e2; border-radius: 1rem; }
 .admin-button { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; min-height: 44px; padding: .625rem 1rem; border-radius: .65rem; font-size: .875rem; font-weight: 500; }
 .admin-label { font-size: .75rem; font-weight: 600; color: #52665e; min-width: 0; }
-.admin-input { display: block; width: 100%; min-width: 0; min-height: 44px; border: 1px solid #cfdcd5; border-radius: .65rem; padding: .625rem .75rem; background: white; font-size: 1rem; font-weight: 400; color: var(--primary); }
+.admin-input { display: block; width: 100%; min-width: 0; min-height: 44px; border: 1px solid #cfdcd5; border-radius: .65rem; padding: .625rem .75rem; background: var(--paper); font-size: 1rem; font-weight: 400; color: var(--primary); }
 .admin-input.pl-9 { padding-left: 2.25rem; }
 .admin-input.w-auto { width: auto; }
 .admin-page :is(button, a, input, select, summary, [tabindex]):focus-visible { outline: 3px solid #137e41; outline-offset: 3px; }
-.admin-header :is(a, button):focus-visible { outline-color: white; }
+.admin-header :is(a, button):focus-visible { outline-color: var(--paper); }
 .admin-status { display: inline-flex; white-space: nowrap; border-radius: 999px; padding: .25rem .625rem; font-size: .75rem; font-weight: 600; }
 .admin-status-confirmed { color: #16633b; background: #e9f4ed; }
 .admin-status-pending { color: #805b1b; background: #fbf3df; }
 .admin-status-declined { color: #875346; background: #f7eeea; }
 .admin-table-scroll { overflow-x: auto; max-height: 680px; }
 .admin-table { width: 100%; min-width: 1500px; table-layout: fixed; font-size: .875rem; text-align: left; }
-.admin-table thead { position: sticky; top: 0; z-index: 1; background: #f1f5f3; }
+.admin-table thead { position: sticky; top: 0; z-index: 1; background: var(--accent); }
 .admin-table :is(th, td) { padding: .75rem; vertical-align: top; }
 .admin-table thead th { font-size: .75rem; font-weight: 600; color: #52665e; }
 .admin-table tbody tr { border-top: 1px solid #e7ede9; }
-.admin-table tbody tr:nth-child(even) { background: #fbfcfb; }
-.admin-table tbody tr:hover { background: #f1f7f3; }
+.admin-table tbody tr:nth-child(even) { background: var(--accent); }
+.admin-table tbody tr:hover { background: var(--accent); }
 .admin-table :is(th, td):nth-child(1) { width: 6%; }
 .admin-table :is(th, td):nth-child(2) { width: 12%; overflow-wrap: anywhere; }
 .admin-table :is(th, td):nth-child(3) { width: 9%; }
@@ -184,7 +189,7 @@ body {
 .admin-table :is(th, td):nth-child(10) { width: 18%; overflow-wrap: anywhere; }
 .admin-table :is(th, td):nth-child(11) { width: 7%; }
 .admin-comment summary { min-height: 32px; }
-.admin-login { display: grid; place-items: center; padding: 1rem; background: radial-gradient(ellipse at top left, #dcece3, transparent 65%), #f4f7f6; }
+.admin-login { display: grid; place-items: center; padding: 1rem; background: radial-gradient(ellipse at top left, #dcece3, transparent 65%), var(--accent); }
 
 /* Honeymoon travel journal. */
 .honeymoon-container { width: min(100% - 2rem, 1040px); margin-inline: auto; }
@@ -195,8 +200,8 @@ body {
 .honeymoon-step > div { min-width: 0; }
 .honeymoon-visual {
   position: relative; display: flex; align-items: center; justify-content: center;
-  height: 160px; overflow: hidden; border-radius: 1rem; background: #edf3ef;
-  border: 1px solid rgb(0 59 78 / 8%);
+  height: 160px; overflow: hidden; border-radius: 1rem; background: var(--accent);
+  border: 1px solid rgb(23 78 54 / 8%);
 }
 @media (min-width: 768px) {
   .honeymoon-route { left: 50%; }
@@ -205,10 +210,10 @@ body {
 }
 .landing-panel {
   padding: 1.25rem;
-  border: 1px solid rgb(0 59 78 / 12%);
+  border: 1px solid rgb(23 78 54 / 12%);
   border-radius: 1rem;
   background: #fff;
-  box-shadow: 0 4px 20px rgb(0 59 78 / 4%);
+  box-shadow: 0 4px 20px rgb(23 78 54 / 4%);
 }
 .landing-rsvp { border-top: 3px solid var(--secondary); }
 .landing-title {
@@ -243,12 +248,12 @@ body {
   outline: 3px solid var(--secondary);
   outline-offset: 4px;
 }
-.landing-hero a:focus-visible { outline-color: #fff; }
+.landing-hero a:focus-visible { outline-color: var(--paper); }
 .landing-page section[id] { scroll-margin-top: 1rem; }
 .landing-disclosure {
-  border: 1px solid rgb(0 59 78 / 12%);
+  border: 1px solid rgb(23 78 54 / 12%);
   border-radius: .75rem;
-  background: white;
+  background: #fff;
 }
 .landing-disclosure summary {
   display: flex;
@@ -267,7 +272,7 @@ body {
 .disclosure-content {
   margin-inline: 1rem;
   padding-block: 1rem;
-  border-top: 1px solid rgb(0 59 78 / 10%);
+  border-top: 1px solid rgb(23 78 54 / 10%);
   font-size: .875rem;
   line-height: 1.65;
 }
@@ -296,7 +301,7 @@ body {
   min-height: 48px;
   font-size: .75rem;
   text-align: center;
-  color: rgb(255 255 255 / 80%);
+  color: rgb(255 248 223 / 80%);
 }
 .landing-hero-next > :last-child { font-size: 1.5rem; }
 .landing-practical { border-top: 3px solid var(--secondary); }

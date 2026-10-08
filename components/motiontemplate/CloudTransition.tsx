@@ -8,7 +8,7 @@ const fragment = `precision highp float;uniform float uTravel,uAspect;varying ve
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
 float fbm(vec2 p){float v=0.,w=.5;for(int i=0;i<5;i++){v+=noise(p)*w;p=p*2.03+vec2(3.1,7.8);w*=.5;}return v;}
-void main(){vec2 p=vec2(vUv.x*uAspect,vUv.y)*4.+vec2(uTravel*1.7,0.);float n=fbm(p),detail=fbm(p*3.);float center=uTravel*2.1-.55;float d=abs(vUv.y-center+(n-.5)*.27);float density=1.-smoothstep(.17,.38,d);vec3 color=mix(vec3(.64,.75,.79),vec3(.98,.97,.91),smoothstep(.15,.8,n+detail*.24));color+=vec3(.04)*smoothstep(.08,.32,vUv.y-center);gl_FragColor=vec4(color,clamp(density*1.65,0.,1.));}`;
+void main(){vec2 p=vec2(vUv.x*uAspect,vUv.y)*4.+vec2(uTravel*1.7,0.);float n=fbm(p),detail=fbm(p*3.);float center=uTravel*2.1-.55;float d=abs(vUv.y-center+(n-.5)*.27);float density=1.-smoothstep(.17,.38,d);vec3 color=mix(vec3(.64,.71,.61),vec3(1.,.973,.875),smoothstep(.15,.8,n+detail*.24));color+=vec3(.04)*smoothstep(.08,.32,vUv.y-center);gl_FragColor=vec4(color,clamp(density*1.65,0.,1.));}`;
 
 export default function CloudTransition({ progressRef }: { progressRef: MutableRefObject<number> }) {
   const ref = useRef<HTMLCanvasElement>(null);

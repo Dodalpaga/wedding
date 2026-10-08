@@ -95,16 +95,16 @@ function GalleryContent() {
       <div className="pt-4 md:pt-4">
         <ReturnHomeButton />
         <div className="w-full max-w-lg p-8 bg-white rounded-xl shadow-2xl border border-gray-100 text-center">
-          <h1 className="text-6xl md:text-8xl font-wedding text-[#003b4e] mb-6">
+          <h1 className="text-6xl md:text-8xl font-wedding text-[var(--primary)] mb-6">
             Accès Refusé
           </h1>
-          <p className="text-[#003b4e]/70 mb-8">
+          <p className="text-[var(--primary)]/70 mb-8">
             Veuillez utiliser le formulaire sur la page d'accueil pour accéder à
             la galerie avec votre code d'invitation.
           </p>
           <Link
             href="/#confirmation"
-            className="inline-block bg-[#003b4e] text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-[#137e41] transition-all"
+            className="inline-block bg-[var(--primary)] text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-[var(--secondary)] transition-all"
           >
             Retour à l'accueil
           </Link>
@@ -119,10 +119,10 @@ function GalleryContent() {
 
       <div className="pt-24 pb-20 container mx-auto px-4">
         <div className="text-center mb-16">
-          <h1 className="text-6xl md:text-8xl font-wedding text-[#003b4e] mb-6">
+          <h1 className="text-6xl md:text-8xl font-wedding text-[var(--primary)] mb-6">
             Nos Albums
           </h1>
-          <p className="text-[#003b4e]/70 max-w-2xl mx-auto font-light text-lg">
+          <p className="text-[var(--primary)]/70 max-w-2xl mx-auto font-light text-lg">
             Choisissez un moment du week-end pour découvrir les photos.
           </p>
         </div>
@@ -146,7 +146,7 @@ function GalleryContent() {
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[#003b4e]/90 via-[#003b4e]/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--primary)]/90 via-[var(--primary)]/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
 
               <div className="absolute bottom-0 left-0 right-0 p-8 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                 <h3 className="text-3xl font-wedding text-white mb-2 drop-shadow-md">
@@ -177,7 +177,7 @@ function GalleryContent() {
                     Lien non configuré
                   </div>
                 )}
-                <div className="h-0.5 w-0 group-hover:w-16 bg-[#137e41] mt-4 transition-all duration-500 ease-out" />
+                <div className="h-0.5 w-0 group-hover:w-16 bg-[var(--secondary)] mt-4 transition-all duration-500 ease-out" />
               </div>
             </div>
           ))}
@@ -192,9 +192,9 @@ export default function GalleryPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#fcfcfc]">
+        <div className="min-h-screen flex items-center justify-center bg-[var(--accent)]">
           <div className="text-center">
-            <div className="text-6xl font-wedding text-[#003b4e] mb-4">
+            <div className="text-6xl font-wedding text-[var(--primary)] mb-4">
               Chargement...
             </div>
           </div>

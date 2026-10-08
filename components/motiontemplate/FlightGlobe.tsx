@@ -127,13 +127,23 @@ export default function FlightGlobe({ progressRef, onPreparation }: Props) {
         });
         await waitForGlobeIdle(currentMap, controller.signal);
         currentMap.setProjection({ type: 'globe' });
-        currentMap.setSky({ 'sky-color': '#081d29', 'horizon-color': '#73b1bb', 'fog-color': '#081d29', 'atmosphere-blend': 0.8 });
+        currentMap.setSky({ 'sky-color': '#103b2c', 'horizon-color': '#9ab695', 'fog-color': '#103b2c', 'atmosphere-blend': 0.8 });
         for (const layer of currentMap.getStyle().layers) {
+          if (layer.type === 'background') currentMap.setPaintProperty(layer.id, 'background-color', '#eeeadd');
+          if (layer.type === 'fill') {
+            const sourceLayer = 'source-layer' in layer ? layer['source-layer'] : '';
+            const fill = sourceLayer === 'water' ? '#a9c0b3' : sourceLayer === 'landcover' || sourceLayer === 'park' ? '#b7c9ad' : '#d8d9c4';
+            try { currentMap.setPaintProperty(layer.id, 'fill-color', fill); } catch { /* style layer may not expose a fill color */ }
+          }
+          if (layer.id === 'waterway' && layer.type === 'line') currentMap.setPaintProperty(layer.id, 'line-color', '#bac9ae');
+          if (layer.type === 'line') {
+            try { currentMap.setPaintProperty(layer.id, 'line-color', '#b9b99f'); } catch { /* decorative layers can omit this property */ }
+          }
           if (layer.type === 'symbol') currentMap.setLayerZoomRange(layer.id, Math.max(2, layer.minzoom ?? 0), layer.maxzoom ?? 24);
         }
         currentMap.addSource('flight-route', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: arc } } });
         currentMap.addSource('flight-trail', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: [TOULOUSE, TOULOUSE] } } });
-        currentMap.addLayer({ id: 'route-guide', type: 'line', source: 'flight-route', paint: { 'line-color': '#486c76', 'line-width': 1.5, 'line-dasharray': [2, 4] } });
+        currentMap.addLayer({ id: 'route-guide', type: 'line', source: 'flight-route', paint: { 'line-color': '#527653', 'line-width': 1.5, 'line-dasharray': [2, 4] } });
         currentMap.addLayer({ id: 'route-trail', type: 'line', source: 'flight-trail', paint: { 'line-color': '#bf7848', 'line-width': 3 }, layout: { 'line-cap': 'round', 'line-join': 'round' } });
         await waitForGlobeIdle(currentMap, controller.signal);
         observer = new ResizeObserver(() => {

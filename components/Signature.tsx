@@ -5,7 +5,7 @@ interface SignatureProps {
 }
 
 const Signature: React.FC<SignatureProps> = ({ theme = 'light' }) => {
-  const strokeColor = theme === 'light' ? '#e9edef' : '#003b4e';
+  const strokeColor = theme === 'light' ? 'var(--paper)' : 'var(--primary)';
 
   return (
     <svg

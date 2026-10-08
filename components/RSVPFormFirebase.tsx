@@ -234,7 +234,7 @@ export default function RSVPFormFirebase({
               La présence de <strong>{membreSelectionne}</strong> a bien été
               enregistrée.
             </p>
-            <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded text-left">
+            <div className="bg-[var(--accent)] border-l-4 border-[var(--secondary)] p-6 rounded text-left">
               <p className="text-[var(--dark)]">
                 <strong>Récapitulatif :</strong>
                 <br />• Invité : {membreSelectionne}
@@ -352,7 +352,7 @@ export default function RSVPFormFirebase({
         )}
 
         {!membreSelectionne && (
-          <div className="max-w-3xl mx-auto bg-blue-50 border-2 border-blue-300 p-6 rounded-lg text-center mb-8">
+          <div className="max-w-3xl mx-auto bg-[var(--accent)] border-2 border-[var(--secondary)]/30 p-6 rounded-lg text-center mb-8">
             <p className="text-[var(--dark)] flex items-center justify-center gap-2">
               <TouchApp />
               Cliquez sur un invité ci-dessus pour confirmer sa présence
@@ -469,7 +469,7 @@ export default function RSVPFormFirebase({
 
                   <div className="space-y-3">
                     {/* Vendredi soir */}
-                    <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-blue-50">
+                    <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-[var(--accent)]">
                       <input
                         type="checkbox"
                         checked={formData.vendredi_soir}
@@ -551,7 +551,7 @@ export default function RSVPFormFirebase({
                     </label>
 
                     {/* Dimanche brunch */}
-                    <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-blue-50">
+                    <label className="flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-all hover:border-[var(--primary)] hover:bg-[var(--accent)]">
                       <input
                         type="checkbox"
                         checked={formData.dimanche_brunch}

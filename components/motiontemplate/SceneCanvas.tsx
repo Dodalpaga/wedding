@@ -71,7 +71,7 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
           const room = new RoomEnvironment(), pmrem = new THREE.PMREMGenerator(renderer);
           environment = pmrem.fromScene(room, .04); scene.environment = environment.texture;
           room.dispose(); pmrem.dispose();
-          scene.add(new THREE.HemisphereLight(0xe8f3ff, 0xa18c66, .55));
+          scene.add(new THREE.HemisphereLight(0xe7efdf, 0xa18c66, .55));
           sun = new THREE.DirectionalLight(0xffedce, 1.8);
           sun.position.set(5, 12, 9); sun.castShadow = true;
           sun.shadow.mapSize.setScalar(innerWidth <= 700 ? 1024 : 2048);
@@ -161,7 +161,8 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
             camera.fov = kind === 'restaurant' ? THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(24)) / Math.min(1, aspect))) : 40;
           }
           else {
-            const halfHeight = 2.45; camera.left = -halfHeight * aspect; camera.right = halfHeight * aspect; camera.top = halfHeight; camera.bottom = -halfHeight;
+            // Reserve paper around the full artwork even at the hover limits.
+            const halfHeight = 3.15; camera.left = -halfHeight * aspect; camera.right = halfHeight * aspect; camera.top = halfHeight; camera.bottom = -halfHeight;
           }
           camera.updateProjectionMatrix(); shading?.resize(width, height); lastKey = ''; schedule();
         };
