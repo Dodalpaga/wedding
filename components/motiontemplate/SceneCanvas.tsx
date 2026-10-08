@@ -42,7 +42,7 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
     const controller = new AbortController(), reduced = matchMedia('(prefers-reduced-motion: reduce)');
     let disposed = false, frame = 0, visible = false, ready = false, lastKey = '', draws = 0;
     let renderer: THREE.WebGLRenderer | undefined, model: THREE.Object3D | undefined;
-    let mixer: THREE.AnimationMixer | undefined, environment: THREE.Texture | undefined, draw: (() => void) | undefined;
+    let mixer: THREE.AnimationMixer | undefined, environment: THREE.WebGLRenderTarget | undefined, draw: (() => void) | undefined;
     let resizeObserver: ResizeObserver | undefined, visibilityObserver: IntersectionObserver | undefined;
     let shading: ReturnType<typeof sceneOcclusion> | undefined, sun: THREE.DirectionalLight | undefined;
     const notify = (state: GlobePreparation['state'], progress = 0) => { if (!disposed) onPreparation({ state, progress }); };
@@ -69,7 +69,7 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
         const camera = kind === 'temple' ? new THREE.OrthographicCamera(-6, 6, 6, -6, .05, 100) : new THREE.PerspectiveCamera(40, 1, .03, 200);
         if (kind !== 'temple') {
           const room = new RoomEnvironment(), pmrem = new THREE.PMREMGenerator(renderer);
-          environment = pmrem.fromScene(room, .04).texture; scene.environment = environment;
+          environment = pmrem.fromScene(room, .04); scene.environment = environment.texture;
           room.dispose(); pmrem.dispose();
           scene.add(new THREE.HemisphereLight(0xe8f3ff, 0xa18c66, .55));
           sun = new THREE.DirectionalLight(0xffedce, 1.8);
