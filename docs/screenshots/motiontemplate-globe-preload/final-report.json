@@ -1,0 +1,22 @@
+[
+  {
+    "url": "http://localhost:3104/wedding/motiontemplate/",
+    "width": 390,
+    "height": 844,
+    "dpr": 2,
+    "loaderFocus": true,
+    "scrollRequests": [],
+    "errors": [],
+    "webgl": "ready"
+  },
+  {
+    "url": "http://localhost:3105/motiontemplate/",
+    "width": 320,
+    "height": 568,
+    "dpr": 1,
+    "loaderFocus": true,
+    "scrollRequests": [],
+    "errors": [],
+    "webgl": "ready"
+  }
+]

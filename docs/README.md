@@ -1,6 +1,6 @@
 # Documentation du projet
 
-État de référence : **4 octobre 2026**, confronté au code du dépôt. Les documents décrivent l’implémentation actuelle ; les plans et captures conservent aussi l’historique des ajustements.
+État de référence : **8 octobre 2026**, confronté au code du dépôt. Les documents décrivent l’implémentation actuelle ; les plans et captures conservent aussi l’historique des ajustements.
 
 Travail actif : [GSAP, images originales et cache borné sur Noces](plans/active/noces-gsap-native-quality.md). Le stash des essais précédents a été supprimé à la demande de l’utilisateur. [Pauses résiduelles : mesures](screenshots/noces-last-stutters/README.md).
 
@@ -17,6 +17,8 @@ Travail actif : [GSAP, images originales et cache borné sur Noces](plans/active
 | [Plans](plans/README.md) | Organisation des travaux et plans terminés. |
 | [Captures](screenshots/README.md) | Index des screenshots et limites de leur actualité. |
 
+[Modèles Motiontemplate et crédits](MOTIONTEMPLATE_MODELS.md).
+
 ## Où modifier quoi ?
 
 | Contenu/comportement | Source |
@@ -29,6 +31,7 @@ Travail actif : [GSAP, images originales et cache borné sur Noces](plans/active
 | Escales du Japon, textes, visuels | `tripSteps` dans `app/noces/page.tsx` |
 | Hero séquencé, scènes fixes en fondu et cartes photo | `components/noces/frame-sequence.ts`, `components/noces/useJourneyScenes.ts`, `components/noces/`, `app/noces/noces.css`, `scripts/extract-video-frames.ps1` |
 | Ombre diagonale et rayons solaires au scroll | `components/noces/solar-rays.ts`, `components/noces/SequenceBackdrop.tsx`, `app/noces/noces.css` |
+| Globe et nouvelles expériences japonaises | `app/motiontemplate/`, `components/motiontemplate/` ; [modèles](MOTIONTEMPLATE_MODELS.md), [plan actif](plans/active/motiontemplate-three-experiences.md) |
 | Buffer réseau et caches des frames | `components/noces/frame-buffer.ts`, `components/noces/frame-blob-cache.ts`, `components/noces/frame-sequence.ts`, `tests/frame-buffer.test.cjs`, `tests/frame-blob-cache.test.cjs` |
 | Volets des descriptions sur téléphone/écran court | `components/noces/StepDrawer.tsx`, `app/noces/noces.css` |
 | Albums locaux / OneDrive | `app/gallerie/page.tsx`, `app/gallerie-cloud/page.tsx` |

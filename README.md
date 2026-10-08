@@ -26,6 +26,7 @@ Le site de développement est disponible sur http://localhost:3000, sans préfix
 | `/confirmation/?code=CODE` | Lecture de l’invitation Firestore, sélection d’un invité et réponse individuelle, selon les catégories configurées. |
 | `/hebergement/` | Neuf suggestions avec filtres par prix/capacité et coordonnées des établissements. Route directement accessible. |
 | `/noces/` | Hero unique, séquence Torii de 597 WebP et rayons solaires synchronisés au scroll : cartes photo fixes en fondu, cinq escales et cadeau avec retour Accueil ; sans navbar, avion, curseur personnalisé ni scrollbar visible. |
+| `/motiontemplate/` | Globe France–Japon, avion et sortie sous les nuages. Littlest Tokyo avec train au scroll, visite Inakaya par la porte et carte Kinkakuji avec parallaxe par rotation du modèle 3D. Occlusion ambiante/ombres et préparation complète avant le scroll. [Modèles et rendu](docs/MOTIONTEMPLATE_MODELS.md). |
 | `/admin/` | Connexion Firebase, suivi des réponses, flags repas/couchage, ratios confirmés/invités pour les deux, recherche, tri et export CSV. |
 | `/gallerie/?code=CODE` | Prototype d’albums locaux avec visionneuse, zoom, miniatures et téléchargement. |
 | `/gallerie-cloud/?code=CODE` | Prototype d’albums OneDrive ; la plupart des liens restent à compléter. |
@@ -34,7 +35,7 @@ Les routes des galeries conservent l’orthographe `gallerie` présente dans le 
 
 ## Stack et structure
 
-Next.js 14.2.5 (App Router), React 18, TypeScript, Tailwind CSS 3, Firebase Firestore/Authentication. Le voyage utilise des canvas et des fondus sans Framer Motion, avec caches mémoire bornés ; OGL rend l’aurore, et les icônes proviennent de Lucide et Material UI.
+Next.js 14.2.5 (App Router), React 18, TypeScript, Tailwind CSS 3, Firebase Firestore/Authentication. Le voyage utilise des canvas et des fondus sans Framer Motion, avec caches mémoire bornés ; OGL rend l’aurore et le prototype WebGL autonome, et les icônes proviennent de Lucide et Material UI.
 
 ```text
 app/                    Routes, layout, styles globaux

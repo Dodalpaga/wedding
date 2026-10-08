@@ -2,7 +2,20 @@
 
 Référence actuelle : 4 octobre 2026. Ce fichier distingue les choix en vigueur des propositions remplacées pendant les ajustements visuels.
 
+Complément du 8 octobre : la couverture de la carte est préparée avec marge puis aux dimensions visibles, avec une sélection parmi 769 positions dans chaque passe. Chaque caméra préparée attend un rendu stabilisé. Les corps des tuiles vectorielles CARTO déjà téléchargées sont également conservés en Blob locaux pendant la visite : si MapLibre recrée une tuile malgré son cache décodé, ses données restent disponibles sans requête externe. Plafond de 2048 ressources, aucun stockage persistant, révocation des URL et annulation des téléchargements au démontage. Ce cache de corps complète les buffers décodés ; le plafond est un nombre de ressources, pas un budget en octets.
+
 ## Choix en vigueur
+
+### Préparation de la carte Motiontemplate — 8 octobre 2026
+
+Préparer toute la couverture du trajet avant de libérer le scroll. Un simple chargement de la vue de départ ou un cache HTTP ne suffisent pas : conserver aussi les tuiles décodées et leurs buffers. Sélectionner des vues couvrant les positions du trajet avec marge, supprimer les vues redondantes, attendre le rendu des détails, puis stabiliser Toulouse. Une nouvelle taille d'écran entraîne une préparation complémentaire. La progression est celle des vues, pas un compteur d'octets. Ne pas ouvrir automatiquement une carte partielle en cas d'échec ; offrir Réessayer et Passer le voyage. Aucun téléchargement de carte en réduction des mouvements. Les délais suspendent leur compte en onglet masqué. Le plafond de 2048 tuiles par source est une limite de nombre, pas un budget en octets.
+
+
+### Motiontemplate : trois expériences après les nuages — 9 octobre 2026
+
+Les propriétaires abandonnent les paysages précédents et demandent leur retrait du code, des documents et des captures. Le globe, les pays entiers, le trajet et les nuages sont conservés. Les GLB gratuits fournis les remplacent : train Littlest Tokyo au scroll ; restaurant Inakaya, comptoir et cuisine puis retour extérieur ; carte Kinkakuji avec parallaxe au pointeur/clavier. Modèles et textes alternent gauche/droite sur PC et s’empilent sur téléphone. Voir le [plan](plans/active/motiontemplate-three-experiences.md). Aucun déploiement dans ce travail.
+
+Affinage du rendu : faire tourner le cube 3D du temple avec une caméra et un cadre fixes ; faire monter Tokyo sous les nuages sans visibilité binaire ni fondu/zoom ; traverser l'entrée d'Inakaya sous le rideau puis conserver des vues larges, les textures des plats ne supportant pas les gros plans. Ajouter occlusion ambiante SSAO et ombres directionnelles sur Tokyo et Inakaya, sans modifier les matériaux illustrés unlit du temple. Préparer textures, ombres et post-traitement avant le scroll ; rendu uniquement lors des interactions.
 
 ### Flags d’invitation dans Firestore — 5 octobre 2026
 

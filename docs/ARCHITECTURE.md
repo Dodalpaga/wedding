@@ -1,6 +1,6 @@
 # Architecture
 
-Référence : code du dépôt au 4 octobre 2026.
+Référence : code du dépôt au 8 octobre 2026.
 
 ## Socle et rendu
 
@@ -16,6 +16,7 @@ Next.js 14.2.5 App Router, React 18, TypeScript en mode strict et Tailwind CSS 3
 | `/confirmation/` | `useSearchParams` sous Suspense, lecture Firestore du code normalisé en majuscules, message d’invitation, catégories, lien d’hébergement et `RSVPFormFirebase`. |
 | `/hebergement/` | Suspense, bouton `router.back()` et liste locale de neuf hébergements. |
 | `/noces/` | Données `tripSteps`, hero partagé avec fond canvas séquencé, cinq escales et cadeau au premier plan ; retour Accueil dans le cadeau final, sans footer, navbar ni avion. |
+| `/motiontemplate/` | Globe MapLibre/CARTO France entière → vol Toulouse–Tokyo → Japon entier, puis sortie vers le haut sous des nuages OGL. Three.js : Littlest Tokyo/train au scroll, visite Inakaya par la porte avec vues intérieures larges et retour extérieur, puis carte Kinkakuji avec rotation 3D au survol/clavier. [Plan](plans/active/motiontemplate-three-experiences.md), [sources et rendu](MOTIONTEMPLATE_MODELS.md). |
 | `/admin/` | Authentification Email/Password, lecture des invitations et écoute des statuts, statistiques/tableau/export. |
 | `/gallerie/` | Albums de démonstration locaux et lightbox avec Zoom, Download, Thumbnails. |
 | `/gallerie-cloud/` | Albums OneDrive, ouverture des liens renseignés dans un nouvel onglet. |

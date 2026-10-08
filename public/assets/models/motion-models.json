@@ -1,0 +1,73 @@
+{
+  "tokyo": {
+    "source": "littlest_tokyo.glb",
+    "sourceBytes": 13932048,
+    "sourceSha256": "93dc4f51bbd37a986289792030ba067ec1333daf0a5911c0d9cef4c86c7a2b8d",
+    "attribution": {
+      "author": "3D Models Low Poly (https://sketchfab.com/Modelos3DLowPoly)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/littlest-tokyo-30c4a731fb8f4981bb9fdf0cfd986b70",
+      "title": "Littlest Tokyo"
+    },
+    "variants": {
+      "desktop": {
+        "file": "tokyo-desktop.glb",
+        "bytes": 4166880,
+        "maxTextureDimension": 2048
+      },
+      "mobile": {
+        "file": "tokyo-mobile.glb",
+        "bytes": 3752728,
+        "maxTextureDimension": 1024
+      }
+    }
+  },
+  "restaurant": {
+    "source": "japanese_restaurant_inakaya.glb",
+    "sourceBytes": 20465048,
+    "sourceSha256": "891c084b0831e6c3f1035411ff285aa21b872ce0d29a5986d02907c97d27258a",
+    "attribution": {
+      "author": "Jellepostma (https://sketchfab.com/Jellepostma)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/japanese-restaurant-inakaya-97594e92c418491ab7f032ed2abbf596",
+      "title": "Japanese Restaurant \"Inakaya\""
+    },
+    "variants": {
+      "desktop": {
+        "file": "restaurant-desktop.glb",
+        "bytes": 4128652,
+        "maxTextureDimension": 4096,
+        "maxOtherTextureDimension": 2048
+      },
+      "mobile": {
+        "file": "restaurant-mobile.glb",
+        "bytes": 2884224,
+        "maxTextureDimension": 2048,
+        "maxOtherTextureDimension": 1024
+      }
+    }
+  },
+  "temple": {
+    "source": "inubeko_ukiyo_-_kinkakuji_temple.glb",
+    "sourceBytes": 23361228,
+    "sourceSha256": "d8e80259e324d7456e0883bbbf5933a5db46542a0c90e2eeb898f3c69013c0ef",
+    "attribution": {
+      "author": "Jellepostma (https://sketchfab.com/Jellepostma)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/inubeko-ukiyo-kinkakuji-temple-3d146476840847ca9d46f3300aa4445d",
+      "title": "InuBeko Ukiyo - Kinkakuji Temple"
+    },
+    "variants": {
+      "desktop": {
+        "file": "temple-desktop.glb",
+        "bytes": 2935340,
+        "maxTextureDimension": 2048
+      },
+      "mobile": {
+        "file": "temple-mobile.glb",
+        "bytes": 2935340,
+        "maxTextureDimension": 1024
+      }
+    }
+  }
+}

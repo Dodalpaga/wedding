@@ -1,5 +1,10 @@
 # Captures d’écran
 
+## Motiontemplate : carte préparée avant le scroll — 8 octobre 2026
+
+[Captures et contrôles réseau](motiontemplate-globe-preload/README.md) : écran de préparation, zéro requête cartographique au scroll sur téléphone/tablette/PC et après resize, erreur/retry, clavier et réduction des mouvements.
+
+
 Captures de référence et preuves visuelles des étapes de travail des 3 et 4 octobre 2026. Elles ne sont pas régénérées automatiquement ; une image ancienne ne prime pas sur le code et les décisions actuelles. Les nouvelles captures de l’admin utilisent des données fictives ; la capture originale admin.png fournie par les propriétaires contient des données d’invités.
 
 ## État initial fourni par les propriétaires

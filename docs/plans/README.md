@@ -1,5 +1,7 @@
 # Plans d’exécution
 
+Plan Motiontemplate actif : [trois expériences japonaises](active/motiontemplate-three-experiences.md).
+
 Plan actif : [Noces : GSAP et images originales](active/noces-gsap-native-quality.md).
 
 Pour un changement complexe ou un refactoring majeur : créer un document dans `active/`, décrire le but et les étapes, noter les validations puis déplacer le plan dans `completed/` à la fin. Les plans terminés sont un historique ; la référence actuelle est [ARCHITECTURE.md](../ARCHITECTURE.md) et [PROJECT_STATE.md](../PROJECT_STATE.md).
@@ -22,5 +24,6 @@ Pour un changement complexe ou un refactoring majeur : créer un document dans `
 | [noces-solar-rays.md](completed/noces-solar-rays.md) | Rayons solaires au scroll, perspective, masque de luminance et performances bornées. |
 | [documentation-sync.md](completed/documentation-sync.md) | Audit et consolidation complète de la documentation. |
 | [admin-csv-layout.md](completed/admin-csv-layout.md) | CSV multiline, palette admin, pagination et cartes responsive. |
+| [motiontemplate-globe-preload.md](completed/motiontemplate-globe-preload.md) | Carte préparée avant le scroll, cache décodé conservé et contrôles réseau sans cache HTTP. |
 
 Le plan GSAP reste ouvert pour l’objectif absolu de fluidité à toute vitesse.
