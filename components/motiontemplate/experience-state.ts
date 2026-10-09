@@ -1,6 +1,7 @@
 import { clamp, phase } from './journey';
 
 export const FLIGHT_END = 0.32;
+export const INTRO_FADE_END = 0.05;
 export const EXPERIENCE_START = 0.28;
 export const RESTAURANT_START = 0.45;
 
@@ -8,7 +9,8 @@ export function experienceState(progress: number) {
   const p = clamp(progress);
   const restaurant = clamp((p - RESTAURANT_START) / (1 - RESTAURANT_START));
   return {
-    flight: clamp(p / FLIGHT_END),
+    // Keep the departure view still until the title has fully faded.
+    flight: clamp((p - INTRO_FADE_END) / (FLIGHT_END - INTRO_FADE_END)),
     visible: p >= EXPERIENCE_START,
     model: p < RESTAURANT_START ? 'tokyo' as const : 'restaurant' as const,
     train: clamp((p - EXPERIENCE_START) / (RESTAURANT_START - EXPERIENCE_START)),

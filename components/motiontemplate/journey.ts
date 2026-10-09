@@ -33,15 +33,22 @@ export function journeyState(p: number, orbitZoom = ORBIT_ZOOM, departureZoom = 
 }
 
 export function globeCamera(p: number, width: number, height: number) {
-  const orbitZoom = Math.log2(Math.min(width, height) * 0.8 / 512);
   const departure = countryCamera(COUNTRY_BOUNDS.france, width, height);
   const arrival = countryCamera(COUNTRY_BOUNDS.japan, width, height);
-  const { center: flightCenter, zoom } = journeyState(p, orbitZoom, departure.zoom, arrival.zoom);
+  const flightCenter = flightPoint(phase(p, 0.18, 0.5));
   const out = phase(p, 0.035, 0.19), into = phase(p, 0.48, 0.64);
   const center = flightCenter.map((value, i) =>
     value + (departure.center[i] - TOULOUSE[i]) * (1 - out) + (arrival.center[i] - TOKYO[i]) * into,
   ) as [number, number];
-  return { center, zoom, bearing: 0, pitch: 0 };
+  // MapLibre's globe radius is worldSize / (2π cos(latitude)). Blend in
+  // latitude-independent scale, then compensate at the actual camera centre:
+  // otherwise the northern flight looks like an unintended mid-flight zoom.
+  const latitudeZoom = (latitude: number) => Math.log2(Math.cos(latitude * Math.PI / 180));
+  const orbitZoom = Math.log2(Math.min(width, height) * 1.8 / 512);
+  const { zoom: scaleZoom } = journeyState(p, orbitZoom,
+    departure.zoom - latitudeZoom(departure.center[1]),
+    arrival.zoom - latitudeZoom(arrival.center[1]));
+  return { center, zoom: scaleZoom + latitudeZoom(center[1]), bearing: 0, pitch: 0 };
 }
 
 // Conservative Mercator envelope, also containing the globe projection at these

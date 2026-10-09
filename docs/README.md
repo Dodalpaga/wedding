@@ -32,6 +32,7 @@ Travail actif : [GSAP, images originales et cache borné sur Noces](plans/active
 | Hero séquencé, scènes fixes en fondu et cartes photo | `components/noces/frame-sequence.ts`, `components/noces/useJourneyScenes.ts`, `components/noces/`, `app/noces/noces.css`, `scripts/extract-video-frames.ps1` |
 | Ombre diagonale et rayons solaires au scroll | `components/noces/solar-rays.ts`, `components/noces/SequenceBackdrop.tsx`, `app/noces/noces.css` |
 | Globe et nouvelles expériences japonaises | `app/motiontemplate/`, `components/motiontemplate/` ; [modèles](MOTIONTEMPLATE_MODELS.md), [plan actif](plans/active/motiontemplate-three-experiences.md) |
+| Carte Kinkakuji : survol, clavier et inclinaison du téléphone | `components/motiontemplate/TemplePostcard.tsx`, `usePostcardTilt.ts`, `postcard-tilt.ts`, `tests/postcard-tilt.test.cjs` |
 | Buffer réseau et caches des frames | `components/noces/frame-buffer.ts`, `components/noces/frame-blob-cache.ts`, `components/noces/frame-sequence.ts`, `tests/frame-buffer.test.cjs`, `tests/frame-blob-cache.test.cjs` |
 | Volets des descriptions sur téléphone/écran court | `components/noces/StepDrawer.tsx`, `app/noces/noces.css` |
 | Albums locaux / OneDrive | `app/gallerie/page.tsx`, `app/gallerie-cloud/page.tsx` |

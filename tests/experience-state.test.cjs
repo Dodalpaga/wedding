@@ -1,6 +1,20 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),ts=require('typescript');
 const load=(name,deps={})=>{const module={exports:{}};new Function('module','exports','require',ts.transpileModule(fs.readFileSync(path.join(__dirname,'../components/motiontemplate/'+name+'.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText)(module,module.exports,id=>deps[id]);return module.exports;};
-const journey=load('journey'),{experienceState,restaurantPose,RESTAURANT_POSES}=load('experience-state',{'./journey':journey});
+const journey=load('journey'),{experienceState,restaurantPose,RESTAURANT_POSES,INTRO_FADE_END,FLIGHT_END}=load('experience-state',{'./journey':journey});
+
+test('title finishes fading before Earth moves, in either scroll direction',()=>{
+ for(const [width,height] of [[320,568],[820,1180],[1440,900]]) {
+  const initial=journey.globeCamera(0,width,height);
+  for(let i=0;i<=100;i++) {
+   const p=INTRO_FADE_END*i/100;
+   assert.deepEqual(journey.globeCamera(experienceState(p).flight,width,height),initial);
+  }
+  const moving=INTRO_FADE_END+(FLIGHT_END-INTRO_FADE_END)*.1;
+  assert.equal(1-journey.phase(moving,0,INTRO_FADE_END),0);
+  assert.notDeepEqual(journey.globeCamera(experienceState(moving).flight,width,height),initial);
+ }
+ assert.equal(experienceState(FLIGHT_END).flight,1,'cloud/model transition keeps its timing');
+});
 test('three restaurant chapters follow the cities and return outside before the postcard',()=>{
  assert.equal(experienceState(.31).model,'tokyo');assert.equal(experienceState(.46).restaurantChapter,'finding');assert.equal(experienceState(.72).restaurantChapter,'food');assert.equal(experienceState(.82).restaurantChapter,'kitchen');
  assert.deepEqual(restaurantPose(0),restaurantPose(1));assert.equal(experienceState(1).restaurant,1);

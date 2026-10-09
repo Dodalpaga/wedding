@@ -679,6 +679,28 @@ html:has(.motion-template)::-webkit-scrollbar {
 .motion-culture-copy {
   max-width: 390px;
 }
+.motion-tilt-controls {
+  margin-top: 1rem;
+  color: #607064;
+  font-size: .75rem;
+  line-height: 1.5;
+}
+.motion-tilt-controls button {
+  min-height: 44px;
+  margin-top: .6rem;
+  padding: .5rem 1rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  color: var(--primary);
+  background: transparent;
+}
+.motion-tilt-controls button:focus-visible {
+  outline: 2px solid #b77946;
+  outline-offset: 4px;
+}
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .motion-hover-hint { display: none; }
+}
 .motion-culture-copy .motion-itinerary-note {
   font-size: 0.75rem !important;
   font-style: italic;

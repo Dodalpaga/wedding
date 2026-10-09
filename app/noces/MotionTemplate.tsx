@@ -11,7 +11,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import FlightGlobe from '@/components/motiontemplate/FlightGlobe';
 import CloudTransition from '@/components/motiontemplate/CloudTransition';
-import { experienceState } from '@/components/motiontemplate/experience-state';
+import { experienceState, INTRO_FADE_END } from '@/components/motiontemplate/experience-state';
 import { Home } from 'lucide-react';
 import {
   clamp,
@@ -180,7 +180,7 @@ export default function MotionTemplate() {
         '--globe-y',
         `${-phase(state.clouds, 0.22, 0.78) * 110}%`,
       );
-      stage.style.setProperty('--intro-opacity', String(1 - phase(p, 0, 0.05)));
+      stage.style.setProperty('--intro-opacity', String(1 - phase(p, 0, INTRO_FADE_END)));
       // Tokyo is already present behind the globe/cloud bank, then rises into
       // view continuously; no visibility threshold or opacity/scale jump.
       stage.style.setProperty(

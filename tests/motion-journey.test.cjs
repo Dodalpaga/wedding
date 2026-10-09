@@ -20,14 +20,37 @@ test('country views contain mainland France/Corsica and Japan including Okinawa 
       assert.ok(camera.center[0]>west&&camera.center[0]<east);
       assert.ok(camera.center[1]>south&&camera.center[1]<north);
     }
-    const orbit=Math.log2(Math.min(width,height)*.8/512);
-    assert.ok(Math.abs(globeCamera(.3,width,height).zoom-orbit)<1e-10);
     // Both camera blends meet without a jump at the flight/zoom boundaries.
     for (const p of [.035,.19,.48,.64]) {
       const before=globeCamera(p-.000001,width,height),after=globeCamera(p+.000001,width,height);
       assert.ok(Math.abs(before.zoom-after.zoom)<.001);
       assert.ok(Math.hypot(...before.center.map((v,i)=>v-after.center[i]))<.001);
     }
+  }
+});
+
+test('Earth holds its apparent scale throughout the northern flight, with closer framing', () => {
+  // Same radius calculation used by MapLibre's globe projection, independent
+  // of latitude. A constant numeric zoom would fail this at the northern apex.
+  const radius = camera => 512 * 2 ** camera.zoom / (2 * Math.PI * Math.cos(camera.center[1] * Math.PI / 180));
+  for (const [width, height] of [[320,568],[820,1180],[1440,900],[844,390]]) {
+    const target = Math.min(width, height) * 1.8 / (2 * Math.PI);
+    for (let i = 0; i <= 100; i++) {
+      assert.ok(Math.abs(radius(globeCamera(.19 + .29 * i / 100, width, height)) - target) < 1e-8);
+    }
+    let previous = radius(globeCamera(0, width, height));
+    for (let i = 1; i <= 100; i++) {
+      const next = radius(globeCamera(.19 * i / 100, width, height));
+      assert.ok(next <= previous + 1e-8, 'departure only zooms out');
+      previous = next;
+    }
+    for (let i = 0; i <= 100; i++) {
+      const next = radius(globeCamera(.48 + .18 * i / 100, width, height));
+      assert.ok(next >= previous - 1e-8, 'arrival only zooms in');
+      previous = next;
+    }
+    const oldDepartureRadius = Math.min(width, height) * .8 / (2 * Math.PI * Math.cos(TOULOUSE[1] * Math.PI / 180));
+    assert.ok(target > oldDepartureRadius * 1.3, 'minimum globe size is visibly larger');
   }
 });
 
