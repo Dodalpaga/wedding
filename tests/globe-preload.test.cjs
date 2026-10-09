@@ -1,6 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict'),{EventEmitter}=require('node:events');
 const fs=require('node:fs'),path=require('node:path'),ts=require('typescript');
-function load(name,dependencies={}){const file=path.join(__dirname,'../components/motiontemplate',name+'.ts');const compiled=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}});const module={exports:{}};new Function('module','exports','require',compiled.outputText)(module,module.exports,id=>dependencies[id]);return module.exports;}
+function load(name,dependencies={}){const file=path.join(__dirname,'../components/noces',name+'.ts');const compiled=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}});const module={exports:{}};new Function('module','exports','require',compiled.outputText)(module,module.exports,id=>dependencies[id]);return module.exports;}
 const journey=load('journey'),{waitForGlobeIdle,waitForGlobeView,globePreloadViews,prepareGlobe}=load('globe-preload',{'./journey':journey});
 class MapDouble extends EventEmitter{
  constructor(){super();this.camera=journey.globeCamera(0,320,568);}

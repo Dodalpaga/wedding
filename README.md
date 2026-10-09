@@ -25,7 +25,7 @@ Le site de développement est disponible sur http://localhost:3000, sans préfix
 | `/` | Hero plein écran, aurore animée, date/lieu, accès RSVP, informations repliables, contact e-mail et lien vers le voyage. |
 | `/confirmation/?code=CODE` | Lecture de l’invitation Firestore, sélection d’un invité et réponse individuelle, selon les catégories configurées. |
 | `/hebergement/` | Neuf suggestions avec filtres par prix/capacité et coordonnées des établissements. Route directement accessible. |
-| `/noces/` | Globe France–Japon, avion et sortie sous les nuages. Littlest Tokyo avec train au scroll, visite Inakaya par la porte et carte Kinkakuji avec rotation 3D au survol, au clavier ou en inclinant le téléphone. Position initiale neutre, activation des capteurs si nécessaire et recentrage. Occlusion ambiante/ombres et préparation complète avant le scroll. [Modèles et rendu](docs/MOTIONTEMPLATE_MODELS.md). |
+| `/noces/` | Globe France–Japon, avion et sortie sous les nuages. Littlest Tokyo avec train au scroll, visite Inakaya par la porte et carte Kinkakuji avec rotation 3D au survol, au clavier ou en inclinant le téléphone. Position initiale neutre, activation des capteurs si nécessaire et recentrage. Occlusion ambiante/ombres et préparation complète avant le scroll. [Modèles et rendu](docs/NOCES_MODELS.md). |
 | `/admin/` | Connexion Firebase, suivi des réponses, flags repas/couchage, ratios confirmés/invités pour les deux, recherche, tri et export CSV. |
 | `/gallerie/?code=CODE` | Prototype d’albums locaux avec visionneuse, zoom, miniatures et téléchargement. |
 | `/gallerie-cloud/?code=CODE` | Prototype d’albums OneDrive ; la plupart des liens restent à compléter. |

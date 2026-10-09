@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const ts = require('typescript');
 const fs = require('node:fs');
-const source = fs.readFileSync(require('node:path').join(__dirname, '../components/motiontemplate/journey.ts'), 'utf8');
+const source = fs.readFileSync(require('node:path').join(__dirname, '../components/noces/journey.ts'), 'utf8');
 const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } });
 const loaded = { exports: {} };
 new Function('module', 'exports', compiled.outputText)(loaded, loaded.exports);

@@ -1,6 +1,6 @@
 # Plans d’exécution
 
-Plan Motiontemplate actif : [trois expériences japonaises](active/motiontemplate-three-experiences.md).
+Plan Noces actif : [trois expériences japonaises](active/noces-three-experiences.md).
 
 Plan actif : [Noces : GSAP et images originales](active/noces-gsap-native-quality.md).
 
@@ -8,6 +8,8 @@ Pour un changement complexe ou un refactoring majeur : créer un document dans `
 
 | Plan terminé | Portée et actualité |
 | --- | --- |
+| [noces-naming.md](completed/noces-naming.md) | Composants, page, styles, outils, tests et documents renommés Noces ; URLs historiques conservées dans les rapports. |
+| [temple-phone-tilt.md](completed/temple-phone-tilt.md) | Carte Kinkakuji inclinable sur téléphone, neutre initial, permissions et recentrage ; capteurs testés par simulation, validation physique encore nécessaire. |
 | [noces-reversal-freeze.md](completed/noces-reversal-freeze.md) | Correction du blocage à l’inversion ; tests avant/après et traversées rapides Chrome Windows PC. |
 | [noces-decoder-priority.md](completed/noces-decoder-priority.md) | Voie urgente, cache réduit ; gain de mémoire et de suivi, freezes encore présents. |
 | [noces-last-stutters.md](completed/noces-last-stutters.md) | Mise à jour GSAP directe et préparation des photos mobiles ; améliorations mesurées et pauses résiduelles documentées. |
@@ -24,6 +26,6 @@ Pour un changement complexe ou un refactoring majeur : créer un document dans `
 | [noces-solar-rays.md](completed/noces-solar-rays.md) | Rayons solaires au scroll, perspective, masque de luminance et performances bornées. |
 | [documentation-sync.md](completed/documentation-sync.md) | Audit et consolidation complète de la documentation. |
 | [admin-csv-layout.md](completed/admin-csv-layout.md) | CSV multiline, palette admin, pagination et cartes responsive. |
-| [motiontemplate-globe-preload.md](completed/motiontemplate-globe-preload.md) | Carte préparée avant le scroll, cache décodé conservé et contrôles réseau sans cache HTTP. |
+| [noces-globe-preload.md](completed/noces-globe-preload.md) | Carte préparée avant le scroll, cache décodé conservé et contrôles réseau sans cache HTTP. |
 
 Le plan GSAP reste ouvert pour l’objectif absolu de fluidité à toute vitesse.

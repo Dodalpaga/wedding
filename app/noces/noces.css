@@ -1,14 +1,14 @@
-html:has(.motion-template) {
+html:has(.noces-page) {
   scroll-behavior: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-html:has(.motion-template)::-webkit-scrollbar {
+html:has(.noces-page)::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
 }
-.motion-template {
+.noces-page {
   --ink: var(--primary);
   --gold: #a06a3e;
   min-height: 100vh;
@@ -20,7 +20,7 @@ html:has(.motion-template)::-webkit-scrollbar {
     -apple-system,
     sans-serif;
 }
-.motion-template a:focus-visible {
+.noces-page a:focus-visible {
   outline: 2px solid #b77946;
   outline-offset: 6px;
 }
@@ -428,7 +428,7 @@ html:has(.motion-template)::-webkit-scrollbar {
 .motion-stage:has(.motion-loading-screen) .motion-header,
 .motion-stage:has(.motion-loading-screen) .motion-intro,
 .motion-stage:has(.motion-loading-screen) .motion-footer,
-.motion-template:has(.motion-loading-screen) .motion-progress-track {
+.noces-page:has(.motion-loading-screen) .motion-progress-track {
   visibility: hidden;
 }
 @media (max-width: 700px) {

@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), ts = require('typescript');
 const load = (name, deps = {}) => {
   const module = { exports: {} };
-  const source = fs.readFileSync(path.join(__dirname, '../components/motiontemplate/' + name + '.ts'), 'utf8');
+  const source = fs.readFileSync(path.join(__dirname, '../components/noces/' + name + '.ts'), 'utf8');
   new Function('module', 'exports', 'require', ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(module, module.exports, id => deps[id]);
   return module.exports;
 };

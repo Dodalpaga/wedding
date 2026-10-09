@@ -9,30 +9,30 @@ import {
 } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import FlightGlobe from '@/components/motiontemplate/FlightGlobe';
-import CloudTransition from '@/components/motiontemplate/CloudTransition';
-import { experienceState, INTRO_FADE_END } from '@/components/motiontemplate/experience-state';
+import FlightGlobe from '@/components/noces/FlightGlobe';
+import CloudTransition from '@/components/noces/CloudTransition';
+import { experienceState, INTRO_FADE_END } from '@/components/noces/experience-state';
 import { Home } from 'lucide-react';
 import {
   clamp,
   journeyState,
   phase,
-} from '@/components/motiontemplate/journey';
-import type { GlobePreparation } from '@/components/motiontemplate/globe-preload';
+} from '@/components/noces/journey';
+import type { GlobePreparation } from '@/components/noces/globe-preload';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import './motiontemplate.css';
+import './noces.css';
 
 const JapaneseExperiences = dynamic(
-  () => import('@/components/motiontemplate/JapaneseExperiences'),
+  () => import('@/components/noces/JapaneseExperiences'),
   { ssr: false },
 );
 const TemplePostcard = dynamic(
-  () => import('@/components/motiontemplate/TemplePostcard'),
+  () => import('@/components/noces/TemplePostcard'),
   { ssr: false },
 );
 type ResourceKind = 'map' | 'tokyo' | 'restaurant' | 'temple';
 
-export default function MotionTemplate() {
+export default function NocesJourney() {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const progressTrackRef = useRef<HTMLDivElement>(null);
@@ -218,7 +218,7 @@ export default function MotionTemplate() {
   }, []);
 
   return (
-    <main className="motion-template">
+    <main className="noces-page">
       <div
         ref={progressTrackRef}
         className="motion-progress-track"

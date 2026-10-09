@@ -1,6 +1,6 @@
 # Préparer le globe avant le scroll
 
-Complément : cadrages des pays entiers, seconde passe aux dimensions visibles et corps vectoriels conservés pendant la visite. Les expériences après les nuages font l’objet du [nouveau plan](../active/motiontemplate-three-experiences.md).
+Complément : cadrages des pays entiers, seconde passe aux dimensions visibles et corps vectoriels conservés pendant la visite. Les expériences après les nuages font l’objet du [nouveau plan](../active/noces-three-experiences.md).
 
 ## Demande du 8 octobre 2026
 
@@ -19,6 +19,6 @@ Aucun accès Firebase, RSVP soumis ou déploiement. Les données cartographiques
 
 ## Résultats et limites
 
-Six tests de préparation, trois tests du trajet, TypeScript et export isolé validés. Les visites Chrome avec cache HTTP désactivé couvrent 320×568, 820×1180, 1440×900, resize 390×844 et parcours haute densité DPR 2. Zéro requête CARTO au scroll ; erreur/retry/passage, clavier, réduction des mouvements et no-JS contrôlés. Double montage React en développement validé. [Rapport](../../screenshots/motiontemplate-globe-preload/README.md).
+Six tests de préparation, trois tests du trajet, TypeScript et export isolé validés. Les visites Chrome avec cache HTTP désactivé couvrent 320×568, 820×1180, 1440×900, resize 390×844 et parcours haute densité DPR 2. Zéro requête CARTO au scroll ; erreur/retry/passage, clavier, réduction des mouvements et no-JS contrôlés. Double montage React en développement validé. [Rapport](../../screenshots/noces-globe-preload/README.md).
 
 Le temps initial varie avec le réseau et le GPU ; pas de mesure sur téléphone physique ni réseau lent. La couverture porte sur le trajet, avec marge de 256px, et le viewport préparé. Une nouvelle taille entraîne une préparation supplémentaire. Les vues sont sélectionnées parmi 769 positions, et le cache décodé est plafonné à 2048 tuiles par source. Aucun cache persistant ajouté ni accès/écriture Firebase.

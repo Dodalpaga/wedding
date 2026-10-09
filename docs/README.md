@@ -17,7 +17,7 @@ Travail actif : [GSAP, images originales et cache borné sur Noces](plans/active
 | [Plans](plans/README.md) | Organisation des travaux et plans terminés. |
 | [Captures](screenshots/README.md) | Index des screenshots et limites de leur actualité. |
 
-[Modèles Motiontemplate et crédits](MOTIONTEMPLATE_MODELS.md).
+[Modèles Noces et crédits](NOCES_MODELS.md).
 
 ## Où modifier quoi ?
 
@@ -31,8 +31,8 @@ Travail actif : [GSAP, images originales et cache borné sur Noces](plans/active
 | Escales du Japon, textes, visuels | `tripSteps` dans `app/noces/page.tsx` |
 | Hero séquencé, scènes fixes en fondu et cartes photo | `components/noces/frame-sequence.ts`, `components/noces/useJourneyScenes.ts`, `components/noces/`, `app/noces/noces.css`, `scripts/extract-video-frames.ps1` |
 | Ombre diagonale et rayons solaires au scroll | `components/noces/solar-rays.ts`, `components/noces/SequenceBackdrop.tsx`, `app/noces/noces.css` |
-| Globe et nouvelles expériences japonaises | `app/motiontemplate/`, `components/motiontemplate/` ; [modèles](MOTIONTEMPLATE_MODELS.md), [plan actif](plans/active/motiontemplate-three-experiences.md) |
-| Carte Kinkakuji : survol, clavier et inclinaison du téléphone | `components/motiontemplate/TemplePostcard.tsx`, `usePostcardTilt.ts`, `postcard-tilt.ts`, `tests/postcard-tilt.test.cjs` |
+| Globe et nouvelles expériences japonaises | `app/noces/`, `components/noces/` ; [modèles](NOCES_MODELS.md), [plan actif](plans/active/noces-three-experiences.md) |
+| Carte Kinkakuji : survol, clavier et inclinaison du téléphone | `components/noces/TemplePostcard.tsx`, `usePostcardTilt.ts`, `postcard-tilt.ts`, `tests/postcard-tilt.test.cjs` |
 | Buffer réseau et caches des frames | `components/noces/frame-buffer.ts`, `components/noces/frame-blob-cache.ts`, `components/noces/frame-sequence.ts`, `tests/frame-buffer.test.cjs`, `tests/frame-blob-cache.test.cjs` |
 | Volets des descriptions sur téléphone/écran court | `components/noces/StepDrawer.tsx`, `app/noces/noces.css` |
 | Albums locaux / OneDrive | `app/gallerie/page.tsx`, `app/gallerie-cloud/page.tsx` |

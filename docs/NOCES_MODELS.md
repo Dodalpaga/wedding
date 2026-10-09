@@ -1,6 +1,6 @@
-# Modèles Motiontemplate
+# Modèles Noces
 
-Trois GLB fournis par les propriétaires le 9 octobre 2026, en remplacement des paysages précédents. Le globe, l'avion et les nuages restent en place. [Plan](plans/active/motiontemplate-three-experiences.md).
+Trois GLB fournis par les propriétaires le 9 octobre 2026, en remplacement des paysages précédents. Le globe, l'avion et les nuages restent en place. [Plan](plans/active/noces-three-experiences.md).
 
 Le cadrage du globe compense le facteur de latitude de MapLibre : son échelle apparente reste constante pendant le vol vers le nord, sans agrandissement au milieu du trajet. Le recul est réduit (rayon de référence de 1,8 × la petite dimension du viewport / 2π, remplaçant le premier réglage à 1,5), avec un dézoom au départ et un zoom à l'arrivée. Le globe reste immobile jusqu'à la disparition complète du titre (5 % du parcours principal), puis le voyage reprend jusqu'au même point de sortie sous les nuages. Les vues de la France et du Japon entiers conservent leurs cadrages.
 
@@ -20,7 +20,7 @@ Sur les navigateurs imposant [une autorisation déclenchée par un geste](https:
 
 Tokyo monte progressivement derrière le globe et les nuages, sans seuil de visibilité, fondu ou agrandissement. Tokyo et Inakaya utilisent une lumière directionnelle avec ombres portées et une passe d'occlusion ambiante SSAO. L'environnement et la lumière ambiante sont réduits pour conserver les contrastes. Le temple garde son rendu d'origine sans ces effets.
 
-Les versions web sont générées séparément par `node scripts/prepare-motion-models.mjs`, avec Meshopt et des textures WebP. Un argument `tokyo`, `restaurant` ou `temple` permet de ne préparer qu'un modèle. Les sources restent intactes ; `public/assets/models/motion-models.json` conserve leurs empreintes, les crédits et les tailles générées.
+Les versions web sont générées séparément par `node scripts/prepare-noces-models.mjs`, avec Meshopt et des textures WebP. Un argument `tokyo`, `restaurant` ou `temple` permet de ne préparer qu'un modèle. Les sources restent intactes ; `public/assets/models/noces-models.json` conserve leurs empreintes, les crédits et les tailles générées.
 
 | Variante | Tokyo | Inakaya | Kinkakuji | Total |
 | --- | ---: | ---: | ---: | ---: |

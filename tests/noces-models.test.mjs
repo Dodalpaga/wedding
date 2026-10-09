@@ -3,7 +3,7 @@ import { NodeIO } from '@gltf-transform/core';import { ALL_EXTENSIONS } from '@g
 import sharp from 'sharp';import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 await MeshoptDecoder.ready;const io=new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({'meshopt.decoder':MeshoptDecoder});
-const folder=new URL('../public/assets/models/',import.meta.url),manifest=JSON.parse(await fs.readFile(new URL('motion-models.json',folder),'utf8'));
+const folder=new URL('../public/assets/models/',import.meta.url),manifest=JSON.parse(await fs.readFile(new URL('noces-models.json',folder),'utf8'));
 test('prepared GLBs preserve source files, embedded resources, materials and the train animation',async()=>{
  for(const [name,entry]of Object.entries(manifest)){
   const source=await fs.readFile(new URL(entry.source,folder));assert.equal(createHash('sha256').update(source).digest('hex'),entry.sourceSha256);

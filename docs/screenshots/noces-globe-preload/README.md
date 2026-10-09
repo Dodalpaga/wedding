@@ -1,6 +1,8 @@
 # Globe préparé avant le scroll
 
-Contrôle historique de la cartographie seule. Depuis le 9 octobre, l'écran prépare également les trois modèles GLB et leur rendu, y compris en réduction des mouvements. Voir les [contrôles du parcours actuel](../motiontemplate-experiences/README.md).
+Le dossier porte désormais le nom Noces. Les URLs de l'ancienne route du prototype dans les rapports ci-dessous restent historiques ; la route actuelle est `/noces/`.
+
+Contrôle historique de la cartographie seule. Depuis le 9 octobre, l'écran prépare également les trois modèles GLB et leur rendu, y compris en réduction des mouvements. Voir les [contrôles du parcours actuel](../noces-experiences/README.md).
 
 Vérification du 8 octobre 2026 sur l'export `/wedding/motiontemplate/`, Chrome Windows, GPU NVIDIA GTX 1070 via ANGLE/D3D11. Cache HTTP désactivé par CDP avant chaque visite ; aucune interception des requêtes CARTO, aucune écriture Firebase. Script local `build/check-globe-preload.cjs` et copie de compilation `build/motion-validation` (ignorés par Git).
 

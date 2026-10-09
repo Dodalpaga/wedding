@@ -1,5 +1,5 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),ts=require('typescript');
-const source=fs.readFileSync(require('node:path').join(__dirname,'../components/motiontemplate/globe-resources.ts'),'utf8');
+const source=fs.readFileSync(require('node:path').join(__dirname,'../components/noces/globe-resources.ts'),'utf8');
 const compiled=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;
 const moduleObject={exports:{}};new Function('module','exports','require',compiled)(moduleObject,moduleObject.exports,()=>({GLOBE_TILE_CACHE_SIZE:2048}));
 const {createGlobeResourceCache}=moduleObject.exports;

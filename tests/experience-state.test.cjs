@@ -1,5 +1,5 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),ts=require('typescript');
-const load=(name,deps={})=>{const module={exports:{}};new Function('module','exports','require',ts.transpileModule(fs.readFileSync(path.join(__dirname,'../components/motiontemplate/'+name+'.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText)(module,module.exports,id=>deps[id]);return module.exports;};
+const load=(name,deps={})=>{const module={exports:{}};new Function('module','exports','require',ts.transpileModule(fs.readFileSync(path.join(__dirname,'../components/noces/'+name+'.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText)(module,module.exports,id=>deps[id]);return module.exports;};
 const journey=load('journey'),{experienceState,restaurantPose,RESTAURANT_POSES,INTRO_FADE_END,FLIGHT_END}=load('experience-state',{'./journey':journey});
 
 test('title finishes fading before Earth moves, in either scroll direction',()=>{

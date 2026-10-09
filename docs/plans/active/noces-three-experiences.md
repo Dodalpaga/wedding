@@ -1,4 +1,4 @@
-# Motiontemplate : trois expériences japonaises
+# Noces : trois expériences japonaises
 
 Demande du 9 octobre 2026. Conserver France → globe → Japon, avion, préparation complète et sortie sous les nuages. Supprimer les anciennes scènes Tokyo/Fuji et bambous ainsi que leurs documents et captures obsolètes, à la demande explicite des propriétaires.
 

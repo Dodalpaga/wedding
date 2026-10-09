@@ -38,6 +38,6 @@ for (const [name, file] of Object.entries(inputs)) {
   report[name] = { source: file, sourceBytes: source.length, sourceSha256: createHash('sha256').update(source).digest('hex'), attribution: original.asset.extras, variants };
   console.log(JSON.stringify({ name, sourceBytes: source.length, variants }));
 }
-const manifest = path.join(folder, 'motion-models.json');
+const manifest = path.join(folder, 'noces-models.json');
 const previous = process.argv[2] ? JSON.parse(await fs.readFile(manifest, 'utf8')) : {};
 await fs.writeFile(manifest, JSON.stringify({ ...previous, ...report }, null, 2) + '\n');
