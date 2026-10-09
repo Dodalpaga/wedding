@@ -2,7 +2,7 @@
 
 ## Motiontemplate : nouvelle direction — 9 octobre 2026
 
-Le globe, les cadrages des pays entiers, l’avion et les nuages restent en place. Les anciens paysages et leur documentation sont retirés à la demande des propriétaires. Le [parcours](plans/active/motiontemplate-three-experiences.md) intègre Littlest Tokyo, Inakaya et Kinkakuji ; le cube du temple est cadré avec une marge qui conserve son contenu pendant la rotation. Le thème partagé utilise vert profond, beige de fond et blanc clair pour les cartes/FAQ. Les [sources et crédits](MOTIONTEMPLATE_MODELS.md) sont inspectés. Aucun déploiement ni écriture Firebase.
+Le globe, les cadrages des pays entiers, l’avion et les nuages restent en place. Les anciens paysages et leur documentation sont retirés à la demande des propriétaires. Le [parcours](plans/active/motiontemplate-three-experiences.md) intègre Littlest Tokyo, Inakaya et Kinkakuji ; le cube du temple est cadré avec une marge qui conserve son contenu pendant la rotation. La carte Kinkakuji termine maintenant la page : compteur/progression jusqu’à 03/03, texte de clôture et crédits regroupés dans cette scène. Le thème partagé utilise vert profond, beige de fond et blanc clair pour les cartes/FAQ. Les [sources et crédits](MOTIONTEMPLATE_MODELS.md) sont inspectés. Aucun déploiement ni écriture Firebase.
 
 
 État du code au **5 octobre 2026**. Ce document consolide les notes de refactoring ; les états intermédiaires sont conservés dans les plans/captures et ne sont pas la référence courante.
