@@ -1,5 +1,7 @@
 # Modèles Noces
 
+La scène sticky conserve `100lvh` (fallback `100vh`) pour couvrir la zone libérée lorsque la barre d'adresse mobile se replie, y compris pendant le geste. La longueur du parcours reste en `svh` ; les translations de Tokyo/Inakaya sont exprimées en pourcentage de leur hauteur, comme celle du globe. Le calcul du progrès soustrait la hauteur réelle de la scène. La réduction des mouvements conserve son contenu dans le flux avec une hauteur naturelle.
+
 Trois GLB fournis par les propriétaires le 9 octobre 2026, en remplacement des paysages précédents. Le globe, l'avion et les nuages restent en place. [Plan](plans/active/noces-three-experiences.md).
 
 Le cadrage du globe compense le facteur de latitude de MapLibre : son échelle apparente reste constante pendant le vol vers le nord, sans agrandissement au milieu du trajet. Le recul est réduit (rayon de référence de 1,8 × la petite dimension du viewport / 2π, remplaçant le premier réglage à 1,5), avec un dézoom au départ et un zoom à l'arrivée. Le globe reste immobile jusqu'à la disparition complète du titre (5 % du parcours principal), puis le voyage reprend jusqu'au même point de sortie sous les nuages. Les vues de la France et du Japon entiers conservent leurs cadrages.

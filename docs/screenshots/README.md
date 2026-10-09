@@ -1,5 +1,7 @@
 # Captures d’écran
 
+[Viewport mobile Noces](noces-mobile-viewport/README.md) : reproduction de la bande verte au repli de la barre d'adresse, puis couverture complète avec `100lvh` ; simulation téléphone/tablette/PC et limites.
+
 ## Noces : carte préparée avant le scroll — 8 octobre 2026
 
 [Captures et contrôles réseau](noces-globe-preload/README.md) : écran de préparation, zéro requête cartographique au scroll sur téléphone/tablette/PC et après resize, erreur/retry, clavier et réduction des mouvements.

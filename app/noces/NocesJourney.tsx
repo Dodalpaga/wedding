@@ -185,11 +185,11 @@ export default function NocesJourney() {
       // view continuously; no visibility threshold or opacity/scale jump.
       stage.style.setProperty(
         '--tokyo-y',
-        `${(1 - phase(p, 0.225, 0.3)) * 45 - phase(p, 0.425, 0.455) * 110}svh`,
+        `${(1 - phase(p, 0.225, 0.3)) * 45 - phase(p, 0.425, 0.455) * 110}%`,
       );
       stage.style.setProperty(
         '--restaurant-y',
-        `${(1 - phase(p, 0.425, 0.455)) * 110}svh`,
+        `${(1 - phase(p, 0.425, 0.455)) * 110}%`,
       );
       stage.dataset.experience = experience.model;
       stage.dataset.restaurantChapter = experience.restaurantChapter;

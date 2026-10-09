@@ -34,7 +34,9 @@ html:has(.noces-page)::-webkit-scrollbar {
 .motion-stage {
   position: sticky;
   top: 0;
-  height: 100svh;
+  /* Paint the full screen throughout mobile browser toolbar animations. */
+  height: 100vh;
+  height: 100lvh;
   min-height: 400px;
   width: 100%;
   overflow: hidden;
@@ -523,10 +525,10 @@ html:has(.noces-page)::-webkit-scrollbar {
   pointer-events: none;
 }
 .motion-experience-tokyo {
-  transform: translateY(var(--tokyo-y, 0svh));
+  transform: translateY(var(--tokyo-y, 0%));
 }
 .motion-experience-restaurant {
-  transform: translateY(var(--restaurant-y, 110svh));
+  transform: translateY(var(--restaurant-y, 110%));
   background: var(--accent);
 }
 .motion-model-panel {
