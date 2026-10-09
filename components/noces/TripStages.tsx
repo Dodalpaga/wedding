@@ -1,5 +1,5 @@
 import { Image as ImageIcon } from 'lucide-react';
-import type { TripStep } from '@/app/noces/page';
+import type { TripStep } from './types';
 import StepDrawer from './StepDrawer';
 
 export default function TripStages({ steps }: { steps: TripStep[] }) {

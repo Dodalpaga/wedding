@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import type { TripStep } from '@/app/noces/page';
+import type { TripStep } from './types';
 import SequenceBackdrop from './SequenceBackdrop';
 import TripStages from './TripStages';
 import GiftSection from './GiftSection';
