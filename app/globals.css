@@ -110,28 +110,6 @@ body {
   }
 }
 
-.aurora-bg {
-  background: linear-gradient(
-    135deg,
-    var(--primary) 0%,
-    var(--dark) 30%,
-    var(--secondary) 60%,
-    var(--primary) 100%
-  );
-  background-size: 200% 200%;
-  animation: aurora-shift 15s ease infinite;
-}
-
-@keyframes aurora-shift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
 /* Compact guest landing page. Scoped to keep other routes unchanged. */
 .landing-page {
   color: var(--primary);
@@ -192,22 +170,6 @@ body {
 .admin-login { display: grid; place-items: center; padding: 1rem; background: radial-gradient(ellipse at top left, #dcece3, transparent 65%), var(--accent); }
 
 /* Honeymoon travel journal. */
-.honeymoon-container { width: min(100% - 2rem, 1040px); margin-inline: auto; }
-.honeymoon-page a:focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
-.honeymoon-page #itineraire { scroll-margin-top: 1rem; }
-.honeymoon-route { position: absolute; left: 12px; top: 0; bottom: 0; }
-.honeymoon-step { position: relative; display: grid; gap: 1.25rem; padding-left: 2.5rem; }
-.honeymoon-step > div { min-width: 0; }
-.honeymoon-visual {
-  position: relative; display: flex; align-items: center; justify-content: center;
-  height: 160px; overflow: hidden; border-radius: 1rem; background: var(--accent);
-  border: 1px solid rgb(23 78 54 / 8%);
-}
-@media (min-width: 768px) {
-  .honeymoon-route { left: 50%; }
-  .honeymoon-step { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 4rem; padding-left: 0; }
-  .honeymoon-visual { height: 260px; }
-}
 .landing-panel {
   padding: 1.25rem;
   border: 1px solid rgb(23 78 54 / 12%);

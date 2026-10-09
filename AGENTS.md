@@ -12,11 +12,10 @@ La connaissance du projet est maintenue dans `/docs` :
 - `docs/ARCHITECTURE.md` : routes, composants, interactions et contraintes techniques.
 - `docs/CONFIGURATION.md` : installation, environnement, scripts et déploiement.
 - `docs/DATA_MODEL.md` : schéma Firestore, catégories d’invitation et comportement RSVP.
-- `docs/DECISIONS.md` : décisions en vigueur et choix remplacés.
 - `docs/PROJECT_STATE.md` : état actuel, vérifications et limites connues.
-- `docs/plans/` : plans d’exécution ; `docs/screenshots/README.md` explique les captures.
+- `docs/NOCES_MODELS.md` : sources, crédits et préparation des modèles 3D.
 
-Lire les documents utiles avant de modifier le comportement. Maintenir le README et ces documents en cohérence avec les changements significatifs. Pour une fonctionnalité complexe ou un refactoring majeur, créer un plan sous `docs/plans/active/`, l’actualiser au fil du travail puis le déplacer sous `docs/plans/completed/`. Les plans terminés restent historiques ; signaler les décisions remplacées plutôt que de les présenter comme actuelles.
+Lire les documents utiles avant de modifier le comportement. Maintenir le README et ces documents en cohérence avec l’état actuel. Pour un travail complexe, garder le plan et les captures temporaires sous `build/` (ignoré par Git), puis résumer le résultat et ses limites dans la documentation utile. Ne pas conserver de dossiers historiques de plans ou de screenshots dans le dépôt.
 
 ## Règles de modification
 

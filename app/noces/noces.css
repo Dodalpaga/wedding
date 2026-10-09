@@ -171,17 +171,6 @@ html:has(.noces-page)::-webkit-scrollbar {
   justify-content: space-between;
   gap: 1rem;
 }
-.motion-wordmark {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: inherit;
-  text-decoration: none;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  font-weight: 600;
-  min-height: 44px;
-}
 
 .motion-chapter-count {
   font-size: 0.72rem;
@@ -438,11 +427,6 @@ html:has(.noces-page)::-webkit-scrollbar {
     left: 5vw;
     right: 5vw;
     gap: 0.5rem;
-  }
-  .motion-wordmark {
-    font-size: 0.62rem;
-    letter-spacing: 0.07em;
-    gap: 0.4rem;
   }
 
   .motion-chapter-count {

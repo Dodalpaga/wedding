@@ -3,10 +3,10 @@ import { NodeIO } from '@gltf-transform/core';import { ALL_EXTENSIONS } from '@g
 import sharp from 'sharp';import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 await MeshoptDecoder.ready;const io=new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({'meshopt.decoder':MeshoptDecoder});
-const folder=new URL('../public/assets/models/',import.meta.url),manifest=JSON.parse(await fs.readFile(new URL('noces-models.json',folder),'utf8'));
+const folder=new URL('../public/assets/models/',import.meta.url),sources=new URL('../assets/models/',import.meta.url),manifest=JSON.parse(await fs.readFile(new URL('noces-models.json',sources),'utf8'));
 test('prepared GLBs preserve source files, embedded resources, materials and the train animation',async()=>{
  for(const [name,entry]of Object.entries(manifest)){
-  const source=await fs.readFile(new URL(entry.source,folder));assert.equal(createHash('sha256').update(source).digest('hex'),entry.sourceSha256);
+  const source=await fs.readFile(new URL(entry.source,sources));assert.equal(createHash('sha256').update(source).digest('hex'),entry.sourceSha256);
   for(const [profile,variant]of Object.entries(entry.variants)){
    const file=new URL(variant.file,folder),bytes=await fs.readFile(file);assert.equal(bytes.length,variant.bytes);assert.ok(bytes.length<source.length*.5);
    const document=await io.read(fileURLToPath(file));assert.ok(document.getRoot().listMeshes().length>0);

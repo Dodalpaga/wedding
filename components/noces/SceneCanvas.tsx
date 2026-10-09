@@ -84,7 +84,8 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
         }
         const profile = innerWidth <= 700 ? 'mobile' : 'desktop';
         canvas.dataset.profile = profile;
-        const url = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/assets/models/${kind}-${profile}.glb`;
+        const file = kind === 'temple' ? 'temple.glb' : `${kind}-${profile}.glb`;
+        const url = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/assets/models/${file}`;
         const response = await fetch(url, { signal: controller.signal });
         if (!response.ok) throw new Error('Model unavailable');
         const total = Number(response.headers.get('content-length'));

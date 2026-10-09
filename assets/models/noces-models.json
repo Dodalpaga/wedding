@@ -59,12 +59,12 @@
     },
     "variants": {
       "desktop": {
-        "file": "temple-desktop.glb",
+        "file": "temple.glb",
         "bytes": 2935340,
         "maxTextureDimension": 2048
       },
       "mobile": {
-        "file": "temple-mobile.glb",
+        "file": "temple.glb",
         "bytes": 2935340,
         "maxTextureDimension": 1024
       }

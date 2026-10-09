@@ -10,6 +10,7 @@ coverage/
 .next/
 out/
 build/
+.codex-remote-attachments/
 dist/
 
 # Production

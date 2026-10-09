@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Aurora from '@/components/Aurora/Aurora';
+import Aurora from '@/components/Aurora';
 import Signature from '@/components/Signature';
 
 export default function Hero() {
