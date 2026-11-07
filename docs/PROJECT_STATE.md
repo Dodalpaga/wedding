@@ -10,6 +10,8 @@ Le voyage conserve le globe compensÃ© en latitude, le fondu du titre avant mou
 
 ## Limites connues
 
+Le mode édition global modifie les réponses RSVP, les présences, l'e-mail et les commentaires des invités visibles sur la page ; les changements se sauvegardent en un lot Firestore ou s'annulent. Les cartes mobiles et les statistiques du tableau ont été resserrées pour limiter le défilement. `npx tsc --noEmit`, `npm test` (37 tests) et le build de production ont réussi. Aucune réponse réelle n'a été écrite ; les règles Firestore de l'admin restent à sécuriser séparément.
+
 - Les rÃ¨gles Firebase et rÃ´les admin ne sont pas dans le dÃ©pÃ´t ; les codes/conditions client ne constituent pas une protection serveur.
 - Les galeries ne valident pas les invitations et ne protÃ¨gent pas les images.
 - L'inclinaison du tÃ©lÃ©phone est testÃ©e par Ã©vÃ©nements simulÃ©s ; sensation et permissions sur appareil physique restent Ã  vÃ©rifier.

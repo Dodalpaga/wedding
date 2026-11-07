@@ -31,6 +31,10 @@ L'admin Ã©coute les rÃ©ponses, joint les membres par nom, filtre et trie les
 
 Les galeries exigent uniquement un code non vide dans l'URL ; elles ne valident pas l'invitation et ne protÃ¨gent pas les images. L'admin accepte une session Firebase connectÃ©e sans rÃ´le/allowlist versionnÃ©. Le dÃ©pÃ´t ne contient pas les rÃ¨gles Firebase : ces interfaces ne prouvent pas une autorisation serveur.
 
+Le tableau admin utilise des indicateurs de présence compacts et des cartes synthétiques sur téléphone. Le bouton « Mode édition » rend les champs RSVP de tous les invités de la page directement modifiables, en tableau sur ordinateur et en cartes sur téléphone. Les filtres et la pagination sont suspendus pendant l'édition ; les changements se sauvegardent ensemble ou s'annulent. Le nom et les flags d'invitation ne sont pas modifiables depuis cet éditeur.
+
+L'authentification Firebase contrôle l'accès à l'interface, mais ne constitue pas une autorisation serveur. Les règles indiquées pour `statuts` autorisent les écritures publiques ; elles doivent être revues séparément si les modifications administratives doivent être restreintes.
+
 ## Voyage Noces
 
 MapLibre/CARTO affiche la France entiÃ¨re, suit le vol Toulouseâ€“Tokyo et termine sur le Japon entier. Le titre finit de disparaÃ®tre avant le premier mouvement. Le zoom compense la latitude pour garder une taille constante en vol. Tuiles, modÃ¨les et shaders sont prÃ©parÃ©s avant de libÃ©rer le scroll ; les erreurs proposent RÃ©essayer ou Passer le voyage. Le cache conserve les ressources de la visite et les libÃ¨re au dÃ©montage.

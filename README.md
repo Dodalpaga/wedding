@@ -22,6 +22,8 @@ npm run build
 
 ## Routes
 
+Le panneau admin propose un mode édition global pour les invités visibles, avec modifications directes des champs puis sauvegarde groupée ou annulation.
+
 | Route | Fonction |
 | --- | --- |
 | `/` | Invitation, hero/aurore, programme provisoire, lieu, FAQ, contact e-mail et accÃ¨s RSVP. |

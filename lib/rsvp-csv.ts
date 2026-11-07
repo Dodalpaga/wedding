@@ -1,5 +1,6 @@
 export interface AdminGuest {
   codeInvitation: string;
+  statutDocumentId?: string;
   nom: string;
   email: string;
   statut: 'accepte' | 'refuse' | 'en_attente';
@@ -10,6 +11,16 @@ export interface AdminGuest {
   dimanche_brunch: boolean;
   commentaires: string;
   dateModification?: Date;
+}
+
+export type AdminRsvpEdits = Pick<
+  AdminGuest,
+  'statut' | 'email' | 'commentaires' | 'vendredi_soir' | 'samedi_soir' | 'dimanche_brunch'
+>;
+
+export interface AdminGuestEdit {
+  guest: AdminGuest;
+  edits: AdminRsvpEdits;
 }
 
 /** Keep one physical line per guest; flatten field line breaks only in the export. */

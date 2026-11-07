@@ -143,7 +143,7 @@ body {
 .admin-input { display: block; width: 100%; min-width: 0; min-height: 44px; border: 1px solid #cfdcd5; border-radius: .65rem; padding: .625rem .75rem; background: var(--paper); font-size: 1rem; font-weight: 400; color: var(--primary); }
 .admin-input.pl-9 { padding-left: 2.25rem; }
 .admin-input.w-auto { width: auto; }
-.admin-page :is(button, a, input, select, summary, [tabindex]):focus-visible { outline: 3px solid #137e41; outline-offset: 3px; }
+.admin-page :is(button, a, input, select, textarea, summary, [tabindex]):focus-visible { outline: 3px solid #137e41; outline-offset: 3px; }
 .admin-header :is(a, button):focus-visible { outline-color: var(--paper); }
 .admin-status { display: inline-flex; white-space: nowrap; border-radius: 999px; padding: .25rem .625rem; font-size: .75rem; font-weight: 600; }
 .admin-status-confirmed { color: #16633b; background: #e9f4ed; }
@@ -157,6 +157,7 @@ body {
 .admin-table tbody tr { border-top: 1px solid #e7ede9; }
 .admin-table tbody tr:nth-child(even) { background: var(--accent); }
 .admin-table tbody tr:hover { background: var(--accent); }
+.admin-table-editing .admin-input { background: #fff; border-color: #b7c9bf; }
 .admin-table :is(th, td):nth-child(1) { width: 6%; }
 .admin-table :is(th, td):nth-child(2) { width: 12%; overflow-wrap: anywhere; }
 .admin-table :is(th, td):nth-child(3) { width: 9%; }

@@ -43,6 +43,12 @@ Les Ã©vÃ©nements masquÃ©s ne sont pas automatiquement effacÃ©s : les boo
 
 ## Administration et CSV
 
+Le mode édition admin sauvegarde ensemble les modifications de la page dans les documents `statuts`, avec un lot Firestore atomique. Il modifie `statut`, `email`, `commentaires` et les trois booléens d'événements, conserve les éventuels champs supplémentaires et crée un document manquant avec le nom exact de l'invité comme identifiant, comme le formulaire RSVP.
+
+L'admin peut remettre une réponse en `en_attente` sans supprimer l'e-mail, le commentaire ou les événements : cette valeur est affichée comme « En attente ». Le formulaire public conserve son comportement actuel : une personne peut ensuite choisir sa réponse et la soumettre normalement.
+
+Avec les règles Firestore fournies, les écritures dans `statuts` sont également autorisées aux clients non connectés. L'accès à l'éditeur par connexion admin ne restreint donc pas ces écritures côté serveur. Ne pas traiter l'interface comme une barrière d'autorisation ; toute évolution des règles doit conserver le parcours RSVP public voulu.
+
 Le dashboard joint les rÃ©ponses par `nom_membre`. Ratios repas/couchage : membres acceptÃ©s avec flag `true` / tous les membres avec flag `true`, indÃ©pendamment des Ã©vÃ©nements, filtres et pagination. Les flags manquants sont exclus du ratio et signalÃ©s.
 
 Le CSV exporte tous les rÃ©sultats filtrÃ©s/triÃ©s, avec onze colonnes : Code, InvitÃ©, RÃ©ponse, Email, Vendredi, Samedi, Dimanche, Repas, Couchage sur place, Commentaires, Mise Ã  jour. RÃ©ponses : ConfirmÃ©/RefusÃ©/En attente. Ã‰vÃ©nements : Oui seulement si la rÃ©ponse est acceptÃ©e et la case cochÃ©e, sinon Â« â€” Â». Flags : Oui/Non/Non renseignÃ©, indÃ©pendamment du RSVP.

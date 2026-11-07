@@ -3,11 +3,11 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import Link from 'next/link';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { collection, getDocs, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getDocs, query, orderBy, onSnapshot, serverTimestamp, writeBatch } from 'firebase/firestore';
 import { ArrowLeft, LockKeyhole } from 'lucide-react';
 import { auth, db } from '@/lib/firebase';
 import AdminDashboardView from '@/components/AdminDashboardView';
-import type { AdminGuest } from '@/lib/rsvp-csv';
+import type { AdminGuest, AdminGuestEdit } from '@/lib/rsvp-csv';
 
 export default function AdminDashboard() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -42,11 +42,15 @@ export default function AdminDashboard() {
         const groups = invitations.docs.filter(entry => entry.id.length === 6 && Array.isArray(entry.data().membres));
         unsubscribeData = onSnapshot(query(collection(db, 'statuts'), orderBy('date_modification', 'desc')), snapshot => {
           if (!active || currentRevision !== revision) return;
-          const responses = new Map(snapshot.docs.map(entry => [entry.data().nom_membre, entry.data()]));
+          const responses = new Map(snapshot.docs.map(entry => {
+            const response = entry.data();
+            return [response.nom_membre, { id: entry.id, data: response }] as const;
+          }));
           setGuests(groups.flatMap(group => (group.data().membres as string[]).map(nom => {
-            const response = responses.get(nom);
+            const responseEntry = responses.get(nom);
+            const response = responseEntry?.data;
             return {
-              nom, codeInvitation: group.id, email: response?.email || '',
+              nom, codeInvitation: group.id, statutDocumentId: responseEntry?.id, email: response?.email || '',
               participation_repas: typeof group.data().participation_repas === 'boolean' ? group.data().participation_repas : undefined,
               couchage_sur_place: typeof group.data().couchage_sur_place === 'boolean' ? group.data().couchage_sur_place : undefined,
               statut: response?.statut === 'accepte' || response?.statut === 'refuse' ? response.statut : 'en_attente',
@@ -83,9 +87,21 @@ export default function AdminDashboard() {
     try { await signOut(auth); setPassword(''); }
     catch { setDataError('La déconnexion a échoué. Veuillez réessayer.'); }
   };
+  const handleSaveGuests = async (changes: AdminGuestEdit[]) => {
+    const batch = writeBatch(db);
+    changes.forEach(({ guest, edits }) => {
+      batch.set(doc(db, 'statuts', guest.statutDocumentId || guest.nom), {
+        code_invitation: guest.codeInvitation,
+        nom_membre: guest.nom,
+        ...edits,
+        date_modification: serverTimestamp(),
+      }, { merge: true });
+    });
+    await batch.commit();
+  };
 
   if (checking) return <main className="admin-page grid min-h-screen place-items-center"><p role="status">Vérification de la connexion…</p></main>;
-  if (authenticated) return <AdminDashboardView guests={guests} loading={loading} error={dataError} onLogout={handleLogout} />;
+  if (authenticated) return <AdminDashboardView guests={guests} loading={loading} error={dataError} onLogout={handleLogout} onSaveGuests={handleSaveGuests} />;
 
   return <main className="admin-page admin-login">
     <section className="admin-panel w-full max-w-md p-6 sm:p-8" aria-labelledby="login-title">
