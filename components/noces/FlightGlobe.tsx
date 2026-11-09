@@ -172,11 +172,13 @@ export default function FlightGlobe({ progressRef, onPreparation }: Props) {
         currentMap.setProjection({ type: 'globe' });
         currentMap.setSky({
           'sky-color': '#103b2c',
-          'horizon-color': '#9ab695',
-          'fog-color': '#103b2c',
-          'atmosphere-blend': 0.8,
+          'horizon-color': '#d49a62',
+          'fog-color': '#315a45',
+          'atmosphere-blend': 0.34,
         });
         for (const layer of currentMap.getStyle().layers) {
+          const sourceLayer =
+            'source-layer' in layer ? layer['source-layer'] : '';
           if (layer.type === 'background')
             currentMap.setPaintProperty(
               layer.id,
@@ -184,35 +186,60 @@ export default function FlightGlobe({ progressRef, onPreparation }: Props) {
               '#eeeadd',
             );
           if (layer.type === 'fill') {
-            const sourceLayer =
-              'source-layer' in layer ? layer['source-layer'] : '';
             const fill =
               sourceLayer === 'water'
-                ? '#a9c0b3'
-                : sourceLayer === 'landcover' || sourceLayer === 'park'
-                  ? '#b7c9ad'
-                  : '#d8d9c4';
+                ? '#79a99d'
+                : sourceLayer === 'park'
+                  ? '#88a57b'
+                  : sourceLayer === 'landcover'
+                    ? '#a7b27e'
+                    : '#f0e3c2';
             try {
               currentMap.setPaintProperty(layer.id, 'fill-color', fill);
             } catch {
               /* style layer may not expose a fill color */
             }
           }
-          if (layer.id === 'waterway' && layer.type === 'line')
-            currentMap.setPaintProperty(layer.id, 'line-color', '#bac9ae');
           if (layer.type === 'line') {
+            const isBoundary = sourceLayer === 'boundary';
+            const color =
+              sourceLayer === 'waterway'
+                ? '#72a79b'
+                : isBoundary
+                  ? '#806a4f'
+                  : sourceLayer === 'transportation'
+                    ? '#b39b6d'
+                    : '#9a8d70';
             try {
-              currentMap.setPaintProperty(layer.id, 'line-color', '#b9b99f');
+              currentMap.setPaintProperty(layer.id, 'line-color', color);
+              currentMap.setPaintProperty(
+                layer.id,
+                'line-opacity',
+                isBoundary ? 0.9 : 0.72,
+              );
+              if (isBoundary)
+                currentMap.setPaintProperty(layer.id, 'line-width', 1.1);
             } catch {
               /* decorative layers can omit this property */
             }
+          } else if (layer.type === 'symbol') {
+            try {
+              currentMap.setPaintProperty(layer.id, 'text-color', '#355b49');
+              currentMap.setPaintProperty(
+                layer.id,
+                'text-halo-color',
+                '#f5edd9',
+              );
+              currentMap.setPaintProperty(layer.id, 'text-halo-width', 1.5);
+              currentMap.setLayerZoomRange(
+                layer.id,
+                Math.max(2, layer.minzoom ?? 0),
+                layer.maxzoom ?? 24,
+              );
+            } catch {
+              /* symbol layers without text can omit text paint properties */
+            }
           }
-          if (layer.type === 'symbol')
-            currentMap.setLayerZoomRange(
-              layer.id,
-              Math.max(2, layer.minzoom ?? 0),
-              layer.maxzoom ?? 24,
-            );
         }
         currentMap.addSource('flight-route', {
           type: 'geojson',
@@ -235,16 +262,39 @@ export default function FlightGlobe({ progressRef, onPreparation }: Props) {
           type: 'line',
           source: 'flight-route',
           paint: {
-            'line-color': '#527653',
-            'line-width': 1.5,
-            'line-dasharray': [2, 4],
+            'line-color': '#365c47',
+            'line-width': 2.2,
+            'line-dasharray': [1.5, 2.5],
           },
+        });
+        currentMap.addLayer({
+          id: 'route-trail-glow',
+          type: 'line',
+          source: 'flight-trail',
+          paint: {
+            'line-color': '#d49a62',
+            'line-width': 10,
+            'line-opacity': 0.34,
+            'line-blur': 4,
+          },
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
+        });
+        currentMap.addLayer({
+          id: 'route-trail-casing',
+          type: 'line',
+          source: 'flight-trail',
+          paint: {
+            'line-color': '#f5edd9',
+            'line-width': 5,
+            'line-opacity': 0.94,
+          },
+          layout: { 'line-cap': 'round', 'line-join': 'round' },
         });
         currentMap.addLayer({
           id: 'route-trail',
           type: 'line',
           source: 'flight-trail',
-          paint: { 'line-color': '#bf7848', 'line-width': 3 },
+          paint: { 'line-color': '#b75e3b', 'line-width': 2.6 },
           layout: { 'line-cap': 'round', 'line-join': 'round' },
         });
         await waitForGlobeIdle(currentMap, controller.signal);

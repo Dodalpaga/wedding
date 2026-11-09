@@ -10,7 +10,6 @@ import sharp from 'sharp';
 const folder = path.resolve('public/assets/models');
 const sources = path.resolve('assets/models');
 const inputs = {
-  tokyo: 'littlest_tokyo.glb',
   restaurant: 'japanese_restaurant_inakaya.glb',
   temple: 'inubeko_ukiyo_-_kinkakuji_temple.glb',
 };

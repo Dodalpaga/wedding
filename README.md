@@ -29,7 +29,7 @@ Le panneau admin propose un mode édition global pour les invités visibles, ave
 | `/` | Invitation, hero/aurore, programme provisoire, lieu, FAQ, contact e-mail et accÃ¨s RSVP. |
 | `/confirmation/?code=CODE` | Message d'invitation et RSVP individuel modifiable. |
 | `/hebergement/` | Suggestions locales avec filtres et coordonnÃ©es publiques. |
-| `/noces/` | Globe Toulouseâ€“Tokyo, nuages, train Littlest Tokyo, visite Inakaya et carte Kinkakuji interactive au survol, au clavier ou par inclinaison du tÃ©lÃ©phone. |
+| `/noces/` | Hero éditorial qui invite à faire défiler, globe illustré Toulouse–Tokyo, vidéo, visite Inakaya, carrousel de souvenirs et carte Kinkakuji interactive. |
 | `/admin/` | Connexion Firebase, statistiques, filtres et CSV. |
 | `/gallerie/`, `/gallerie-cloud/` | Prototypes de galeries locales/OneDrive ; la landing les annonce comme indisponibles. |
 

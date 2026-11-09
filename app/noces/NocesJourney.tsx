@@ -11,8 +11,18 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import FlightGlobe from '@/components/noces/FlightGlobe';
 import CloudTransition from '@/components/noces/CloudTransition';
-import { experienceState, INTRO_FADE_END } from '@/components/noces/experience-state';
-import { Home } from 'lucide-react';
+import {
+  experienceState,
+  HERO_SCROLL_END,
+  HERO_SCROLL_START,
+  RESTAURANT_REVEAL_END,
+  RESTAURANT_REVEAL_START,
+  RESTAURANT_END,
+  SOUVENIR_START,
+  journeyProgress,
+} from '@/components/noces/experience-state';
+import SouvenirCarousel from './SouvenirCarousel';
+import { ArrowDown, Home } from 'lucide-react';
 import {
   clamp,
   journeyState,
@@ -30,7 +40,7 @@ const TemplePostcard = dynamic(
   () => import('@/components/noces/TemplePostcard'),
   { ssr: false },
 );
-type ResourceKind = 'map' | 'tokyo' | 'restaurant' | 'temple';
+type ResourceKind = 'map' | 'restaurant' | 'temple';
 
 export default function NocesJourney() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -40,7 +50,6 @@ export default function NocesJourney() {
   const flightProgressRef = useRef(0);
   const resourcesRef = useRef<Record<ResourceKind, GlobePreparation>>({
     map: { state: 'loading', progress: 0 },
-    tokyo: { state: 'loading', progress: 0 },
     restaurant: { state: 'loading', progress: 0 },
     temple: { state: 'loading', progress: 0 },
   });
@@ -82,10 +91,6 @@ export default function NocesJourney() {
   );
   const onMap = useCallback(
     (status: GlobePreparation) => onResource('map', status),
-    [onResource],
-  );
-  const onTokyo = useCallback(
-    (status: GlobePreparation) => onResource('tokyo', status),
     [onResource],
   );
   const onRestaurant = useCallback(
@@ -144,6 +149,29 @@ export default function NocesJourney() {
     );
   };
 
+  const startJourney = () => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    if (reducedMotion) {
+      section.querySelector('.motion-static-summary')?.scrollIntoView();
+      return;
+    }
+    const travel = Math.max(
+      1,
+      section.offsetHeight - (stageRef.current?.offsetHeight ?? window.innerHeight),
+    );
+    window.scrollTo({
+      top:
+        section.getBoundingClientRect().top +
+        window.scrollY +
+        travel * HERO_SCROLL_END,
+      behavior: 'smooth',
+    });
+  };
+
   useEffect(() => {
     const section = sectionRef.current,
       stage = stageRef.current;
@@ -159,11 +187,15 @@ export default function NocesJourney() {
       const travel = Math.max(1, section.offsetHeight - stage.offsetHeight);
       const allowed =
         preparationRef.current.state === 'ready' || bypassRef.current;
-      const p = reduced.matches
+      const rawProgress = reduced.matches
         ? 1
         : allowed
           ? clamp(-section.getBoundingClientRect().top / travel)
           : progressRef.current;
+      const heroProgress = phase(rawProgress, HERO_SCROLL_START, HERO_SCROLL_END);
+      const p = reduced.matches
+        ? 1
+        : journeyProgress(rawProgress);
       const pageTravel = Math.max(
         1,
         document.documentElement.scrollHeight - window.innerHeight,
@@ -178,26 +210,29 @@ export default function NocesJourney() {
       const state = journeyState(experience.flight);
       stage.style.setProperty(
         '--globe-y',
-        `${-phase(state.clouds, 0.22, 0.78) * 110}%`,
+        `${(1 - heroProgress) * 110 - phase(state.clouds, 0.22, 0.78) * 110}%`,
       );
-      stage.style.setProperty('--intro-opacity', String(1 - phase(p, 0, INTRO_FADE_END)));
-      // Tokyo is already present behind the globe/cloud bank, then rises into
-      // view continuously; no visibility threshold or opacity/scale jump.
-      stage.style.setProperty(
-        '--tokyo-y',
-        `${(1 - phase(p, 0.225, 0.3)) * 45 - phase(p, 0.425, 0.455) * 110}%`,
-      );
+      stage.style.setProperty('--hero-y', `${-heroProgress * 110}%`);
+      stage.style.setProperty('--intro-opacity', String(1 - heroProgress));
+      // Keep the interlude between the globe and restaurant intentionally empty.
       stage.style.setProperty(
         '--restaurant-y',
-        `${(1 - phase(p, 0.425, 0.455)) * 110}%`,
+        `${(1 - phase(p, RESTAURANT_REVEAL_START, RESTAURANT_REVEAL_END)) * 110 - phase(p, RESTAURANT_END, SOUVENIR_START) * 110}%`,
       );
-      stage.dataset.experience = experience.model;
+      stage.style.setProperty(
+        '--souvenir-y',
+        `${(1 - phase(p, RESTAURANT_END, SOUVENIR_START)) * 110}%`,
+      );
       stage.dataset.restaurantChapter = experience.restaurantChapter;
-      stage.dataset.step = experience.visible
-        ? experience.model === 'tokyo'
-          ? '2'
-          : '3'
-        : '1';
+      stage.dataset.step = rawProgress < HERO_SCROLL_START
+        ? '1'
+        : p >= RESTAURANT_END
+          ? '5'
+          : experience.visible
+            ? p < RESTAURANT_REVEAL_END
+              ? '3'
+              : '4'
+            : '2';
       window.dispatchEvent(new Event('motionjourneyupdate'));
     };
     const schedule = () => {
@@ -236,7 +271,7 @@ export default function NocesJourney() {
         id="top"
         ref={sectionRef}
         className="motion-journey"
-        aria-label="De Toulouse au Japon : les villes et les saveurs"
+        aria-label="Voyage de noces au Japon"
       >
         <div
           ref={stageRef}
@@ -247,7 +282,6 @@ export default function NocesJourney() {
           <JapaneseExperiences
             key={`experiences-${attempt}`}
             progressRef={progressRef}
-            onTokyo={onTokyo}
             onRestaurant={onRestaurant}
           />
           <CloudTransition progressRef={flightProgressRef} />
@@ -304,31 +338,46 @@ export default function NocesJourney() {
             </div>
           )}
           <header className="motion-header">
+            <span className="motion-wordmark">Carnet de voyage <i>·</i> Japon 2027</span>
             <span className="motion-chapter-count" aria-hidden="true">
-              <span className="motion-step-two">01 / 03</span>
-              <span className="motion-step-three">02 / 03</span>
+              <span className="motion-step-one">01 <i>/ 06</i></span>
+              <span className="motion-step-two">02 <i>/ 06</i></span>
+              <span className="motion-step-three">03 <i>/ 06</i></span>
+              <span className="motion-step-four">04 <i>/ 06</i></span>
+              <span className="motion-step-five">05 <i>/ 06</i></span>
             </span>
           </header>
-          <div className="motion-intro">
-            <p className="motion-eyebrow">Notre voyage de noces · 2027</p>
-            <h1>Un mois au Japon</h1>
-            <p>Le début d’une nouvelle aventure.</p>
-          </div>
-          <div className="motion-footer">
-            <span className="motion-scroll-cue">
-              <i aria-hidden="true">↓</i> Défiler pour voyager
-            </span>
+          <div className="motion-hero">
+            <div className="motion-intro">
+              <div className="motion-intro-copy">
+                <p className="motion-eyebrow">Notre voyage de noces · Japon · 2027</p>
+                <h1>À deux,<br />ailleurs.</h1>
+              </div>
+              <div className="motion-intro-invitation">
+                <p>
+                  De Toulouse à Tokyo, suivons le fil d’un voyage encore à
+                  inventer.
+                </p>
+                <p className="motion-intro-prompt">
+                  Une traversée immersive, chapitre après chapitre.
+                </p>
+                <button
+                  className="motion-start-button"
+                  type="button"
+                  onClick={startJourney}
+                >
+                  <span>Faire défiler pour commencer</span>
+                  <i aria-hidden="true"><ArrowDown size={18} /></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div className="motion-static-summary">
-            <p>
-              Toulouse → Tokyo : la France au départ, un vol autour du globe et
-              le Japon entier à l’arrivée.
-            </p>
-            <p>
-              Puis : explorer les villes, découvrir les saveurs et s’émerveiller
-              devant la culture du Japon.
-            </p>
+            <p className="motion-eyebrow">Un voyage à deux · 2027</p>
+            <h2>Toulouse <span aria-hidden="true">→</span> Tokyo</h2>
+            <p>La destination est choisie ; les étapes se dessineront au fil de nos envies.</p>
           </div>
+          <SouvenirCarousel progressRef={progressRef} />
         </div>
       </section>
       <TemplePostcard

@@ -9,7 +9,7 @@ import { sceneOcclusion } from './scene-occlusion';
 import { experienceState, restaurantPose } from './experience-state';
 import type { GlobePreparation } from './globe-preload';
 
-export type ModelKind = 'tokyo' | 'restaurant' | 'temple';
+export type ModelKind = 'restaurant' | 'temple';
 type Props = {
   kind: ModelKind;
   progressRef: MutableRefObject<number>;
@@ -42,7 +42,7 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
     const controller = new AbortController(), reduced = matchMedia('(prefers-reduced-motion: reduce)');
     let disposed = false, frame = 0, visible = false, ready = false, lastKey = '', draws = 0;
     let renderer: THREE.WebGLRenderer | undefined, model: THREE.Object3D | undefined;
-    let mixer: THREE.AnimationMixer | undefined, environment: THREE.WebGLRenderTarget | undefined, draw: (() => void) | undefined;
+    let environment: THREE.WebGLRenderTarget | undefined, draw: (() => void) | undefined;
     let resizeObserver: ResizeObserver | undefined, visibilityObserver: IntersectionObserver | undefined;
     let shading: ReturnType<typeof sceneOcclusion> | undefined, sun: THREE.DirectionalLight | undefined;
     const notify = (state: GlobePreparation['state'], progress = 0) => { if (!disposed) onPreparation({ state, progress }); };
@@ -106,12 +106,6 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
         const gltf = await loader.parseAsync(buffer, url.slice(0, url.lastIndexOf('/') + 1));
         model = gltf.scene;
         if (disposed) { disposeModel(model); model = undefined; return; }
-        if (kind === 'tokyo') {
-          if (!gltf.animations.length) throw new Error('Train animation missing');
-          mixer = new THREE.AnimationMixer(model);
-          const action = mixer.clipAction(gltf.animations[0]); action.setLoop(THREE.LoopOnce, 1); action.clampWhenFinished = true; action.play();
-          mixer.setTime(0);
-        }
         model.updateMatrixWorld(true);
         const box = new THREE.Box3().setFromObject(model), center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
         const group = new THREE.Group(); group.add(model); scene.add(group);
@@ -135,13 +129,6 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
         const pose = (amount: number) => {
           if (kind === 'restaurant') {
             const next = restaurantPose(amount); camera.position.fromArray(next.position); camera.lookAt(new THREE.Vector3().fromArray(next.target));
-          } else if (kind === 'tokyo') {
-            camera.position.set(-10, 6, -13).multiplyScalar(camera instanceof THREE.PerspectiveCamera ? Math.max(1, .8 / camera.aspect) : 1); camera.lookAt(0, .1, 0);
-            const time = Math.min(gltf.animations[0].duration - .00001, Math.max(0, amount) * gltf.animations[0].duration);
-            // Reset the one-shot action before each seek, including reverse scroll.
-            const action = mixer!.clipAction(gltf.animations[0]); action.enabled = true; action.paused = false;
-            mixer!.setTime(time); model!.updateMatrixWorld(true);
-            canvas.dataset.animationTime = time.toFixed(5);
           } else {
             const [x, y] = reduced.matches ? [0, 0] : parallaxRef?.current || [0, 0];
             // The artwork is a depth-filled box. Rotate that box in world space,
@@ -170,7 +157,7 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
         draw = () => {
           if (!ready || disposed || document.hidden || !visible) return;
           const state = experienceState(progressRef.current);
-          const amount = reduced.matches ? 0 : kind === 'tokyo' ? state.train : state.restaurant;
+          const amount = reduced.matches ? 0 : kind === 'restaurant' ? state.restaurant : 0;
           const key = kind === 'temple' ? `${reduced.matches}:${parallaxRef?.current.join(',')}` : `${amount.toFixed(6)}:${reduced.matches}`;
           if (key === lastKey) return; lastKey = key; pose(amount); render();
         };
@@ -178,7 +165,7 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
         await renderer.compileAsync(scene, camera);
         controller.signal.throwIfAborted();
         // Upload textures and buffers for the actual views, behind the preparation screen.
-        for (const sample of kind === 'restaurant' ? [0, .46, .67, 1] : kind === 'tokyo' ? [0, .5, 1] : [0]) { pose(sample); render(); }
+        for (const sample of kind === 'restaurant' ? [0, .46, .67, 1] : [0]) { pose(sample); render(); }
         pose(0); render();
         culling.forEach((original, mesh) => { mesh.frustumCulled = original; });
         ready = true; canvas.dataset.model = 'ready'; notify('ready', 1);
@@ -198,7 +185,7 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
       disposed = true; controller.abort(); cancelAnimationFrame(frame); resizeObserver?.disconnect(); visibilityObserver?.disconnect();
       window.removeEventListener('motionjourneyupdate', schedule); window.removeEventListener('motionpostcardupdate', schedule);
       document.removeEventListener('visibilitychange', schedule); reduced.removeEventListener('change', motionChange); canvas.removeEventListener('webglcontextlost', onLost);
-      if (model) { mixer?.stopAllAction(); mixer?.uncacheRoot(model); disposeModel(model); }
+      if (model) disposeModel(model);
       shading?.dispose(); sun?.shadow.dispose(); environment?.dispose(); renderer?.dispose();
       // A removed canvas can release its context. Strict Mode reuses a connected
       // canvas during its second setup, so keep that context available.
@@ -206,5 +193,5 @@ export default function SceneCanvas({ kind, progressRef, parallaxRef, onPreparat
     };
   }, [kind, progressRef, parallaxRef, onPreparation]);
   return <canvas ref={ref} className={`motion-model-canvas motion-model-${kind}`} role="img"
-    aria-label={kind === 'tokyo' ? 'Littlest Tokyo : quartier miniature et train animé au défilement' : kind === 'restaurant' ? 'Restaurant Inakaya : façade, plats et cuisine en trois dimensions' : 'Carte illustrée en trois dimensions du pavillon d’or Kinkakuji'} />;
+    aria-label={kind === 'restaurant' ? 'Restaurant Inakaya : façade, plats et cuisine en trois dimensions' : 'Carte illustrée en trois dimensions du pavillon d’or Kinkakuji'} />;
 }

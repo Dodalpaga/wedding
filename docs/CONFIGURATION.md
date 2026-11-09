@@ -11,7 +11,7 @@ Node.js 20 et npm : `npm ci --legacy-peer-deps`, puis crÃ©er `.env.local` et l
 | `npx tsc --noEmit` | Types et variables/paramÃ¨tres inutilisÃ©s. |
 | `npm run build` | Compilation et export statique dans `out/`. |
 | `npm run lint` | Next lint ; une configuration ESLint peut Ãªtre demandÃ©e au premier usage. |
-| `node scripts/prepare-noces-models.mjs` | RÃ©gÃ©nÃ©rer les modÃ¨les web ; argument optionnel `tokyo`, `restaurant` ou `temple`. |
+| `node scripts/prepare-noces-models.mjs` | RÃ©gÃ©nÃ©rer les modÃ¨les web ; argument optionnel `restaurant` ou `temple`. |
 
 Next.js 14 exporte directement via `output: 'export'`. Ne pas lancer `next export`, ni prÃ©visualiser un export avec `next start`. Pour reproduire la production, servir `out/` sous `/wedding/`.
 

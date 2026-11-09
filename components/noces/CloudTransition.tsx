@@ -14,13 +14,15 @@ export default function CloudTransition({ progressRef }: { progressRef: MutableR
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const canvas = ref.current; if (!canvas) return;
+    const viewport = canvas.parentElement;
+    if (!viewport) return;
     let frame = 0, disposed = false;
     let renderer: Renderer, program: Program, geometry: Triangle;
     const draw = () => {
       frame = 0;
       if (disposed || document.hidden) return;
       program.uniforms.uTravel.value = journeyState(progressRef.current).clouds;
-      program.uniforms.uAspect.value = canvas.clientWidth / Math.max(1, canvas.clientHeight);
+      program.uniforms.uAspect.value = viewport.clientWidth / Math.max(1, viewport.clientHeight);
       renderer.render({ scene, frustumCull: false });
     };
     const schedule = () => { if (!frame && !disposed) frame = requestAnimationFrame(draw); };
@@ -32,8 +34,8 @@ export default function CloudTransition({ progressRef }: { progressRef: MutableR
         uniforms: { uTravel: { value: 0 }, uAspect: { value: 1 } } });
       new Mesh(renderer.gl, { geometry, program }).setParent(scene);
     } catch { return; }
-    const resize = () => { renderer.setSize(Math.max(1, canvas.clientWidth), Math.max(1, canvas.clientHeight)); schedule(); };
-    const observer = new ResizeObserver(resize); observer.observe(canvas); resize();
+    const resize = () => { renderer.setSize(Math.max(1, viewport.clientWidth), Math.max(1, viewport.clientHeight)); schedule(); };
+    const observer = new ResizeObserver(resize); observer.observe(viewport); resize();
     window.addEventListener('motionjourneyupdate', schedule); document.addEventListener('visibilitychange', schedule);
     return () => { disposed = true; cancelAnimationFrame(frame); observer.disconnect(); window.removeEventListener('motionjourneyupdate', schedule); document.removeEventListener('visibilitychange', schedule); geometry.remove(); program.remove(); };
   }, [progressRef]);
