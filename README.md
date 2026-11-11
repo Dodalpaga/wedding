@@ -29,13 +29,13 @@ Le panneau admin propose un mode édition global pour les invités visibles, ave
 | `/` | Invitation, hero/aurore, programme provisoire, lieu, FAQ, contact e-mail et accÃ¨s RSVP. |
 | `/confirmation/?code=CODE` | Message d'invitation et RSVP individuel modifiable. |
 | `/hebergement/` | Suggestions locales avec filtres et coordonnÃ©es publiques. |
-| `/noces/` | Hero éditorial qui invite à faire défiler, globe illustré Toulouse–Tokyo, vidéo, visite Inakaya, carrousel de souvenirs et carte Kinkakuji interactive. |
+| `/noces/` | Carnet de voyage Tokyo, Nara, Osaka qui alterne washi et néon, avec deux transitions 3D : un shinkansen qui décolle l'autocollant de Tokyo, un torii qui s'ouvre sur Osaka. |
 | `/admin/` | Connexion Firebase, statistiques, filtres et CSV. |
 | `/gallerie/`, `/gallerie-cloud/` | Prototypes de galeries locales/OneDrive ; la landing les annonce comme indisponibles. |
 
 ## Organisation
 
-`app/` contient les routes et styles ; `components/` les interfaces, avec le voyage dans `components/noces/` ; `lib/` les calculs et Firebase ; `config/` la liste RSVP ; `public/` les assets servis ; `assets/` les sources de modÃ¨les et signatures conservÃ©es hors export ; `scripts/` les outils de prÃ©paration/tests ; `tests/` les tests ; `migration/` la maintenance des invitations ; `docs/` la documentation actuelle.
+`app/` contient les routes et styles ; `components/` les interfaces partagées (la page Noces est regroupée dans `app/noces/`) ; `lib/` les calculs et Firebase ; `config/` la liste RSVP ; `public/` les assets servis ; `assets/` les sources de modÃ¨les et signatures conservÃ©es hors export ; `scripts/` les outils de prÃ©paration/tests ; `tests/` les tests ; `migration/` la maintenance des invitations ; `docs/` la documentation actuelle.
 
 [Documentation](docs/README.md) Â· [Consignes](AGENTS.md) Â· [ModÃ¨les et crÃ©dits](docs/NOCES_MODELS.md)
 

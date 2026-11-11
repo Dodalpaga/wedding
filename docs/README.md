@@ -18,7 +18,7 @@ Documentation de l'implÃ©mentation actuelle. Les essais, captures et plans tem
 | Informations, programme, lieu, FAQ et contact | `components/InfoSection.tsx` |
 | Invitation et rÃ©ponse individuelle | `app/confirmation/page.tsx`, `components/RSVPFormFirebase.tsx`, `config/codes.ts` |
 | HÃ©bergements | `components/Hebergement.tsx` |
-| Voyage, camÃ©ras et inclinaison du tÃ©lÃ©phone | `app/noces/`, `components/noces/` |
+| Voyage de noces et transitions 3D | `app/noces/`, `scripts/prepare-noces-models.mjs` |
 | Administration, statistiques et CSV | `app/admin/page.tsx`, `components/AdminDashboardView.tsx`, `lib/admin-stats.ts`, `lib/rsvp-csv.ts` |
 | Sources de modÃ¨les et signatures | `assets/models/`, `assets/signatures/` |
 | Flags des invitations | [Outils de migration](../migration/README.md) |

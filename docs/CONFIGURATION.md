@@ -11,11 +11,11 @@ Node.js 20 et npm : `npm ci --legacy-peer-deps`, puis crÃ©er `.env.local` et l
 | `npx tsc --noEmit` | Types et variables/paramÃ¨tres inutilisÃ©s. |
 | `npm run build` | Compilation et export statique dans `out/`. |
 | `npm run lint` | Next lint ; une configuration ESLint peut Ãªtre demandÃ©e au premier usage. |
-| `node scripts/prepare-noces-models.mjs` | RÃ©gÃ©nÃ©rer les modÃ¨les web ; argument optionnel `restaurant` ou `temple`. |
+| `node scripts/prepare-noces-models.mjs` | Régénérer les modèles web de Noces depuis `assets/models/noces/` (hors Git) ; argument optionnel `shinkansen`, `torii` ou `lanterne`. |
 
 Next.js 14 exporte directement via `output: 'export'`. Ne pas lancer `next export`, ni prÃ©visualiser un export avec `next start`. Pour reproduire la production, servir `out/` sous `/wedding/`.
 
-Ne pas construire et prÃ©visualiser simultanÃ©ment dans le mÃªme `.next`. Si nÃ©cessaire, utiliser une copie temporaire sous `build/`, avec app/components/config/lib/public, dÃ©pendances, package/configs, **postcss.config.mjs**, types Next et environnement local non publiÃ©. Les sources `assets/models/` sont nÃ©cessaires aux tests/prÃ©parations, pas au build du site.
+Ne pas construire et prÃ©visualiser simultanÃ©ment dans le mÃªme `.next`. Si nÃ©cessaire, utiliser une copie temporaire sous `build/`, avec app/components/config/lib/public, dÃ©pendances, package/configs, **postcss.config.mjs**, types Next et environnement local non publiÃ©. Les sources `assets/models/noces/` ne servent qu'à la préparation des modèles, pas au build du site.
 
 ## Variables
 

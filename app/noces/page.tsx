@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
-import NocesJourney from './NocesJourney';
+import NocesVoyage from './NocesVoyage';
 
 export const metadata: Metadata = {
-  title: 'À deux, ailleurs — Voyage de noces au Japon',
-  description: 'Un carnet de voyage animé au fil du scroll, de Toulouse aux scènes du Japon, jusqu’à une carte 3D interactive du Kinkakuji.',
+  title: 'Notre voyage de noces — Tokyo, Nara, Osaka',
+  description: 'Un carnet de voyage qui alterne néons et papier washi : Tokyo, un shinkansen, Nara, un torii, Osaka.',
 };
 
 export default function NocesPage() {
-  return <NocesJourney />;
+  return <NocesVoyage />;
 }

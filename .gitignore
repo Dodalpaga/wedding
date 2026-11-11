@@ -54,3 +54,6 @@ firestore-debug.log
 # - En local dans .env.local
 # - Dans les secrets GitHub Actions
 # - Dans les variables d'environnement Vercel
+
+# Sources 3D des transitions Noces (trop lourdes pour Git, voir docs/NOCES_MODELS.md)
+assets/models/noces/

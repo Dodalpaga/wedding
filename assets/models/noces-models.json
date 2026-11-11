@@ -1,49 +1,55 @@
 {
-  "restaurant": {
-    "source": "japanese_restaurant_inakaya.glb",
-    "sourceBytes": 20465048,
-    "sourceSha256": "891c084b0831e6c3f1035411ff285aa21b872ce0d29a5986d02907c97d27258a",
+  "shinkansen": {
+    "source": "n700-3000_series_shinkansen.glb",
+    "sourceBytes": 27414792,
+    "sourceSha256": "e71a105ba66bda38134d76c5d495550ec17867908a73a0b48233f49a1a677233",
     "attribution": {
-      "author": "Jellepostma (https://sketchfab.com/Jellepostma)",
+      "author": "Layo (https://sketchfab.com/bciarfello)",
       "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
-      "source": "https://sketchfab.com/3d-models/japanese-restaurant-inakaya-97594e92c418491ab7f032ed2abbf596",
-      "title": "Japanese Restaurant \"Inakaya\""
+      "source": "https://sketchfab.com/3d-models/n700-3000-series-shinkansen-f70820be44e0467d8b1614f2aa3045bd",
+      "title": "N700-3000 Series Shinkansen"
     },
     "variants": {
-      "desktop": {
-        "file": "restaurant-desktop.glb",
-        "bytes": 4128652,
-        "maxTextureDimension": 4096,
-        "maxOtherTextureDimension": 2048
-      },
-      "mobile": {
-        "file": "restaurant-mobile.glb",
-        "bytes": 2884224,
-        "maxTextureDimension": 2048,
-        "maxOtherTextureDimension": 1024
+      "all": {
+        "file": "shinkansen.glb",
+        "bytes": 129192,
+        "maxTexture": null
       }
     }
   },
-  "temple": {
-    "source": "inubeko_ukiyo_-_kinkakuji_temple.glb",
-    "sourceBytes": 23361228,
-    "sourceSha256": "d8e80259e324d7456e0883bbbf5933a5db46542a0c90e2eeb898f3c69013c0ef",
+  "torii": {
+    "source": "torii_gate.glb",
+    "sourceBytes": 9750264,
+    "sourceSha256": "06f50ca1a2e942d9f71f231f5ecca5d85b9256fac5bf51e719b9ad8120d783fd",
     "attribution": {
-      "author": "Jellepostma (https://sketchfab.com/Jellepostma)",
+      "author": "panrichi (https://sketchfab.com/panrichi)",
       "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
-      "source": "https://sketchfab.com/3d-models/inubeko-ukiyo-kinkakuji-temple-3d146476840847ca9d46f3300aa4445d",
-      "title": "InuBeko Ukiyo - Kinkakuji Temple"
+      "source": "https://sketchfab.com/3d-models/torii-gate-bcad7f0d07984d6b8d5d1f63c7949d84",
+      "title": "Torii Gate"
     },
     "variants": {
-      "desktop": {
-        "file": "temple.glb",
-        "bytes": 2935340,
-        "maxTextureDimension": 2048
-      },
-      "mobile": {
-        "file": "temple.glb",
-        "bytes": 2935340,
-        "maxTextureDimension": 1024
+      "all": {
+        "file": "torii.glb",
+        "bytes": 1521020,
+        "maxTexture": 1024
+      }
+    }
+  },
+  "lanterne": {
+    "source": "japanese_stone_lantern.glb",
+    "sourceBytes": 8805528,
+    "sourceSha256": "8bd77af7bcd6e46188d943efdc84078f270acd67677ed2a670d680bb1c37fb9f",
+    "attribution": {
+      "author": "Sahir Virmani (https://sketchfab.com/sahirvirmani)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/japanese-stone-lantern-e0417d1e05984727a50f9ab1451d162d",
+      "title": "Japanese Stone Lantern"
+    },
+    "variants": {
+      "all": {
+        "file": "lanterne.glb",
+        "bytes": 368244,
+        "maxTexture": 512
       }
     }
   }
