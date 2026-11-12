@@ -19,38 +19,38 @@ const NAMES = ['東京', 'Tokyo', '新幹線', 'Shinkansen', '奈良', 'Nara', '
 const FOODS = ['たこ焼き', 'Takoyaki', 'お好み焼き', 'Okonomiyaki', '串カツ', 'Kushikatsu', 'ラーメン', 'Ramen', 'たい焼き', 'Taiyaki', 'おにぎり', 'Onigiri'];
 
 const TOKYO_CARDS: { jp: string; title: string; text: string; icon: NeonKind }[] = [
-  { jp: 'ネオン', title: 'Les ruelles', text: 'Se perdre la nuit entre les enseignes, les comptoirs minuscules et les trains qui passent au-dessus de nos têtes.', icon: 'neon' },
-  { jp: '居酒屋', title: 'Les izakaya', text: 'Pousser une porte coulissante, s’asseoir au comptoir et commander en montrant les plats des voisins.', icon: 'food' },
+  { jp: '横丁', title: 'Les ruelles', text: 'Se perdre la nuit entre les enseignes, les comptoirs minuscules et les trains qui passent au-dessus de nos têtes.', icon: 'neon' },
+  { jp: '居酒屋', title: 'Les izakaya', text: 'Faire glisser une porte coulissante, s’asseoir au comptoir et commander en s’inspirant des plats des voisins.', icon: 'food' },
   { jp: '電車', title: 'Les trains', text: 'Comprendre (ou pas) le plan du métro, et regarder la ville défiler depuis la fenêtre.', icon: 'rail' },
   { jp: '静寂', title: 'Le calme', text: 'Trouver, au détour d’une avenue, un jardin où l’on n’entend plus que le gravier sous nos pas.', icon: 'zen' },
 ];
 
 const STAMPS: { kind: StampKind; kanji: string; label: string; shape: 'round' | 'square' }[] = [
-  { kind: 'cerf', kanji: '鹿', label: 'Les daims', shape: 'round' },
+  { kind: 'cerf', kanji: '鹿', label: 'Les cerfs', shape: 'round' },
   { kind: 'torii', kanji: '社', label: 'Le sanctuaire', shape: 'square' },
   { kind: 'repas', kanji: '食', label: 'Les bons repas', shape: 'round' },
   { kind: 'bambou', kanji: '竹', label: 'Les bambous', shape: 'square' },
   { kind: 'lanterne', kanji: '灯', label: 'Les lanternes', shape: 'round' },
   { kind: 'onsen', kanji: '湯', label: 'Les sources chaudes', shape: 'square' },
   { kind: 'montagne', kanji: '山', label: 'La montagne', shape: 'round' },
-  { kind: 'mer', kanji: '波', label: 'La mer', shape: 'square' },
+  { kind: 'mer', kanji: '海', label: 'La mer', shape: 'square' },
 ];
 
 const WORDS = [
   { jp: '一期一会', romaji: 'ichi-go ichi-e', title: 'Une fois, une rencontre', text: 'Chaque instant est unique et ne se reproduira pas. Nous voulons vivre ce voyage en le sachant.' },
-  { jp: '侘寂', romaji: 'wabi-sabi', title: 'La beauté de l’inachevé', text: 'Un bol fêlé, une mousse sur la pierre, un plan qui change. Notre itinéraire restera imparfait.' },
-  { jp: '縁', romaji: 'en', title: 'Le lien', text: 'Le fil invisible qui relie les personnes destinées à se croiser. Vous faites partie du nôtre.' },
+  { jp: '侘び寂び', romaji: 'wabi-sabi', title: 'La beauté de l’imparfait', text: 'Un bol fêlé, une mousse sur la pierre, un plan qui change. Notre itinéraire restera imparfait.' },
+  { jp: '縁', romaji: 'en', title: 'Le lien', text: 'Le fil invisible qui relie les personnes destinées à se croiser. Vous êtes de ceux que le nôtre relie.' },
 ];
 
 const OSAKA_CARDS: { jp: string; title: string; text: string; icon: NeonKind }[] = [
   { jp: 'たこ焼き', title: 'Les takoyaki', text: 'Des boulettes brûlantes retournées à la pique, qu’on mange trop vite en se brûlant la langue.', icon: 'takoyaki' },
   { jp: 'お好み焼き', title: 'L’okonomiyaki', text: 'Une galette cuite devant nous sur la plaque, avec « ce qu’on aime » dedans.', icon: 'okonomi' },
-  { jp: '川', title: 'Le canal', text: 'Marcher le long de l’eau quand les enseignes s’allument et se reflètent partout.', icon: 'canal' },
+  { jp: '道頓堀', title: 'Le canal', text: 'Marcher le long de l’eau quand les enseignes s’allument et se reflètent partout.', icon: 'canal' },
   { jp: '立ち飲み', title: 'Les comptoirs debout', text: 'Un verre, quelques brochettes, et des conversations avec des inconnus.', icon: 'drink' },
 ];
 
 const OKINAWA_CARDS: { jp: string; title: string; text: string; icon: NeonKind }[] = [
-  { jp: 'ダイビング', title: 'La plongée', text: 'Pourquoi pas nos premières plongées : un masque, un tuba, et l’eau turquoise sous le bateau.', icon: 'dive' },
+  { jp: '体験ダイビング', title: 'La plongée', text: 'Pourquoi pas un baptême de plongée : un moniteur, une bouteille, et l’eau turquoise sous le bateau.', icon: 'dive' },
   { jp: '珊瑚礁', title: 'Les récifs', text: 'Des jardins de corail à quelques mètres du bord, où il suffit de flotter pour regarder.', icon: 'coral' },
   { jp: '海亀', title: 'Les tortues', text: 'Croiser une tortue de mer qui passe sans se presser. On en rêve un peu.', icon: 'turtle' },
   { jp: '夕日', title: 'Le couchant', text: 'Finir la journée les pieds dans le sable, à regarder le soleil tomber dans la mer.', icon: 'sunset' },
@@ -62,13 +62,24 @@ const BUBBLES = [
   [63, 7, 6, 0.3], [72, 16, 9, 2.8], [80, 6, 5, 1.1], [88, 10, 7, 3.6], [94, 7, 6, 0.9],
 ] as const;
 
+/** Kana ou kanji : le texte doit être marqué lang="ja" (glyphes japonais, pas chinois). */
+const JAPANESE = {
+  test(text: string) {
+    for (let i = 0; i < text.length; i++) {
+      const code = text.charCodeAt(i);
+      if ((code >= 0x3040 && code <= 0x30ff) || (code >= 0x3400 && code <= 0x9fff)) return true;
+    }
+    return false;
+  },
+};
+
 /* ---------- Morceaux ---------- */
 
 function Marquee({ words, label }: { words: string[]; label: string }) {
   return (
     <div className="fx-marquee" aria-label={label}>
       <div className="fx-marquee-track" aria-hidden="true">
-        {[...words, ...words].map((word, i) => <span key={i}>{word}</span>)}
+        {[...words, ...words].map((word, i) => <span key={i} lang={JAPANESE.test(word) ? 'ja' : undefined}>{word}</span>)}
       </div>
     </div>
   );
@@ -113,7 +124,7 @@ function InkStamp({ text, shape, className }: { text: string; shape: 'round' | '
 export default function NocesVoyage() {
   const rootRef = useRef<HTMLElement>(null);
   const tokyoRef = useRef<HTMLElement>(null);
-  const [chapter, setChapter] = useState({ label: '旅 · Le carnet', theme: 'light' });
+  const [chapter, setChapter] = useState({ label: '旅 · Le voyage', theme: 'light' });
   const [auroraOn, setAuroraOn] = useState(false);
   const [auroraColors, setAuroraColors] = useState(['#003b4e', '#1c7743', '#003b4e']);
   useScrollProgress(rootRef);
@@ -163,11 +174,15 @@ export default function NocesVoyage() {
 
       <nav className="fx-topbar" data-theme={chapter.theme} aria-label="Navigation">
         <Link href="/" className="fx-pill"><ArrowLeft size={16} aria-hidden="true" /> Accueil</Link>
-        <span className="fx-pill fx-chapter" aria-live="polite">{chapter.label}</span>
+        <span className="fx-pill fx-chapter" aria-live="polite">
+          {chapter.label.split(' · ').map((part, i) => (
+            <span key={i} lang={JAPANESE.test(part) ? 'ja' : undefined}>{i > 0 && ' · '}{part}</span>
+          ))}
+        </span>
       </nav>
 
       {/* ============ Page de garde (washi) ============ */}
-      <header className="fx-cover fx-light" data-chapter="旅 · Le carnet" data-theme="light">
+      <header className="fx-cover fx-light" data-chapter="旅 · Le voyage" data-theme="light">
         <WashiPaper seed={4} />
         <p className="fx-vertical fx-cover-vertical" lang="ja" aria-hidden="true">旅の始まり</p>
         <div className="fx-cover-center">
@@ -238,10 +253,10 @@ export default function NocesVoyage() {
               <p className="fx-vertical fx-nara-kanji" lang="ja" aria-hidden="true">奈良</p>
               <div>
                 <p className="fx-kicker">第二章 · Chapitre deux</p>
-                <h2 id="fx-nara-title" className="fx-h2-script">Nara, à pas de daim</h2>
+                <h2 id="fx-nara-title" className="fx-h2-script">Nara, au pas des cerfs</h2>
                 <p className="fx-body">
-                  Changement de rythme. Ici, les daims se promènent librement et saluent
-                  d’une petite révérence ceux qui leur tendent un biscuit. On veut ralentir,
+                  Changement de rythme. Ici, les cerfs se promènent librement et saluent
+                  d’une petite révérence ceux qui leur tendent un shika senbei, leur biscuit de riz. On veut ralentir,
                   se lever tôt, marcher sous les arbres et écouter le silence des temples.
                 </p>
               </div>
@@ -254,11 +269,11 @@ export default function NocesVoyage() {
         <WashiPaper seed={21} />
         <div className="fx-container">
           <div className="fx-head" data-reveal>
-            <p className="fx-kicker">御朱印帳 · le carnet</p>
+            <p className="fx-kicker">旅のスタンプ帳 · le carnet</p>
             <h2 id="fx-stamps-title" className="fx-h2-script">Les pages que nous rêvons de remplir</h2>
             <p className="fx-body">
-              Dans les gares et les temples, des tampons à l’encre attendent les voyageurs,
-              qui les collectionnent dans un petit carnet. Voici nos envies, sans ordre ni horaire.
+              Dans les gares, les musées et les sites, des tampons en libre-service attendent
+              les voyageurs, qui les collectionnent dans un petit carnet. Voici nos envies, sans ordre ni horaire.
             </p>
           </div>
           <div className="fx-book">
