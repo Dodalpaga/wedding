@@ -11,7 +11,7 @@ Next.js 14.2.5 App Router, React 18, TypeScript strict et Tailwind CSS 3. `app/l
 | `/` | `Hero`, `InfoSection`, `Footer`. |
 | `/confirmation/` | Lecture du code sous Suspense, invitation, flags et `RSVPFormFirebase`. |
 | `/hebergement/` | Liste locale filtrable et bouton de retour. |
-| `/noces/` | `NocesVoyage` : couverture washi, Tokyo (néon), transition shinkansen, Nara (washi), transition torii, Osaka (néon), lettre. |
+| `/noces/` | `NocesVoyage` : couverture washi, Tokyo (néon), transition shinkansen, Nara (washi), transition torii, Osaka (néon), Okinawa (lagon et sable), lettre. |
 | `/admin/` | Session Firebase, jointure invitations/statuts et `AdminDashboardView`. |
 | `/gallerie/`, `/gallerie-cloud/` | Albums de dÃ©monstration, lightbox ou liens OneDrive. |
 
@@ -39,12 +39,14 @@ L'authentification Firebase contrôle l'accès à l'interface, mais ne constitue
 
 `app/noces/` regroupe la page : `NocesVoyage.tsx` (sections), `NocesArt.tsx` (icônes néon et tampons SVG), `Scene3D.tsx` (transition épinglée), `scenes.ts` (scènes Three.js), `peel.ts` (géométrie du décollage), `scroll-effects.ts` (progression `--p` et apparitions) et `noces.css` (styles préfixés `fx-`).
 
-Les sections alternent papier washi et nuit néon dans la palette du site. Le chapitre Tokyo reprend l'aurore de la landing (mêmes réglages, montée seulement près de l'écran), les horloges Toulouse/Tokyo calculées avec `Intl` et quatre envies en défilement horizontal épinglé. Nara présente un carnet de tampons et trois mots ; Osaka des envies culinaires animées ; la lettre finale est chiffonnée et tamponnée. Aucune escale ni horaire n'est figé.
+Les sections alternent papier washi et nuit néon dans la palette du site. Le chapitre Tokyo reprend l'aurore de la landing (mêmes réglages, montée seulement près de l'écran), les horloges Toulouse/Tokyo calculées avec `Intl` et quatre envies en défilement horizontal épinglé. Nara présente un carnet de tampons et trois mots ; Osaka des envies culinaires animées ; Okinawa, au thème propre, un lagon lumineux puis des cartes postales sur le sable ; la lettre finale, chiffonnée et tamponnée, occupe exactement un écran. Aucune escale ni horaire n'est figé.
 
 Chaque transition est une section épinglée (`260svh`, scène sticky en `100lvh`) : la progression du scroll est lissée puis pilote la scène. Three.js et les modèles ne se chargent qu'à l'approche ; le canvas est transparent et le rendu s'arrête hors écran.
 
 - **Shinkansen** : deux motrices N700 dos à dos traversent l'écran ; une ficelle de longueur fixe, attachée à la queue, décolle depuis le coin supérieur droit l'« autocollant » de la nuit de Tokyo (découpe CSS `clip-path` et rabat SVG calculés par `peel.ts`), qui découvre l'introduction du chapitre Nara.
 - **Torii** : le torii et deux lanternes projettent leur ombre sur le papier ; l'introduction du chapitre Osaka est visible dans l'ouverture, découpée par projection des coins mesurés sur le modèle (piliers et traverse basse), jusqu'à remplir l'écran.
+
+Le chapitre Okinawa s'ouvre sur `OkinawaLagoon` : vagues `react-wavify`, eau découpée par le tracé de la vague de premier plan (`clip-path` mis à jour à chaque image) fond marin photographié (`public/images/noces/okinawa-recif.webp`, chargé avec `NEXT_PUBLIC_BASE_PATH`) déformé par un shader `Water` et flouté, teinte lagon, reflets de surface par un second `Water` sans image, et rayons `GodRays` de `@paper-design/shaders-react` (WebGL, pause hors écran, vitesse nulle avec la réduction des mouvements).
 
 Avec `prefers-reduced-motion`, les sections ne sont plus épinglées, la 3D est omise et les chapitres révélés s'affichent directement. La page masque sa barre de défilement. [Modèles et crédits](NOCES_MODELS.md).
 

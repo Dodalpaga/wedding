@@ -7,13 +7,14 @@ import Aurora from '@/components/Aurora';
 import { useReveal, useScrollProgress } from './scroll-effects';
 import { NeonIcon, StampArt, type NeonKind, type StampKind } from './NocesArt';
 import Scene3D from './Scene3D';
+import OkinawaLagoon from './OkinawaLagoon';
 import './noces.css';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 /* ---------- Contenus ---------- */
 
-const NAMES = ['東京', 'Tokyo', '新幹線', 'Shinkansen', '奈良', 'Nara', '鳥居', 'Torii', '大阪', 'Osaka', '温泉', 'Onsen', '抹茶', 'Matcha'];
+const NAMES = ['東京', 'Tokyo', '新幹線', 'Shinkansen', '奈良', 'Nara', '鳥居', 'Torii', '大阪', 'Osaka', '沖縄', 'Okinawa', '温泉', 'Onsen', '抹茶', 'Matcha'];
 const FOODS = ['たこ焼き', 'Takoyaki', 'お好み焼き', 'Okonomiyaki', '串カツ', 'Kushikatsu', 'ラーメン', 'Ramen', 'たい焼き', 'Taiyaki', 'おにぎり', 'Onigiri'];
 
 const TOKYO_CARDS: { jp: string; title: string; text: string; icon: NeonKind }[] = [
@@ -46,6 +47,19 @@ const OSAKA_CARDS: { jp: string; title: string; text: string; icon: NeonKind }[]
   { jp: '川', title: 'Le canal', text: 'Marcher le long de l’eau quand les enseignes s’allument et se reflètent partout.', icon: 'canal' },
   { jp: '立ち飲み', title: 'Les comptoirs debout', text: 'Un verre, quelques brochettes, et des conversations avec des inconnus.', icon: 'drink' },
 ];
+
+const OKINAWA_CARDS: { jp: string; title: string; text: string; icon: NeonKind }[] = [
+  { jp: 'ダイビング', title: 'La plongée', text: 'Pourquoi pas nos premières plongées : un masque, un tuba, et l’eau turquoise sous le bateau.', icon: 'dive' },
+  { jp: '珊瑚礁', title: 'Les récifs', text: 'Des jardins de corail à quelques mètres du bord, où il suffit de flotter pour regarder.', icon: 'coral' },
+  { jp: '海亀', title: 'Les tortues', text: 'Croiser une tortue de mer qui passe sans se presser. On en rêve un peu.', icon: 'turtle' },
+  { jp: '夕日', title: 'Le couchant', text: 'Finir la journée les pieds dans le sable, à regarder le soleil tomber dans la mer.', icon: 'sunset' },
+];
+
+/** Bulles sous la surface : position horizontale (%), taille (px), durée et retard (s). */
+const BUBBLES = [
+  [8, 10, 7, 0], [16, 6, 5, 1.2], [27, 14, 8, 2.4], [35, 8, 6, 0.6], [46, 5, 5, 3.1], [55, 12, 7, 1.8],
+  [63, 7, 6, 0.3], [72, 16, 9, 2.8], [80, 6, 5, 1.1], [88, 10, 7, 3.6], [94, 7, 6, 0.9],
+] as const;
 
 /* ---------- Utilitaires ---------- */
 
@@ -204,7 +218,7 @@ export default function NocesVoyage() {
           <p className="fx-kicker">Japon · 2027</p>
           <h1 className="fx-cover-title">Notre voyage de noces</h1>
           <p className="fx-cover-lede">
-            Tokyo, Nara, Osaka : trois premières envies dans un carnet encore vierge.
+            Tokyo, Nara, Osaka, Okinawa : quatre envies dans un carnet encore vierge.
             Le reste s’écrira en route.
           </p>
           <span className="fx-seal" aria-hidden="true" lang="ja">結</span>
@@ -215,7 +229,7 @@ export default function NocesVoyage() {
         </a>
       </header>
 
-      <Marquee words={NAMES} label="Tokyo, Shinkansen, Nara, Torii, Osaka, Onsen, Matcha" />
+      <Marquee words={NAMES} label="Tokyo, Shinkansen, Nara, Torii, Osaka, Okinawa, Onsen, Matcha" />
 
       {/* ============ Chapitre 1 — Tokyo (néon) ============ */}
       <section id="tokyo" ref={tokyoRef} className="fx-intro fx-dark" data-progress="view" data-chapter="東京 · Tokyo" data-theme="dark" aria-labelledby="fx-tokyo-title">
@@ -389,6 +403,46 @@ export default function NocesVoyage() {
       </section>
 
       {/* ============ Lettre (washi) ============ */}
+      {/* ============ Chapitre 4 — Okinawa : la surface du lagon ============ */}
+      <section className="fx-dive" data-progress="view" data-chapter="沖縄 · Okinawa" data-theme="dark" aria-labelledby="fx-okinawa-title">
+        <OkinawaLagoon>
+          <div className="fx-dive-bubbles">
+            {BUBBLES.map(([x, size, duration, delay], i) => (
+              <span key={i} style={{ left: `${x}%`, width: size, height: size, animationDuration: `${duration}s`, animationDelay: `${delay}s` } as React.CSSProperties} />
+            ))}
+          </div>
+          <span className="fx-wire fx-dive-wire" lang="ja">沖縄</span>
+        </OkinawaLagoon>
+        <p className="fx-pass-credit fx-dive-credit">Photo : <a href="https://www.pexels.com/photo/clear-ocean-water-with-coral-reefs-35269346/" target="_blank" rel="noopener noreferrer">Jeffry Surianto</a> · Pexels</p>
+        <div className="fx-container fx-dive-copy" data-reveal>
+          <p className="fx-eyebrow">第四章 · Chapitre quatre</p>
+          <h2 id="fx-okinawa-title" className="fx-h2">Okinawa, à fleur d’eau</h2>
+          <p className="fx-lede">
+            Pour finir, ralentir pour de bon. Loin au sud, Okinawa nous promet la mer,
+            les forêts et le grand calme : de quoi se ressourcer au contact de la nature,
+            et pourquoi pas sous la surface.
+          </p>
+        </div>
+      </section>
+
+      <section className="fx-section fx-okinawa" data-chapter="沖縄 · Okinawa" data-theme="light" aria-labelledby="fx-okinawa-cards">
+        <div className="fx-container">
+          <p className="fx-kicker" data-reveal>Le carnet de bord</p>
+          <h2 id="fx-okinawa-cards" className="fx-h2-script" data-reveal>Quatre envies à Okinawa</h2>
+          <ol className="fx-grid">
+            {OKINAWA_CARDS.map((card, i) => (
+              <li key={card.title} className="fx-card" data-reveal>
+                <div className="fx-card-art"><NeonIcon kind={card.icon} /></div>
+                <span className="fx-card-index" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <p className="fx-card-jp" lang="ja">{card.jp}</p>
+                <h3>{card.title}</h3>
+                <p>{card.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       <footer className="fx-section fx-light fx-letter-section" data-chapter="手紙 · La lettre" data-theme="light">
         <article className="fx-letter" data-reveal>
           <p className="fx-kicker">手紙 · une lettre</p>
@@ -398,7 +452,7 @@ export default function NocesVoyage() {
             autour de nous. C’est ce jour-là qui donne son sens au voyage qui suivra.
           </p>
           <p>
-            De Tokyo à Osaka, nous penserons à vous à chaque tampon ajouté au carnet.
+            De Tokyo à Okinawa, nous penserons à vous à chaque tampon ajouté au carnet.
             Nous vous rapporterons des histoires, quelques photos floues de ramen et,
             peut-être, l’envie d’y aller à votre tour.
           </p>
@@ -406,6 +460,7 @@ export default function NocesVoyage() {
           <InkStamp text="東京" shape="round" className="fx-ink-a" />
           <InkStamp text="奈良" shape="square" className="fx-ink-b" />
           <InkStamp text="大阪" shape="round" className="fx-ink-c" />
+          <InkStamp text="沖縄" shape="square" className="fx-ink-d" />
           <span className="fx-seal fx-seal-letter" aria-hidden="true" lang="ja">結</span>
         </article>
         <div className="fx-end-links">

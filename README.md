@@ -29,7 +29,7 @@ Le panneau admin propose un mode édition global pour les invités visibles, ave
 | `/` | Invitation, hero/aurore, programme provisoire, lieu, FAQ, contact e-mail et accÃ¨s RSVP. |
 | `/confirmation/?code=CODE` | Message d'invitation et RSVP individuel modifiable. |
 | `/hebergement/` | Suggestions locales avec filtres et coordonnÃ©es publiques. |
-| `/noces/` | Carnet de voyage Tokyo, Nara, Osaka qui alterne washi et néon, avec deux transitions 3D : un shinkansen qui décolle l'autocollant de Tokyo, un torii qui s'ouvre sur Osaka. |
+| `/noces/` | Carnet de voyage Tokyo, Nara, Osaka, Okinawa qui alterne washi et néon, avec deux transitions 3D (un shinkansen qui décolle l'autocollant de Tokyo, un torii qui s'ouvre sur Osaka) puis le lagon d'Okinawa. |
 | `/admin/` | Connexion Firebase, statistiques, filtres et CSV. |
 | `/gallerie/`, `/gallerie-cloud/` | Prototypes de galeries locales/OneDrive ; la landing les annonce comme indisponibles. |
 

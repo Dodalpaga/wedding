@@ -23,3 +23,7 @@ Les sources (`n700-3000_series_shinkansen.glb`, `torii_gate.glb`, `japanese_ston
 Canvas WebGL transparent superposé aux fonds de page, éclairage d'environnement (`RoomEnvironment`), lumière directionnelle avec ombres projetées sur un plan invisible (`ShadowMaterial`). Three.js et les modèles ne sont chargés qu'à l'approche de chaque transition ; le rendu n'a lieu que pendant le scroll et s'arrête hors écran. Ressources et contextes sont libérés au démontage.
 
 Les sources de signatures SVG/HTML sont conservées dans `assets/signatures/` ; la signature affichée par le site reste dans `components/Signature.tsx`.
+
+## Photo du lagon
+
+Le fond marin d'Okinawa (`public/images/noces/okinawa-recif.webp`, 1920 × 1280, WebP qualité 78) vient de la photo Pexels 35269346, « Clear Ocean Water with Coral Reefs », de Jeffry Surianto ([source](https://www.pexels.com/photo/clear-ocean-water-with-coral-reefs-35269346/), licence Pexels). Le crédit est affiché en bas de la section.

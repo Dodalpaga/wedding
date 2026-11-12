@@ -1,6 +1,6 @@
 /* Illustrations SVG de la page Noces : icônes néon et tampons. */
 
-export type NeonKind = 'neon' | 'food' | 'rail' | 'zen' | 'takoyaki' | 'canal' | 'drink' | 'okonomi';
+export type NeonKind = 'neon' | 'food' | 'rail' | 'zen' | 'takoyaki' | 'canal' | 'drink' | 'okonomi' | 'dive' | 'coral' | 'turtle' | 'sunset';
 
 export function NeonIcon({ kind }: { kind: NeonKind }) {
   switch (kind) {
@@ -74,6 +74,53 @@ export function NeonIcon({ kind }: { kind: NeonKind }) {
           <path d="M60 125 L80 115 L100 128 L120 115 L140 126" className="fx-line fx-draw" style={{ animationDelay: '.6s' }} />
           {/* Baguettes posées en travers de l'assiette */}
           <path d="M128 36 L96 104 M150 42 L112 106" className="fx-line" />
+        </svg>
+      );
+    case 'dive':
+      return (
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          {/* Masque de plongée et tuba, bulles qui remontent */}
+          <path d="M48 92 Q48 70 72 70 H128 Q152 70 152 92 Q152 116 128 116 H116 Q106 116 100 106 Q94 116 84 116 H72 Q48 116 48 92 Z" className="fx-fill" />
+          <path d="M60 88 Q60 80 70 80 H90 Q96 80 96 88 V96 Q96 104 88 104 H70 Q60 104 60 96 Z M104 88 Q104 80 110 80 H130 Q140 80 140 88 V96 Q140 104 130 104 H112 Q104 104 104 96 Z" className="fx-glow" />
+          <path d="M156 96 V48 Q156 38 166 38" className="fx-line" />
+          {[0, 1, 2, 3].map((i) => <circle key={i} cx={166 + (i % 2) * 6} cy={30} r={3 + i} className="fx-line fx-bubble" style={{ animationDelay: `${i * 0.55}s` }} />)}
+          <path d="M20 150 q20 -8 40 0 t40 0 t40 0 t40 0" className="fx-line fx-wave" />
+        </svg>
+      );
+    case 'coral':
+      return (
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          {/* Branches de corail et petits poissons */}
+          <path d="M100 160 V112 M100 128 Q78 118 76 92 M76 104 Q62 98 60 80 M100 120 Q124 110 128 84 M128 98 Q144 92 146 74 M100 112 Q98 90 104 72" className="fx-glow" />
+          <path d="M60 160 H140" className="fx-line" />
+          {[0, 1].map((i) => (
+            <path key={i} d={`M${40 + i * 92} ${60 + i * 14} q10 -8 20 0 q-10 8 -20 0 l-8 -6 v12 z`} className="fx-fill fx-wave" style={{ animationDelay: `${i * 0.8}s` }} />
+          ))}
+        </svg>
+      );
+    case 'turtle':
+      return (
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          {/* Tortue de mer qui nage doucement */}
+          <g className="fx-bob">
+            <ellipse cx="100" cy="100" rx="42" ry="30" className="fx-fill" />
+            <path d="M78 88 L100 78 L122 88 L122 112 L100 122 L78 112 Z M100 78 V122 M78 88 L122 112 M122 88 L78 112" className="fx-glow" />
+            <ellipse cx="150" cy="96" rx="12" ry="9" className="fx-line" />
+            <path d="M74 76 Q60 56 44 58 Q58 72 70 82 M74 124 Q60 144 44 142 Q58 128 70 118 M126 76 Q136 64 148 66 M126 124 Q136 136 148 134 M58 100 L44 104" className="fx-line" />
+          </g>
+          {[0, 1, 2].map((i) => <circle key={i} cx={164 + i * 4} cy={86 - i * 14} r={2 + i} className="fx-line fx-bubble" style={{ animationDelay: `${i * 0.7}s` }} />)}
+        </svg>
+      );
+    case 'sunset':
+      return (
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          {/* Soleil couchant sur la mer, reflets */}
+          <path d="M52 112 A48 48 0 0 1 148 112 Z" className="fx-fill" />
+          <path d="M40 112 H160" className="fx-glow" />
+          {[0, 1, 2].map((i) => (
+            <path key={i} d={`M${70 + i * 6} ${128 + i * 14} H${130 - i * 6}`} className="fx-line fx-wave" style={{ animationDelay: `${i * 0.5}s` }} />
+          ))}
+          <path d="M150 56 q8 -6 16 0 M162 44 q6 -4 12 0" className="fx-line" />
         </svg>
       );
   }

@@ -370,6 +370,89 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
   .fx-word:nth-child(3) { transition-delay: .3s; }
 }
 
+/* ===== Chapitre Okinawa : sous la surface du lagon ===== */
+.fx-dive {
+  position: relative; isolation: isolate; overflow: hidden;
+  min-height: 100vh; min-height: 100svh;
+  display: flex; align-items: flex-end;
+  padding: 9rem 0 clamp(5rem, 11svh, 6.5rem);
+  color: var(--paper);
+  /* Nuit d'Osaka au-dessus de la surface ; sable sous la ligne de rivage. */
+  background: linear-gradient(180deg, var(--night) 0 50%, #e9f4ec 50%);
+}
+.fx-lagoon { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+/* Vagues d'arrière-plan : bande du haut. */
+.fx-lagoon-wave { position: absolute; left: 0; right: 0; top: 0; height: 140px; display: block; }
+.fx-lagoon-wave svg { display: block; width: 100%; height: 100%; }
+/* Vague de premier plan : forme seule, sur toute la hauteur (son tracé découpe l'eau). */
+.fx-lagoon-front { position: absolute; inset: 0; display: block; visibility: hidden; }
+.fx-lagoon-front svg { display: block; width: 100%; height: 100%; }
+/* L'eau, d'un seul tenant avec la vague : un dégradé, des caustiques et des rayons. */
+.fx-lagoon-water {
+  position: absolute; inset: 0; overflow: hidden;
+  background: linear-gradient(180deg, #7fd8c6 0, #6fd0bf 80px, #3fb3a8 32%, #1d8f8f 70%, #127579 100%);
+}
+.fx-lagoon-shader { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Eau légèrement trouble : le fond marin est flouté ; l'agrandissement masque les bords flous. */
+.fx-lagoon-seabed { filter: blur(2px) saturate(.92); transform: scale(1.04); }
+/* Teinte lagon sur la photo : claire sous la surface, plus profonde en bas pour la lisibilité du texte. */
+.fx-lagoon-tint {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgb(127 216 198 / 55%) 0, rgb(63 179 168 / 30%) 30%, rgb(29 143 143 / 25%) 55%, rgb(10 74 78 / 60%) 100%);
+}
+.fx-dive-credit { z-index: 3; bottom: 3.5rem; }
+.fx-lagoon-foam { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.fx-lagoon-foam path { fill: none; stroke: #fffdf4; stroke-width: 3; stroke-linecap: round; opacity: .9; filter: drop-shadow(0 2px 3px rgb(15 95 99 / 25%)); }
+.fx-lagoon-rays { mix-blend-mode: screen; opacity: .8; }
+.fx-dive-bubbles { position: absolute; inset: 0; overflow: hidden; }
+.fx-dive-bubbles span {
+  position: absolute; bottom: -24px; border-radius: 50%;
+  border: 1.5px solid rgb(255 255 255 / 70%); background: rgb(255 255 255 / 14%);
+  animation: fx-ascend linear infinite;
+}
+.fx-dive-wire { z-index: 1; -webkit-text-stroke-color: rgb(255 255 255 / 45%); }
+.fx-dive-copy { position: relative; z-index: 2; text-shadow: 0 1px 14px rgb(8 70 74 / 45%); }
+.fx-dive-copy .fx-lede { color: rgb(255 255 250 / 92%); }
+.fx-dive-copy .fx-eyebrow { color: #fff8df; }
+
+/* ===== Chapitre Okinawa : le lagon et le sable ===== */
+.fx-okinawa {
+  --lagoon: #1d8f8f;
+  --lagoon-deep: #0f5f63;
+  --sand: #f5ecd6;
+  position: relative;
+  padding-top: clamp(3rem, 8vw, 5rem);
+  color: var(--lagoon-deep);
+  font-family: var(--serif);
+  background:
+    radial-gradient(60% 40% at 85% 30%, rgb(127 216 198 / 22%), transparent 70%),
+    linear-gradient(180deg, #e9f4ec, var(--sand) 35%, #f7f0de);
+}
+.fx-okinawa .fx-kicker { color: var(--lagoon); }
+.fx-okinawa .fx-h2-script { color: var(--lagoon-deep); }
+/* Cartes postales claires, dessins au trait turquoise. */
+.fx-okinawa .fx-card,
+.fx-okinawa .fx-card:nth-child(even) {
+  color: var(--lagoon-deep);
+  background:
+    linear-gradient(180deg, rgb(127 216 198 / 22%), transparent 55%),
+    #fffdf6;
+  border: 1px solid rgb(15 95 99 / 14%);
+  box-shadow: 0 18px 40px -24px rgb(15 95 99 / 45%);
+  transform: rotate(var(--tilt, 0deg));
+}
+.fx-okinawa .fx-card:nth-child(1) { --tilt: -1deg; }
+.fx-okinawa .fx-card:nth-child(2) { --tilt: .8deg; }
+.fx-okinawa .fx-card:nth-child(3) { --tilt: -.6deg; }
+.fx-okinawa .fx-card:nth-child(4) { --tilt: 1deg; }
+.fx-page .fx-okinawa .fx-card[data-reveal][data-in='true'] { transform: rotate(var(--tilt, 0deg)); }
+.fx-okinawa .fx-card h3 { font-family: 'Wedding', serif; font-weight: normal; font-size: clamp(2.5rem, 7vw, 3rem); line-height: 1.05; letter-spacing: 0; }
+.fx-okinawa .fx-card > p:last-child { color: #3d6b6c; font-family: var(--serif); }
+.fx-okinawa .fx-card-index, .fx-okinawa .fx-card-jp { color: var(--lagoon); }
+.fx-okinawa .fx-line { stroke: var(--lagoon-deep); opacity: .85; }
+.fx-okinawa .fx-fill { fill: rgb(127 216 198 / 28%); stroke: var(--lagoon-deep); }
+.fx-okinawa .fx-glow { stroke: var(--lagoon); filter: none; animation: none; }
+
 /* ===== Lettre chiffonnée et tamponnée ===== */
 /* La dernière section occupe exactement un écran : lettre et liens compactés selon la hauteur disponible. */
 .fx-page .fx-letter-section {
@@ -407,6 +490,7 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
 .fx-ink-a { --r: -12deg; --d: .5s; right: 1.25rem; top: 1.25rem; }
 .fx-ink-b { --r: 8deg; --d: .8s; right: 5.25rem; bottom: 1.5rem; }
 .fx-ink-c { --r: -6deg; --d: 1.1s; left: 1.5rem; bottom: 1.25rem; opacity: 0; }
+.fx-ink-d { --r: 7deg; --d: 1.4s; left: 6.5rem; bottom: 1.6rem; }
 .fx-letter[data-in='true'] .fx-ink-stamp { opacity: .78; transform: rotate(var(--r)); }
 .fx-seal-letter { position: absolute; right: 1.5rem; bottom: 1.5rem; width: 2.75rem; height: 2.75rem; margin: 0; font-size: 1.5rem; animation: none; }
 .fx-end-links { display: flex; flex-direction: column; align-items: center; gap: .25rem; margin-top: clamp(1rem, 3.5svh, 3rem); text-align: center; font-family: var(--sans); }
@@ -427,7 +511,8 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
   .fx-ink-round { width: 3rem; height: 3rem; font-size: .8rem; }
   .fx-ink-square { width: 2.75rem; height: 2.75rem; font-size: .8rem; }
   .fx-ink-a { top: .6rem; right: .75rem; }
-  .fx-ink-b, .fx-ink-c { bottom: .6rem; }
+  .fx-ink-b, .fx-ink-c, .fx-ink-d { bottom: .6rem; }
+  .fx-ink-d { left: 4.75rem; }
   .fx-seal-letter { width: 2.2rem; height: 2.2rem; font-size: 1.2rem; bottom: .7rem; right: .9rem; }
   .fx-end-links { margin-top: 0; }
 }
@@ -448,6 +533,7 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
 @keyframes fx-wave { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-10px); } }
 @keyframes fx-bubble { from { transform: translateY(0); opacity: .9; } to { transform: translateY(-70px); opacity: 0; } }
 @keyframes fx-sauce { 0% { stroke-dashoffset: 200; } 50%, 100% { stroke-dashoffset: 0; } }
+@keyframes fx-ascend { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: 1; } 50% { transform: translate(12px, -55vh); } 100% { transform: translate(-6px, -112vh); opacity: 0; } }
 @keyframes fx-drift { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
 
 @media (prefers-reduced-motion: reduce) {
