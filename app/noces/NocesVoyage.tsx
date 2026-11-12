@@ -8,6 +8,7 @@ import { useReveal, useScrollProgress } from './scroll-effects';
 import { NeonIcon, StampArt, type NeonKind, type StampKind } from './NocesArt';
 import Scene3D from './Scene3D';
 import OkinawaLagoon from './OkinawaLagoon';
+import { CanalReflections, LetterPaper, SandGrain, WashiPaper } from './ShaderLayer';
 import './noces.css';
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -206,6 +207,7 @@ export default function NocesVoyage() {
 
       {/* ============ Page de garde (washi) ============ */}
       <header className="fx-cover fx-light" data-chapter="旅 · Le carnet" data-theme="light">
+        <WashiPaper seed={4} />
         <p className="fx-vertical fx-cover-vertical" lang="ja" aria-hidden="true">旅の始まり</p>
         <div className="fx-cover-center">
           <div className="fx-enso">
@@ -315,6 +317,7 @@ export default function NocesVoyage() {
       />
 
       <section className="fx-section fx-light fx-stamps" data-chapter="奈良 · Nara" data-theme="light" aria-labelledby="fx-stamps-title">
+        <WashiPaper seed={21} />
         <div className="fx-container">
           <div className="fx-head" data-reveal>
             <p className="fx-kicker">御朱印帳 · le carnet</p>
@@ -337,6 +340,7 @@ export default function NocesVoyage() {
       </section>
 
       <section className="fx-section fx-light fx-words" data-chapter="奈良 · Nara" data-theme="light" aria-labelledby="fx-words-title">
+        <WashiPaper seed={37} />
         <div className="fx-container">
           <div className="fx-head" data-reveal>
             <p className="fx-kicker">三つの言葉 · trois mots</p>
@@ -367,7 +371,7 @@ export default function NocesVoyage() {
         cover={<p className="fx-pass-cap"><span lang="ja">鳥居</span>Passer sous le torii...</p>}
         reveal={
           <div className="fx-pass-content fx-intro fx-dark fx-osaka">
-            <div className="fx-intro-bg fx-osaka-bg" aria-hidden="true" />
+            <div className="fx-intro-bg fx-osaka-bg" aria-hidden="true"><CanalReflections /></div>
             <span className="fx-wire" aria-hidden="true" lang="ja">大阪</span>
             <p className="fx-neon-sign" aria-hidden="true" lang="ja">食い倒れ</p>
             <div className="fx-container fx-intro-copy">
@@ -426,6 +430,7 @@ export default function NocesVoyage() {
       </section>
 
       <section className="fx-section fx-okinawa" data-chapter="沖縄 · Okinawa" data-theme="light" aria-labelledby="fx-okinawa-cards">
+        <SandGrain />
         <div className="fx-container">
           <p className="fx-kicker" data-reveal>Le carnet de bord</p>
           <h2 id="fx-okinawa-cards" className="fx-h2-script" data-reveal>Quatre envies à Okinawa</h2>
@@ -445,6 +450,7 @@ export default function NocesVoyage() {
 
       <footer className="fx-section fx-light fx-letter-section" data-chapter="手紙 · La lettre" data-theme="light">
         <article className="fx-letter" data-reveal>
+          <LetterPaper />
           <p className="fx-kicker">手紙 · une lettre</p>
           <p className="fx-letter-greeting">Chers vous,</p>
           <p>

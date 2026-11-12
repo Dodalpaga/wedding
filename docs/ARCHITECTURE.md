@@ -48,6 +48,8 @@ Chaque transition est une section épinglée (`260svh`, scène sticky en `100lvh
 
 Le chapitre Okinawa s'ouvre sur `OkinawaLagoon` : vagues `react-wavify`, eau découpée par le tracé de la vague de premier plan (`clip-path` mis à jour à chaque image) fond marin photographié (`public/images/noces/okinawa-recif.webp`, chargé avec `NEXT_PUBLIC_BASE_PATH`) déformé par un shader `Water` et flouté, teinte lagon, reflets de surface par un second `Water` sans image, et rayons `GodRays` de `@paper-design/shaders-react` (WebGL, pause hors écran, vitesse nulle avec la réduction des mouvements).
 
+D'autres shaders `@paper-design/shaders-react` décorent la page via `ShaderLayer.tsx` : papier washi `PaperTexture` (couverture, tampons et trois mots de Nara), feuille pliée et froissée de la lettre (`PaperTexture`), reflets de canal `Warp` en fond d'Osaka et sable `GrainGradient` sous les cartes d'Okinawa. Chaque calque n'est monté qu'à l'approche de l'écran (`IntersectionObserver`, marge 200 à 400 px) et démonté ensuite, ce qui libère son contexte WebGL ; les fonds CSS d'origine restent en dessous comme repli. Les papiers et le sable sont figés (vitesse 0) ; les reflets s'arrêtent avec la réduction des mouvements.
+
 Avec `prefers-reduced-motion`, les sections ne sont plus épinglées, la 3D est omise et les chapitres révélés s'affichent directement. La page masque sa barre de défilement. [Modèles et crédits](NOCES_MODELS.md).
 
 ## Assets et contraintes
