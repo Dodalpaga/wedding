@@ -8,7 +8,7 @@ Le site possède une landing mobile, un RSVP individuel modifiable, les suggesti
 
 ## Page Noces
 
-`/noces/` alterne sections washi et néon : couverture washi (ensō, monogramme, sceau), bandeau de noms, chapitre Tokyo sombre (aurore montée uniquement près de l'écran, kanji filaire, quatre envies en défilement horizontal), chapitre Nara crème (carnet de huit tampons dont cerfs et repas, plus un tampon « à inventer », trois mots), chapitre Osaka (enseigne néon, quatre envies culinaires animées, bandeau de plats), chapitre Okinawa au thème propre, lumineux et naturel (lagon turquoise puis plage de sable, quatre cartes postales au trait : plongée, récifs, tortues, couchant) et lettre chiffonnée tamponnée, qui occupe exactement un écran (lettre et liens côte à côte sur les écrans peu hauts, comme un téléphone en paysage). Tokyo, Nara, Osaka et Okinawa sont présentés comme des envies, sans dates ni horaires.
+`/noces/` alterne sections washi et néon : couverture washi (monogramme peint au pinceau trait par trait, sceau), bandeau de noms, chapitre Tokyo sombre (aurore montée uniquement près de l'écran, Skytree peinte à la gouache au fil du scroll, kanji filaire, quatre envies en défilement horizontal), chapitre Nara crème (cerf à l'encre peint au fil du scroll devant une pagode, carnet de huit tampons dont cerfs et repas, plus un tampon « à inventer », trois mots), chapitre Osaka (enseigne néon, guirlande de lanternes rouges, quatre envies culinaires animées, bandeau de plats), chapitre Okinawa au thème propre, lumineux et naturel (lagon turquoise puis plage de sable, quatre cartes postales au trait : plongée, récifs, tortues, couchant) et lettre chiffonnée tamponnée, qui occupe exactement un écran (lettre et liens côte à côte sur les écrans peu hauts, comme un téléphone en paysage). Tokyo, Nara, Osaka et Okinawa sont présentés comme des envies, sans dates ni horaires.
 
 Les deux transitions sont des objets 3D intégrés à la page, sans décor (`Scene3D.tsx`, `scenes.ts`) :
 
@@ -30,5 +30,6 @@ Le mode édition global modifie les réponses RSVP, les présences, l'e-mail et 
 
 - Les règles Firebase et rôles admin ne sont pas dans le dépôt ; les codes/conditions client ne constituent pas une protection serveur.
 - Les galeries ne valident pas les invitations et ne protègent pas les images.
+- Les illustrations peintes de Noces (masques et filtres SVG animés) ont été vérifiées dans Chromium à 375×667, 375×812, 768×1024 et 1440×900, pas sur Safari iOS ni sur un vrai téléphone.
 - Les transitions 3D de Noces n'ont pas été mesurées sur un vrai téléphone, ni testées avec la réduction des mouvements activée ; les glyphes japonais dépendent des polices système (Yu, Hiragino, Noto).
 - L'aurore WebGL reste animée avec réduction des mouvements ; la signature et Noces ont leurs propres adaptations.

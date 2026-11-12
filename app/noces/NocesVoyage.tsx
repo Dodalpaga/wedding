@@ -6,12 +6,11 @@ import { ArrowLeft, ArrowUp } from 'lucide-react';
 import Aurora from '@/components/Aurora';
 import { useReveal, useScrollProgress } from './scroll-effects';
 import { NeonIcon, StampArt, type NeonKind, type StampKind } from './NocesArt';
+import { NaraDeer, OsakaLanterns, PaintedLogo, TokyoSkytree } from './CityArt';
 import Scene3D from './Scene3D';
 import OkinawaLagoon from './OkinawaLagoon';
 import { CanalReflections, LetterPaper, SandGrain, WashiPaper } from './ShaderLayer';
 import './noces.css';
-
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
 
 /* ---------- Contenus ---------- */
 
@@ -186,13 +185,7 @@ export default function NocesVoyage() {
         <WashiPaper seed={4} />
         <p className="fx-vertical fx-cover-vertical" lang="ja" aria-hidden="true">旅の始まり</p>
         <div className="fx-cover-center">
-          <div className="fx-enso">
-            <svg viewBox="0 0 200 200" aria-hidden="true">
-              <path d="M150 52 C 128 24, 74 20, 46 52 C 18 84, 30 148, 78 168 C 126 188, 176 156, 178 108 C 180 82, 170 68, 160 60" />
-            </svg>
-            <span className="fx-monogram" role="img" aria-label="Monogramme de Solenne et Dorian"
-              style={{ '--logo': `url("${basePath}/SD%20Logo%20white.svg")` } as React.CSSProperties} />
-          </div>
+          <PaintedLogo />
           <p className="fx-kicker">Japon · 2027</p>
           <h1 className="fx-cover-title">Notre voyage de noces</h1>
           <p className="fx-cover-lede">
@@ -214,6 +207,7 @@ export default function NocesVoyage() {
         <div className="fx-intro-bg" aria-hidden="true">
           {auroraOn && <Aurora colorStops={auroraColors} blend={0.4} amplitude={0.7} speed={0.2} />}
         </div>
+        <TokyoSkytree />
         <span className="fx-wire" aria-hidden="true" lang="ja">東京</span>
         <div className="fx-container fx-intro-copy">
           <p className="fx-eyebrow">第一章 · Chapitre un</p>
@@ -250,8 +244,9 @@ export default function NocesVoyage() {
         reveal={
           <div className="fx-pass-content fx-light fx-nara">
             <div className="fx-container fx-nara-grid">
+              <NaraDeer />
               <p className="fx-vertical fx-nara-kanji" lang="ja" aria-hidden="true">奈良</p>
-              <div>
+              <div className="fx-nara-copy">
                 <p className="fx-kicker">第二章 · Chapitre deux</p>
                 <h2 id="fx-nara-title" className="fx-h2-script">Nara, au pas des cerfs</h2>
                 <p className="fx-body">
@@ -322,6 +317,7 @@ export default function NocesVoyage() {
           <div className="fx-pass-content fx-intro fx-dark fx-osaka">
             <div className="fx-intro-bg fx-osaka-bg" aria-hidden="true"><CanalReflections /></div>
             <span className="fx-wire" aria-hidden="true" lang="ja">大阪</span>
+            <OsakaLanterns />
             <p className="fx-neon-sign" aria-hidden="true" lang="ja">食い倒れ</p>
             <div className="fx-container fx-intro-copy">
               <p className="fx-eyebrow">第三章 · Chapitre trois</p>

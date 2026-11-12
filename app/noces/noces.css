@@ -103,17 +103,15 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
 }
 .fx-cover-vertical::after { content: ''; display: block; width: 1px; height: 4rem; margin: .75rem auto 0; background: var(--ink); opacity: .4; }
 .fx-cover-center { align-self: center; display: flex; flex-direction: column; align-items: center; max-width: 36rem; }
-.fx-enso { position: relative; width: min(62vw, 280px); aspect-ratio: 1; }
-.fx-enso svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: url(#fx-ink); }
-.fx-enso path {
-  fill: none; stroke: var(--ink); stroke-width: 11; stroke-linecap: round;
-  stroke-dasharray: 560; stroke-dashoffset: 560;
-  animation: fx-draw 2.2s .2s cubic-bezier(.6, .1, .2, 1) forwards;
-}
-.fx-monogram {
-  position: absolute; inset: 24%; background: var(--ink);
-  -webkit-mask: var(--logo) center / contain no-repeat; mask: var(--logo) center / contain no-repeat;
-  animation: fx-fade 1.2s 1.6s both;
+.fx-logo-paint { display: block; width: min(50vw, 240px); height: auto; aspect-ratio: 1; overflow: visible; }
+/* Lavis qui diffuse sous le trait, puis poils du pinceau (stries, blancs du pinceau sec). */
+.fx-logo-wash { fill: var(--ink); fill-opacity: .32; }
+.fx-logo-hairs path { fill: none; stroke: var(--ink); stroke-linecap: butt; stroke-linejoin: round; }
+/* Masque de chaque coup : le pinceau avance le long de la ligne médiane. */
+.fx-logo-brush {
+  fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: var(--len) var(--len); stroke-dashoffset: var(--len);
+  animation: fx-brush-stroke 1s cubic-bezier(.5, .05, .35, 1) forwards;
 }
 .fx-cover .fx-kicker { margin-top: 1.25rem; animation: fx-fade 1.2s 1s both; }
 .fx-cover-title {
@@ -174,6 +172,46 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
   will-change: transform;
 }
 .fx-intro-copy { position: relative; }
+
+/* Tokyo : la Skytree peinte à la gouache claire, au fil du défilement (--p de l'ouverture). */
+.fx-skytree {
+  --paint: clamp(0, (var(--p, 1) - .18) * 3.2, 1);
+  position: absolute; z-index: -1; left: 6%; top: 4.5rem; bottom: clamp(12rem, 32%, 17rem);
+  width: min(40%, 15rem); pointer-events: none;
+}
+@media (min-width: 900px) { .fx-skytree { left: 38%; width: 14rem; } }
+.fx-skytree svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.fx-tk-body { fill: #011820; fill-opacity: .7; }
+.fx-tk-halo { fill: #a8e6e0; opacity: calc(.22 * clamp(0, (var(--paint) - .5) * 3, 1)); }
+.fx-tk-halo-soft { opacity: .45; }
+.fx-tk-city { opacity: calc(.6 * clamp(0, var(--paint) * 5, 1)); }
+.fx-tk-lattice { fill: none; stroke: #d6efe6; stroke-width: 1.6; stroke-linecap: round; opacity: .38; }
+.fx-tk-stroke path { fill: none; stroke: currentColor; stroke-linecap: butt; stroke-linejoin: round; }
+.fx-tk-stroke .fx-tk-wash { fill: currentColor; fill-opacity: .16; stroke: none; }
+.fx-tk-pale { color: #eef7ef; }
+.fx-tk-cool { color: #a8e6e0; }
+.fx-tk-dim { color: #b9d9cf; opacity: .55; }
+.fx-tk-warm { color: #ffd59a; }
+.fx-tk-teal { color: #7fb8ad; opacity: .7; }
+.fx-tk-beacon { fill: #e0604a; opacity: clamp(0, (var(--paint) - .86) * 10, 1); }
+.fx-skytree .fx-tk-beacon circle { animation: fx-beacon 3.2s ease-in-out infinite; }
+.fx-tk-seal { opacity: clamp(0, (var(--paint) - .92) * 12, 1); }
+.fx-tk-seal rect { fill: #b8432f; }
+.fx-tk-seal text { font-family: var(--mincho); font-size: 15px; font-weight: 700; fill: var(--paper); }
+
+/* Osaka : guirlande de lanternes, allumées une fois le torii franchi. */
+.fx-lanterns {
+  position: absolute; z-index: 0; top: 4rem; right: 0; width: min(80%, 600px); pointer-events: none;
+  opacity: clamp(.15, (var(--p, 1) - .6) * 4, 1);
+}
+.fx-lanterns svg { display: block; width: 100%; overflow: visible; }
+.fx-lantern-wire { fill: none; stroke: rgb(255 248 223 / 35%); stroke-width: 1.2; }
+.fx-lantern { animation: fx-sway 4.2s ease-in-out infinite alternate; }
+.fx-lantern-body { filter: drop-shadow(0 0 10px rgb(255 120 60 / 65%)) drop-shadow(0 0 26px rgb(255 90 40 / 35%)); }
+.fx-lantern-rib { fill: none; stroke: rgb(120 20 12 / 45%); stroke-width: 1; }
+.fx-lantern-cap { fill: #1d1410; }
+.fx-lantern-tassel { stroke: #1d1410; stroke-width: 2.5; stroke-linecap: round; }
+.fx-lantern-kanji { font-family: var(--mincho); font-size: 22px; font-weight: 700; fill: #2a0d08; opacity: .85; }
 .fx-osaka-bg {
   background:
     radial-gradient(60% 50% at 20% 30%, rgb(28 119 67 / 70%), transparent 70%),
@@ -306,7 +344,41 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
 .fx-pass-credit a { text-decoration: underline; text-underline-offset: 2px; }
 
 /* ===== Nara ===== */
-.fx-nara-grid { display: grid; grid-template-columns: auto 1fr; gap: clamp(1.25rem, 5vw, 4rem); align-items: center; }
+.fx-nara-grid {
+  display: grid; grid-template-columns: auto 1fr; grid-template-areas: 'art art' 'kanji copy';
+  gap: clamp(.75rem, 3svh, 1.5rem) clamp(1.25rem, 5vw, 4rem); align-items: center;
+}
+.fx-nara-kanji { grid-area: kanji; }
+.fx-nara-copy { grid-area: copy; }
+@media (min-width: 900px) {
+  .fx-nara-grid { grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: 'kanji copy art'; }
+}
+
+/* Cerf à l'encre : peint au fil du défilement, une fois le rideau tiré (--p de la transition). */
+.fx-deer {
+  --paint: clamp(0, (var(--p, 1) - .45) * 2.4, 1);
+  grid-area: art; justify-self: center; display: block;
+  width: auto; height: clamp(150px, 27svh, 260px); max-width: 100%; overflow: visible;
+}
+@media (min-width: 900px) { .fx-deer { width: 100%; height: auto; max-height: 70svh; } }
+.fx-brush {
+  fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 101 101;
+  stroke-dashoffset: calc(101 * (1 - clamp(0, (var(--paint) - var(--a)) / var(--s), 1)));
+}
+.fx-deer-wash { fill: var(--ink-deep); fill-opacity: .36; }
+.fx-deer-ink { fill: none; stroke: var(--ink-deep); stroke-linecap: round; stroke-linejoin: round; }
+.fx-deer-solid { fill: var(--ink-deep); }
+.fx-deer-sun { fill: #c8553d; opacity: calc(.45 * clamp(0, var(--paint) * 4, 1)); }
+.fx-deer-pagoda { fill: var(--ink-deep); opacity: clamp(0, var(--paint) * 3, 1); }
+.fx-deer-pagoda-wall { fill-opacity: .1; }
+.fx-deer-pagoda-roof { fill-opacity: .42; }
+.fx-deer-spots { fill: var(--paper); fill-opacity: .75; opacity: clamp(0, (var(--paint) - .4) * 5, 1); }
+.fx-deer-eye { fill: var(--ink-deep); opacity: clamp(0, (var(--paint) - .2) * 6, 1); }
+.fx-deer-glint { fill: var(--paper); }
+.fx-deer-seal { opacity: clamp(0, (var(--paint) - .92) * 12, 1); }
+.fx-deer-seal rect { fill: #b8432f; }
+.fx-deer-seal text { font-family: var(--mincho); font-size: 17px; font-weight: 700; fill: var(--paper); }
 .fx-nara-kanji {
   font-size: clamp(4.5rem, 20vw, 10rem); line-height: 1; color: var(--ink);
   filter: url(#fx-ink); padding-inline: .25rem;
@@ -504,7 +576,9 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
 }
 
 /* ===== Animations ===== */
-@keyframes fx-draw { to { stroke-dashoffset: 40; } }
+@keyframes fx-brush-stroke { to { stroke-dashoffset: 0; } }
+@keyframes fx-beacon { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes fx-sway { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
 @keyframes fx-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @keyframes fx-press { from { opacity: 0; transform: scale(1.8) rotate(-4deg); } to { opacity: 1; transform: rotate(-4deg); } }
 @keyframes fx-drip { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
@@ -525,7 +599,10 @@ html:has(.fx-page)::-webkit-scrollbar { display: none; width: 0; height: 0; }
   .fx-page *, .fx-page *::before, .fx-page *::after { animation: none !important; transition: none !important; }
   .fx-page [data-reveal], .fx-page .fx-stamp[data-reveal] { opacity: 1; transform: none; }
   .fx-page .fx-stamp[data-reveal] { transform: rotate(var(--r)); }
-  .fx-enso path { stroke-dashoffset: 40; }
+  .fx-logo-brush { stroke-dashoffset: 0; }
+  .fx-deer { --paint: 1; }
+  .fx-skytree { --paint: 1; }
+  .fx-lanterns { opacity: 1; }
   .fx-wire { transform: translateY(-50%); }
   .fx-ink-stamp { opacity: .78; transform: rotate(var(--r)); }
   .fx-rail { height: auto; }
