@@ -350,7 +350,7 @@ export default function NocesVoyage() {
         chapter="大阪 · Osaka"
         theme="dark"
         credit={<>Torii et lanternes : <a href="https://sketchfab.com/3d-models/torii-gate-bcad7f0d07984d6b8d5d1f63c7949d84" target="_blank" rel="noopener noreferrer">panrichi</a>, <a href="https://sketchfab.com/3d-models/japanese-stone-lantern-e0417d1e05984727a50f9ab1451d162d" target="_blank" rel="noopener noreferrer">Sahir Virmani</a> · CC BY 4.0</>}
-        cover={<p className="fx-pass-cap"><span lang="ja">鳥居</span>Passer sous le torii…</p>}
+        cover={<p className="fx-pass-cap"><span lang="ja">鳥居</span>Passer sous le torii...</p>}
         reveal={
           <div className="fx-pass-content fx-intro fx-dark fx-osaka">
             <div className="fx-intro-bg fx-osaka-bg" aria-hidden="true" />

@@ -8,7 +8,7 @@ Le site possède une landing mobile, un RSVP individuel modifiable, les suggesti
 
 ## Page Noces
 
-`/noces/` alterne sections washi et néon : couverture washi (ensō, monogramme, sceau), bandeau de noms, chapitre Tokyo sombre (aurore montée uniquement près de l'écran, kanji filaire, horloges Toulouse/Tokyo, quatre envies en défilement horizontal), chapitre Nara crème (carnet de huit tampons dont daims et repas, plus un tampon « à inventer », trois mots), chapitre Osaka (enseigne néon, quatre envies culinaires animées, bandeau de plats) et lettre chiffonnée tamponnée. Tokyo, Nara et Osaka sont présentés comme des envies, sans dates ni horaires.
+`/noces/` alterne sections washi et néon : couverture washi (ensō, monogramme, sceau), bandeau de noms, chapitre Tokyo sombre (aurore montée uniquement près de l'écran, kanji filaire, horloges Toulouse/Tokyo, quatre envies en défilement horizontal), chapitre Nara crème (carnet de huit tampons dont daims et repas, plus un tampon « à inventer », trois mots), chapitre Osaka (enseigne néon, quatre envies culinaires animées, bandeau de plats) et lettre chiffonnée tamponnée, qui occupe exactement un écran (lettre et liens côte à côte sur les écrans peu hauts, comme un téléphone en paysage). Tokyo, Nara et Osaka sont présentés comme des envies, sans dates ni horaires.
 
 Les deux transitions sont des objets 3D intégrés à la page, sans décor (`Scene3D.tsx`, `scenes.ts`) :
 
@@ -19,7 +19,7 @@ Canvas transparent, éclairage d'environnement, ombres sur plan invisible, progr
 
 L'ancien parcours (globe MapLibre Toulouse–Tokyo, vidéo YouTube, visite Inakaya, carrousel de souvenirs, carte Kinkakuji), ses modèles, ses tests et la dépendance `maplibre-gl` ont été retirés, ainsi que les concepts intermédiaires (pages de test, vidéos Pexels, rideau 3D).
 
-Vérifié sur 1280×800, 768×1024 et 375×812, sans débordement horizontal.
+Vérifié sur 1920×1080, 1366×768, 1280×800, 768×1024, 375×812, 375×667 et 812×375, sans débordement horizontal.
 
 ## Limites connues
 

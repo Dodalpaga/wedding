@@ -178,7 +178,8 @@ async function trainScene(canvas: HTMLCanvasElement, host: HTMLElement, mobile: 
     camera.lookAt(look);
     camera.updateMatrixWorld();
     const { w, h } = size();
-    start = solveX(112); // nez juste hors champ à droite
+    // Le nez est déjà à l'écran quand on arrive sur la section (plus engagé sur téléphone, plus étroit).
+    start = solveX(w < 700 ? 40 : 72);
     // Ficelle un peu plus longue que la hauteur du coin au-dessus de la queue : elle pend avant de se tendre.
     const ty = tailAt(solveX(50) - length).y;
     cordLength = ty * 1.25;

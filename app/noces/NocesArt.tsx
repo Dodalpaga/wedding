@@ -72,7 +72,8 @@ export function NeonIcon({ kind }: { kind: NeonKind }) {
           <ellipse cx="100" cy="115" rx="70" ry="34" className="fx-fill" />
           <path d="M50 108 L70 98 L90 112 L110 98 L130 112 L150 100" className="fx-glow fx-draw" />
           <path d="M60 125 L80 115 L100 128 L120 115 L140 126" className="fx-line fx-draw" style={{ animationDelay: '.6s' }} />
-          <path d="M150 40 L170 60 L120 110" className="fx-line" />
+          {/* Baguettes posées en travers de l'assiette */}
+          <path d="M128 36 L96 104 M150 42 L112 106" className="fx-line" />
         </svg>
       );
   }
