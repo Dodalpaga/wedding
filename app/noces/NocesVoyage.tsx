@@ -62,34 +62,6 @@ const BUBBLES = [
   [63, 7, 6, 0.3], [72, 16, 9, 2.8], [80, 6, 5, 1.1], [88, 10, 7, 3.6], [94, 7, 6, 0.9],
 ] as const;
 
-/* ---------- Utilitaires ---------- */
-
-/** Longitude, latitude. */
-const TOULOUSE: [number, number] = [1.4442, 43.6045];
-const TOKYO: [number, number] = [139.6503, 35.6762];
-
-function haversineKm([lon1, lat1]: [number, number], [lon2, lat2]: [number, number]) {
-  const r = Math.PI / 180;
-  const a = Math.sin(((lat2 - lat1) * r) / 2) ** 2
-    + Math.cos(lat1 * r) * Math.cos(lat2 * r) * Math.sin(((lon2 - lon1) * r) / 2) ** 2;
-  return 2 * 6371 * Math.asin(Math.sqrt(a));
-}
-const DISTANCE = (Math.round(haversineKm(TOULOUSE, TOKYO) / 10) * 10).toLocaleString('fr-FR');
-
-const formatTime = (zone: string, date: Date) =>
-  new Intl.DateTimeFormat('fr-FR', { timeZone: zone, hour: '2-digit', minute: '2-digit' }).format(date);
-const hourIn = (zone: string, date: Date) =>
-  Number(new Intl.DateTimeFormat('en-GB', { timeZone: zone, hour: 'numeric', hourCycle: 'h23' }).format(date));
-
-function momentOfDay(hour: number) {
-  if (hour < 6) return 'dort encore';
-  if (hour < 11) return 'prend son petit-déjeuner';
-  if (hour < 14) return 'passe à table';
-  if (hour < 18) return 'flâne en plein après-midi';
-  if (hour < 22) return 'commande à dîner';
-  return 'rentre se coucher';
-}
-
 /* ---------- Morceaux ---------- */
 
 function Marquee({ words, label }: { words: string[]; label: string }) {
@@ -144,7 +116,6 @@ export default function NocesVoyage() {
   const [chapter, setChapter] = useState({ label: '旅 · Le carnet', theme: 'light' });
   const [auroraOn, setAuroraOn] = useState(false);
   const [auroraColors, setAuroraColors] = useState(['#003b4e', '#1c7743', '#003b4e']);
-  const [now, setNow] = useState<Date | null>(null);
   useScrollProgress(rootRef);
   useReveal(rootRef, 0.2);
 
@@ -180,16 +151,6 @@ export default function NocesVoyage() {
     window.addEventListener('resize', updateColors);
     return () => window.removeEventListener('resize', updateColors);
   }, []);
-
-  useEffect(() => {
-    setNow(new Date());
-    const timer = setInterval(() => setNow(new Date()), 15000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const parisHour = now ? hourIn('Europe/Paris', now) : 0;
-  const tokyoHour = now ? hourIn('Asia/Tokyo', now) : 0;
-  const offset = now ? (tokyoHour - parisHour + 24) % 24 : null;
 
   return (
     <main ref={rootRef} className="fx-page">
@@ -245,33 +206,6 @@ export default function NocesVoyage() {
           <p className="fx-lede">
             On atterrit de l’autre côté du monde, les yeux encore pleins du mariage.
             Première étape : une ville immense, qui ne dort jamais vraiment.
-          </p>
-        </div>
-      </section>
-
-      <section className="fx-section fx-dark fx-clocks" data-chapter="東京 · Tokyo" data-theme="dark" aria-labelledby="fx-clocks-title">
-        <div className="fx-container">
-          <p className="fx-eyebrow" data-reveal>Deux fuseaux, une même histoire</p>
-          <h2 id="fx-clocks-title" className="fx-h3" data-reveal>Pendant que vous lirez ceci…</h2>
-          <div className="fx-clock-grid">
-            <article className="fx-clock" data-reveal>
-              <p className="fx-clock-city">Toulouse</p>
-              <p className="fx-clock-time">{now ? formatTime('Europe/Paris', now) : '--:--'}</p>
-              <p className="fx-clock-caption">La France {now ? momentOfDay(parisHour) : '…'}</p>
-            </article>
-            <div className="fx-clock-link" data-reveal aria-hidden="true">
-              <span>+{offset ?? '…'} h</span>
-              <svg viewBox="0 0 200 40"><path d="M5 30 Q100 -10 195 30" /></svg>
-              <span>{DISTANCE} km</span>
-            </div>
-            <article className="fx-clock fx-clock-tokyo" data-reveal>
-              <p className="fx-clock-city">Tokyo</p>
-              <p className="fx-clock-time">{now ? formatTime('Asia/Tokyo', now) : '--:--'}</p>
-              <p className="fx-clock-caption">Le Japon {now ? momentOfDay(tokyoHour) : '…'}</p>
-            </article>
-          </div>
-          <p className="fx-note" data-reveal>
-            {offset !== null && <>{offset} heures d’avance et environ {DISTANCE} km à vol d’oiseau : nos messages arriveront souvent à des heures improbables.</>}
           </p>
         </div>
       </section>

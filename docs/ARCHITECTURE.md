@@ -39,7 +39,7 @@ L'authentification Firebase contrôle l'accès à l'interface, mais ne constitue
 
 `app/noces/` regroupe la page : `NocesVoyage.tsx` (sections), `NocesArt.tsx` (icônes néon et tampons SVG), `Scene3D.tsx` (transition épinglée), `scenes.ts` (scènes Three.js), `peel.ts` (géométrie du décollage), `scroll-effects.ts` (progression `--p` et apparitions) et `noces.css` (styles préfixés `fx-`).
 
-Les sections alternent papier washi et nuit néon dans la palette du site. Le chapitre Tokyo reprend l'aurore de la landing (mêmes réglages, montée seulement près de l'écran), les horloges Toulouse/Tokyo calculées avec `Intl` et quatre envies en défilement horizontal épinglé. Nara présente un carnet de tampons et trois mots ; Osaka des envies culinaires animées ; Okinawa, au thème propre, un lagon lumineux puis des cartes postales sur le sable ; la lettre finale, chiffonnée et tamponnée, occupe exactement un écran. Aucune escale ni horaire n'est figé.
+Les sections alternent papier washi et nuit néon dans la palette du site. Le chapitre Tokyo reprend l'aurore de la landing (mêmes réglages, montée seulement près de l'écran) et quatre envies en défilement horizontal épinglé. Nara présente un carnet de tampons et trois mots ; Osaka des envies culinaires animées ; Okinawa, au thème propre, un lagon lumineux puis des cartes postales sur le sable ; la lettre finale, chiffonnée et tamponnée, occupe exactement un écran. Aucune escale ni horaire n'est figé.
 
 Chaque transition est une section épinglée (`260svh`, scène sticky en `100lvh`) : la progression du scroll est lissée puis pilote la scène. Three.js et les modèles ne se chargent qu'à l'approche ; le canvas est transparent et le rendu s'arrête hors écran.
 
